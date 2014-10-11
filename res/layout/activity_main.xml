@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.helloworld.MainActivity" >
+
+<RadioGroup
+  android:id="@+id/orientation"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content" >
+
+  <RadioButton
+    android:id="@+id/horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Horizontal" >
+  </RadioButton>
+
+  <RadioButton
+    android:id="@+id/vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:checked="true"
+    android:text="Vertical" >
+  </RadioButton>
+</RadioGroup>
+
+<Button
+    android:id="@+id/button1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/main_input"
+    android:layout_below="@+id/main_input"
+    android:layout_marginTop="14dp"
+    android:onClick="onClick"
+    android:text="Start" />
+
+<EditText
+    android:id="@+id/main_input"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/orientation"
+    android:layout_below="@+id/orientation"
+    android:background="#C0C0C0"
+    android:ems="10" />
+
+<Button
+    android:id="@+id/switchImage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/button1"
+    android:layout_below="@+id/button1"
+    android:onClick="onClickSwitchImage"
+    android:text="Switch images" />
+
+<ImageView
+    android:id="@+id/myicon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/switchImage"
+    android:layout_below="@+id/switchImage"
+    android:layout_marginTop="46dp"
+    android:src="@drawable/initial" />
+ 
+</RelativeLayout>
