@@ -6,6 +6,7 @@ package awt.java.awt;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
+import android.graphics.Canvas;
 import awt.java.awt.RenderingHints.Key;
 import awt.java.awt.font.FontRenderContext;
 import awt.java.awt.font.GlyphVector;
@@ -20,7 +21,7 @@ import awt.java.awt.image.renderable.RenderableImage;
  * @author Dritan
  *
  */
-public class AndroidGraphics2D implements Graphics2D {
+public class AndroidGraphics2D extends Canvas implements Graphics2D {
 
 	/* (non-Javadoc)
 	 * @see awt.java.awt.Graphics#create(int, int, int, int)
