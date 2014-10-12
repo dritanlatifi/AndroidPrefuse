@@ -215,20 +215,21 @@ public class PDisplay extends View {
 	public PDisplay(Context context, Visualization visualization,
 			Predicate predicate) {
 		super(context);
-//		setDoubleBuffered(false);
-		setBackgroundColor(android.graphics.Color.WHITE); 
+		// setDoubleBuffered(false);
+		setBackgroundColor(android.graphics.Color.WHITE);
 
 		// initialize text editor
 		m_editing = false;
 		m_editor = new EditText(context);
 		m_editor.setVisibility(View.GONE);
 
-		// register input event capturer TODO for Dritan: implement Event handlers 
-//		InputEventCapturer iec = new InputEventCapturer();
-//		addMouseListener(iec);
-//		addMouseMotionListener(iec);
-//		addMouseWheelListener(iec);
-//		addKeyListener(iec);
+		// register input event capturer TODO for Dritan: implement Event
+		// handlers
+		// InputEventCapturer iec = new InputEventCapturer();
+		// addMouseListener(iec);
+		// addMouseMotionListener(iec);
+		// addMouseWheelListener(iec);
+		// addKeyListener(iec);
 
 		// invalidate the display when the filter changes
 		m_predicate.addExpressionListener(new UpdateListener() {
@@ -253,36 +254,40 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Set the size of the Display.
-	 * TODO for Dritan: on android size of View cannot be set
+	 * Set the size of the Display. TODO for Dritan: on android size of View
+	 * cannot be set
+	 * 
 	 * @param width
 	 *            the width of the Display in pixels
 	 * @param height
 	 *            the height of the Display in pixels
-	 *           
+	 * 
 	 */
 	public void setSize(int width, int height) {
-//		m_offscreen = null;
-//		setPreferredSize(new Dimension(width, height));
-//		super.setSize(width, height);
+		// m_offscreen = null;
+		// setPreferredSize(new Dimension(width, height));
+		// super.setSize(width, height);
 	}
 
 	/**
-	 * Set the size of the Display.
-	 * TODO for Dritan: on android size of View cannot be set
+	 * Set the size of the Display. TODO for Dritan: on android size of View
+	 * cannot be set
+	 * 
 	 * @param d
 	 *            the dimensions of the Display in pixels
 	 */
 	public void setSize(Dimension d) {
-//		m_offscreen = null;
-//		setPreferredSize(d);
-//		super.setSize(d);
+		// m_offscreen = null;
+		// setPreferredSize(d);
+		// super.setSize(d);
 	}
 
 	/**
 	 * Invalidates this component. Overridden to ensure that an internal damage
-	 * report is generated.
-	 * TODO for Dritan: see if the invalidate method from android.View is the same as java.awt.Component#invalidate => i.e. see if call of damageReport is necessary  
+	 * report is generated. TODO for Dritan: see if the invalidate method from
+	 * android.View is the same as java.awt.Component#invalidate => i.e. see if
+	 * call of damageReport is necessary
+	 * 
 	 * @see java.awt.Component#invalidate()
 	 */
 	public void invalidate() {
@@ -291,18 +296,19 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * @see java.awt.Component#setBounds(int, int, int, int)
-	 * TODO for Dritan: on android size of View cannot be set
+	 * @see java.awt.Component#setBounds(int, int, int, int) TODO for Dritan: on
+	 *      android size of View cannot be set
 	 */
 	public void setBounds(int x, int y, int w, int h) {
 		m_offscreen = null;
-//		super.setBounds(x, y, w, h);
+		// super.setBounds(x, y, w, h);
 	}
 
 	/**
 	 * Sets the font used by this Display. This determines the font used by this
-	 * Display's text editor and in any debugging text.
-	 * TODO for Dritan: no support for changing font at androidPrefuse 1.0   
+	 * Display's text editor and in any debugging text. TODO for Dritan: no
+	 * support for changing font at androidPrefuse 1.0
+	 * 
 	 * @param f
 	 *            the Font to use
 	 */
@@ -630,27 +636,30 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * @incomplete TODO for Dritan: this code is not tested and not necessary for the Version 1.0
-	 * Creates a new buffered image to use as an offscreen buffer.
+	 * @incomplete TODO for Dritan: this code is not tested and not necessary
+	 *             for the Version 1.0 Creates a new buffered image to use as an
+	 *             offscreen buffer.
 	 */
 	protected BufferedImage getNewOffscreenBuffer(int width, int height) {
 		BufferedImage img = null;
-//		if (!GraphicsEnvironment.isHeadless()) {
-//			try {
-//				img = (BufferedImage) createImage(width, height);
-//			} catch (Exception e) {
-//				img = null;
-//			}
-//		}
-//		if (img == null) {
-//			return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-//		}
+		// if (!GraphicsEnvironment.isHeadless()) {
+		// try {
+		// img = (BufferedImage) createImage(width, height);
+		// } catch (Exception e) {
+		// img = null;
+		// }
+		// }
+		// if (img == null) {
+		// return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		// }
 		return img;
 	}
 
 	/**
 	 * Saves a copy of this display as an image to the specified output stream.
-	 * @incomplete TODO for Dritan: this code is not tested and not necessary for the Version 1.0
+	 * 
+	 * @incomplete TODO for Dritan: this code is not tested and not necessary
+	 *             for the Version 1.0
 	 * @param output
 	 *            the output stream to write to.
 	 * @param format
@@ -663,26 +672,29 @@ public class PDisplay extends View {
 	 *            of this Display.
 	 * @return true if image was successfully saved, false if an error occurred.
 	 */
-	public boolean saveImage(OutputStream output, Bitmap.CompressFormat format, int quality, double scale) {
+	public boolean saveImage(OutputStream output, Bitmap.CompressFormat format,
+			int quality, double scale) {
 		try {
-			
+
 			// get an image to draw into
-	        //Define a bitmap with the same size as the view
-	        Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(),Bitmap.Config.ARGB_8888);
-	        //Bind a canvas to it
-	        Canvas canvas = new Canvas(bitmap);
-	        //Get the view's background
-	        Drawable bgDrawable =this.getBackground();
-	        if (bgDrawable!=null) 
-	            //has background drawable, then draw it on the canvas
-	            bgDrawable.draw(canvas);
-	        else 
-	            //does not have background drawable, then draw white background on the canvas
-	            canvas.drawColor(android.graphics.Color.WHITE);
-	        // draw the view on the canvas
-	        this.draw(canvas);
-	        
-	        bitmap.compress(format, quality, output);
+			// Define a bitmap with the same size as the view
+			Bitmap bitmap = Bitmap.createBitmap(this.getWidth(),
+					this.getHeight(), Bitmap.Config.ARGB_8888);
+			// Bind a canvas to it
+			Canvas canvas = new Canvas(bitmap);
+			// Get the view's background
+			Drawable bgDrawable = this.getBackground();
+			if (bgDrawable != null)
+				// has background drawable, then draw it on the canvas
+				bgDrawable.draw(canvas);
+			else
+				// does not have background drawable, then draw white background
+				// on the canvas
+				canvas.drawColor(android.graphics.Color.WHITE);
+			// draw the view on the canvas
+			this.draw(canvas);
+
+			bitmap.compress(format, quality, output);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -691,61 +703,63 @@ public class PDisplay extends View {
 	}
 
 	/**
-    * TODO for Dritan: review this old code  
-    * @param output
-    * @param format
-    * @param scale
-    * @return
-    */
+	 * TODO for Dritan: review this old code
+	 * 
+	 * @param output
+	 * @param format
+	 * @param scale
+	 * @return
+	 */
 	public boolean saveImageOld(OutputStream output, String format, double scale) {
 		try {
 			// get an image to draw into
-//			Dimension d = new Dimension((int) (scale * getWidth()),
-//					(int) (scale * getHeight()));
-//			BufferedImage img = getNewOffscreenBuffer(d.width, d.height);
-//			Graphics2D g = (Graphics2D) img.getGraphics();
-//
-//			// set up the display, render, then revert to normal settings
-//			Point2D p = new Point2D.Double(0, 0);
-//			zoom(p, scale); // also takes care of damage report
-//			boolean q = isHighQuality();
-//			setHighQuality(true);
-//			paintDisplay(g, d);
-//			setHighQuality(q);
-//			zoom(p, 1 / scale); // also takes care of damage report
-//
-//			// save the image and return
-//			ImageIO.write(img, format, output);
+			// Dimension d = new Dimension((int) (scale * getWidth()),
+			// (int) (scale * getHeight()));
+			// BufferedImage img = getNewOffscreenBuffer(d.width, d.height);
+			// Graphics2D g = (Graphics2D) img.getGraphics();
+			//
+			// // set up the display, render, then revert to normal settings
+			// Point2D p = new Point2D.Double(0, 0);
+			// zoom(p, scale); // also takes care of damage report
+			// boolean q = isHighQuality();
+			// setHighQuality(true);
+			// paintDisplay(g, d);
+			// setHighQuality(q);
+			// zoom(p, 1 / scale); // also takes care of damage report
+			//
+			// // save the image and return
+			// ImageIO.write(img, format, output);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-	}	
-	
+	}
+
 	/**
 	 * Paints the offscreen buffer to the provided graphics context.
-	 * @incomplete TODO for Dritan: not for the Version 1.0 
+	 * 
+	 * @incomplete TODO for Dritan: not for the Version 1.0
 	 * @param g
 	 *            the Graphics context to paint to
 	 */
 	protected void paintBufferToScreen(Graphics g) {
-		
-//		synchronized (this) {
-//			g.drawImage(m_offscreen, 0, 0, null);
-//		}
+
+		// synchronized (this) {
+		// g.drawImage(m_offscreen, 0, 0, null);
+		// }
 	}
 
 	/**
-	 * @incomplete TODO for Dritan: not for the Version 1.0
-	 * Immediately repaints the contents of the offscreen buffer to the screen.
-	 * This bypasses the usual rendering loop.
+	 * @incomplete TODO for Dritan: not for the Version 1.0 Immediately repaints
+	 *             the contents of the offscreen buffer to the screen. This
+	 *             bypasses the usual rendering loop.
 	 */
 	public void repaintImmediate() {
-//		Graphics g = this.getGraphics();
-//		if (g != null && m_offscreen != null) {
-//			paintBufferToScreen(g);
-//		}
+		// Graphics g = this.getGraphics();
+		// if (g != null && m_offscreen != null) {
+		// paintBufferToScreen(g);
+		// }
 	}
 
 	/**
@@ -818,6 +832,11 @@ public class PDisplay extends View {
 			mark = t;
 			nframes = 0;
 		}
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
 	}
 
 	/**
@@ -972,13 +991,16 @@ public class PDisplay extends View {
 	/**
 	 * Clears the specified region of the display in the display's offscreen
 	 * buffer.
+	 * 
 	 * @incomplete
 	 */
 	protected void clearRegion(Graphics2D g, Rectangle2D r) {
 		ColorDrawable bg = (ColorDrawable) getBackground();
 		int color = bg.getColor();
-		
-		g.setColor( new Color(color) ); // FIXME for Dritan: the color variable (Android-Color) is not compatible with awt.Color.    
+
+		g.setColor(new Color(color)); // FIXME for Dritan: the color variable
+										// (Android-Color) is not compatible
+										// with awt.Color.
 		g.fill(r);
 		// fire pre-paint events to any painters
 		firePrePaint(g);
@@ -1375,7 +1397,8 @@ public class PDisplay extends View {
 	 */
 	private class TransformActivity extends PActivity {
 		// TODO: clean this up to be more general...
-		// TODO: change mechanism so that multiple transform activities can be running at once?
+		// TODO: change mechanism so that multiple transform activities can be
+		// running at once?
 
 		private double[] src, dst;
 		private AffineTransform m_at;
@@ -1457,8 +1480,9 @@ public class PDisplay extends View {
 				m_itransform = m_transform.createInverse();
 			} catch (Exception e) { /* won't happen */
 			}
-//			repaint();
-			invalidate(); // TODO for Dritan: see if this is a correct replacement for the repaint method
+			// repaint();
+			invalidate(); // TODO for Dritan: see if this is a correct
+							// replacement for the repaint method
 		}
 	} // end of inner class TransformActivity
 
@@ -1629,485 +1653,485 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * TODO for Dritan: Implement Interactive Event Handlers for a later version 
+	 * TODO for Dritan: Implement Interactive Event Handlers for a later version
 	 * Captures all mouse and key events on the display, detects relevant
 	 * VisualItems, and informs ControlListeners.
 	 */
-//	public class InputEventCapturer implements MouseMotionListener,
-//			MouseWheelListener, MouseListener, KeyListener {
-//		private VisualItem activeItem = null;
-//		private boolean mouseDown = false;
-//
-//		private boolean validityCheck() {
-//			if (activeItem.isValid())
-//				return true;
-//			activeItem = null;
-//			return false;
-//		}
-//
-//		public void mouseDragged(MouseEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemDragged(activeItem, e);
-//				} else {
-//					fireMouseDragged(e);
-//				}
-//			}
-//		}
-//
-//		public void mouseMoved(MouseEvent e) {
-//			synchronized (m_vis) {
-//				boolean earlyReturn = false;
-//				// check if we've gone over any item
-//				VisualItem vi = findItem(e.getPoint());
-//				if (activeItem != null && activeItem != vi) {
-//					if (validityCheck())
-//						fireItemExited(activeItem, e);
-//					earlyReturn = true;
-//				}
-//				if (vi != null && vi != activeItem) {
-//					fireItemEntered(vi, e);
-//					earlyReturn = true;
-//				}
-//				activeItem = vi;
-//				if (earlyReturn)
-//					return;
-//
-//				if (vi != null && vi == activeItem) {
-//					fireItemMoved(vi, e);
-//				}
-//				if (vi == null) {
-//					fireMouseMoved(e);
-//				}
-//			}
-//		}
-//
-//		public void mouseWheelMoved(MouseWheelEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemWheelMoved(activeItem, e);
-//				} else {
-//					fireMouseWheelMoved(e);
-//				}
-//			}
-//		}
-//
-//		public void mouseClicked(MouseEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemClicked(activeItem, e);
-//				} else {
-//					fireMouseClicked(e);
-//				}
-//			}
-//		}
-//
-//		public void mousePressed(MouseEvent e) {
-//			synchronized (m_vis) {
-//				mouseDown = true;
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemPressed(activeItem, e);
-//				} else {
-//					fireMousePressed(e);
-//				}
-//			}
-//		}
-//
-//		public void mouseReleased(MouseEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemReleased(activeItem, e);
-//				} else {
-//					fireMouseReleased(e);
-//				}
-//				if (activeItem != null && mouseDown && isOffComponent(e)) {
-//					// mouse was dragged off of the component,
-//					// then released, so register an exit
-//					fireItemExited(activeItem, e);
-//					activeItem = null;
-//				}
-//				mouseDown = false;
-//			}
-//		}
-//
-//		public void mouseEntered(MouseEvent e) {
-//			synchronized (m_vis) {
-//				fireMouseEntered(e);
-//			}
-//		}
-//
-//		public void mouseExited(MouseEvent e) {
-//			synchronized (m_vis) {
-//				if (!mouseDown && activeItem != null) {
-//					// we've left the component and an item
-//					// is active but not being dragged, deactivate it
-//					fireItemExited(activeItem, e);
-//					activeItem = null;
-//				}
-//				fireMouseExited(e);
-//			}
-//		}
-//
-//		public void keyPressed(KeyEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemKeyPressed(activeItem, e);
-//				} else {
-//					fireKeyPressed(e);
-//				}
-//			}
-//		}
-//
-//		public void keyReleased(KeyEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemKeyReleased(activeItem, e);
-//				} else {
-//					fireKeyReleased(e);
-//				}
-//			}
-//		}
-//
-//		public void keyTyped(KeyEvent e) {
-//			synchronized (m_vis) {
-//				if (activeItem != null) {
-//					if (validityCheck())
-//						fireItemKeyTyped(activeItem, e);
-//				} else {
-//					fireKeyTyped(e);
-//				}
-//			}
-//		}
-//
-//		private boolean isOffComponent(MouseEvent e) {
-//			int x = e.getX(), y = e.getY();
-//			return (x < 0 || x > getWidth() || y < 0 || y > getHeight());
-//		}
-//
-//		// --------------------------------------------------------------------
-//		// Fire Event Notifications
-//
-//		private void fireItemDragged(VisualItem item, MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemDragged(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemMoved(VisualItem item, MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemMoved(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemWheelMoved(VisualItem item, MouseWheelEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemWheelMoved(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemClicked(VisualItem item, MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemClicked(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemPressed(VisualItem item, MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemPressed(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemReleased(VisualItem item, MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemReleased(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemEntered(VisualItem item, MouseEvent e) {
-//			item.setHover(true);
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemEntered(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemExited(VisualItem item, MouseEvent e) {
-//			if (item.isValid())
-//				item.setHover(false);
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemExited(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemKeyPressed(VisualItem item, KeyEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			if (lstnrs.length == 0)
-//				return;
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemKeyPressed(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemKeyReleased(VisualItem item, KeyEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemKeyReleased(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireItemKeyTyped(VisualItem item, KeyEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.itemKeyTyped(item, e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseEntered(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseEntered(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseExited(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseExited(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMousePressed(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mousePressed(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseReleased(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseReleased(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseClicked(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseClicked(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseDragged(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseDragged(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseMoved(MouseEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseMoved(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireMouseWheelMoved(MouseWheelEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.mouseWheelMoved(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireKeyPressed(KeyEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.keyPressed(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireKeyReleased(KeyEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.keyReleased(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//		private void fireKeyTyped(KeyEvent e) {
-//			Object[] lstnrs = m_controls.getArray();
-//			for (int i = 0; i < lstnrs.length; ++i) {
-//				Control ctrl = (Control) lstnrs[i];
-//				if (ctrl.isEnabled())
-//					try {
-//						ctrl.keyTyped(e);
-//					} catch (Exception ex) {
-//						s_logger.warning("Exception thrown by Control: " + ex
-//								+ "\n" + StringLib.getStackTrace(ex));
-//					}
-//			}
-//		}
-//
-//	} // end of inner class MouseEventCapturer
+	// public class InputEventCapturer implements MouseMotionListener,
+	// MouseWheelListener, MouseListener, KeyListener {
+	// private VisualItem activeItem = null;
+	// private boolean mouseDown = false;
+	//
+	// private boolean validityCheck() {
+	// if (activeItem.isValid())
+	// return true;
+	// activeItem = null;
+	// return false;
+	// }
+	//
+	// public void mouseDragged(MouseEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemDragged(activeItem, e);
+	// } else {
+	// fireMouseDragged(e);
+	// }
+	// }
+	// }
+	//
+	// public void mouseMoved(MouseEvent e) {
+	// synchronized (m_vis) {
+	// boolean earlyReturn = false;
+	// // check if we've gone over any item
+	// VisualItem vi = findItem(e.getPoint());
+	// if (activeItem != null && activeItem != vi) {
+	// if (validityCheck())
+	// fireItemExited(activeItem, e);
+	// earlyReturn = true;
+	// }
+	// if (vi != null && vi != activeItem) {
+	// fireItemEntered(vi, e);
+	// earlyReturn = true;
+	// }
+	// activeItem = vi;
+	// if (earlyReturn)
+	// return;
+	//
+	// if (vi != null && vi == activeItem) {
+	// fireItemMoved(vi, e);
+	// }
+	// if (vi == null) {
+	// fireMouseMoved(e);
+	// }
+	// }
+	// }
+	//
+	// public void mouseWheelMoved(MouseWheelEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemWheelMoved(activeItem, e);
+	// } else {
+	// fireMouseWheelMoved(e);
+	// }
+	// }
+	// }
+	//
+	// public void mouseClicked(MouseEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemClicked(activeItem, e);
+	// } else {
+	// fireMouseClicked(e);
+	// }
+	// }
+	// }
+	//
+	// public void mousePressed(MouseEvent e) {
+	// synchronized (m_vis) {
+	// mouseDown = true;
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemPressed(activeItem, e);
+	// } else {
+	// fireMousePressed(e);
+	// }
+	// }
+	// }
+	//
+	// public void mouseReleased(MouseEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemReleased(activeItem, e);
+	// } else {
+	// fireMouseReleased(e);
+	// }
+	// if (activeItem != null && mouseDown && isOffComponent(e)) {
+	// // mouse was dragged off of the component,
+	// // then released, so register an exit
+	// fireItemExited(activeItem, e);
+	// activeItem = null;
+	// }
+	// mouseDown = false;
+	// }
+	// }
+	//
+	// public void mouseEntered(MouseEvent e) {
+	// synchronized (m_vis) {
+	// fireMouseEntered(e);
+	// }
+	// }
+	//
+	// public void mouseExited(MouseEvent e) {
+	// synchronized (m_vis) {
+	// if (!mouseDown && activeItem != null) {
+	// // we've left the component and an item
+	// // is active but not being dragged, deactivate it
+	// fireItemExited(activeItem, e);
+	// activeItem = null;
+	// }
+	// fireMouseExited(e);
+	// }
+	// }
+	//
+	// public void keyPressed(KeyEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemKeyPressed(activeItem, e);
+	// } else {
+	// fireKeyPressed(e);
+	// }
+	// }
+	// }
+	//
+	// public void keyReleased(KeyEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemKeyReleased(activeItem, e);
+	// } else {
+	// fireKeyReleased(e);
+	// }
+	// }
+	// }
+	//
+	// public void keyTyped(KeyEvent e) {
+	// synchronized (m_vis) {
+	// if (activeItem != null) {
+	// if (validityCheck())
+	// fireItemKeyTyped(activeItem, e);
+	// } else {
+	// fireKeyTyped(e);
+	// }
+	// }
+	// }
+	//
+	// private boolean isOffComponent(MouseEvent e) {
+	// int x = e.getX(), y = e.getY();
+	// return (x < 0 || x > getWidth() || y < 0 || y > getHeight());
+	// }
+	//
+	// // --------------------------------------------------------------------
+	// // Fire Event Notifications
+	//
+	// private void fireItemDragged(VisualItem item, MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemDragged(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemMoved(VisualItem item, MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemMoved(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemWheelMoved(VisualItem item, MouseWheelEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemWheelMoved(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemClicked(VisualItem item, MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemClicked(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemPressed(VisualItem item, MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemPressed(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemReleased(VisualItem item, MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemReleased(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemEntered(VisualItem item, MouseEvent e) {
+	// item.setHover(true);
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemEntered(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemExited(VisualItem item, MouseEvent e) {
+	// if (item.isValid())
+	// item.setHover(false);
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemExited(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemKeyPressed(VisualItem item, KeyEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// if (lstnrs.length == 0)
+	// return;
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemKeyPressed(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemKeyReleased(VisualItem item, KeyEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemKeyReleased(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireItemKeyTyped(VisualItem item, KeyEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.itemKeyTyped(item, e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseEntered(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseEntered(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseExited(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseExited(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMousePressed(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mousePressed(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseReleased(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseReleased(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseClicked(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseClicked(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseDragged(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseDragged(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseMoved(MouseEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseMoved(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireMouseWheelMoved(MouseWheelEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.mouseWheelMoved(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireKeyPressed(KeyEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.keyPressed(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireKeyReleased(KeyEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.keyReleased(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// private void fireKeyTyped(KeyEvent e) {
+	// Object[] lstnrs = m_controls.getArray();
+	// for (int i = 0; i < lstnrs.length; ++i) {
+	// Control ctrl = (Control) lstnrs[i];
+	// if (ctrl.isEnabled())
+	// try {
+	// ctrl.keyTyped(e);
+	// } catch (Exception ex) {
+	// s_logger.warning("Exception thrown by Control: " + ex
+	// + "\n" + StringLib.getStackTrace(ex));
+	// }
+	// }
+	// }
+	//
+	// } // end of inner class MouseEventCapturer
 
 	// ------------------------------------------------------------------------
 	// Text Editing
@@ -2149,10 +2173,10 @@ public class PDisplay extends View {
 		Rectangle2D b = item.getBounds();
 		Rectangle r = m_transform.createTransformedShape(b).getBounds();
 
-//		Font f = getFont();
-//		int size = (int) Math.round(f.getSize() * m_transform.getScaleX());
-//		Font nf = new Font(f.getFontName(), f.getStyle(), size);
-//		m_editor.setFont(nf);
+		// Font f = getFont();
+		// int size = (int) Math.round(f.getSize() * m_transform.getScaleX());
+		// Font nf = new Font(f.getFontName(), f.getStyle(), size);
+		// m_editor.setFont(nf);
 
 		editText(item, attribute, r);
 	}
@@ -2206,14 +2230,16 @@ public class PDisplay extends View {
 		if (m_editing) {
 			stopEditing();
 		}
-//		int width = getWidth();
-//		int height = getHeight();
+		// int width = getWidth();
+		// int height = getHeight();
 		m_editing = true;
 		// m_editor.setBounds(r.x,r.y,r.width,r.height);
 		m_editor.setWidth(r.width);
 		m_editor.setHeight(r.height);
-		m_editor.setLeft(r.x); // TODO for Dritan: I'm not sure this is how it should work
-		m_editor.setBottom(r.y); // TODO for Dritan: I'm not sure this is how it should work
+		m_editor.setLeft(r.x); // TODO for Dritan: I'm not sure this is how it
+								// should work
+		m_editor.setBottom(r.y); // TODO for Dritan: I'm not sure this is how it
+									// should work
 		m_editor.setText(txt);
 		m_editor.setVisibility(View.VISIBLE);
 		m_editor.setSelection(txt.length());
@@ -2229,7 +2255,7 @@ public class PDisplay extends View {
 	public void stopEditing() {
 		m_editor.setVisibility(View.GONE);
 		if (m_editItem != null) {
-			Editable txt = m_editor.getText();			
+			Editable txt = m_editor.getText();
 			m_editItem.set(m_editAttribute, txt.toString());
 			m_editItem = null;
 			m_editAttribute = null;

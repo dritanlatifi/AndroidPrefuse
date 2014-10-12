@@ -29,6 +29,7 @@ import java.text.CharacterIterator;
 
 import org.apache.harmony.awt.internal.nls.Messages;
 
+
 /**
  * The FontMetrics class contains information about the rendering of a
  * particular font on a particular screen.
@@ -455,8 +456,8 @@ public abstract class FontMetrics implements Serializable {
      */
     private FontRenderContext getFRCFromGraphics(Graphics context) {
         FontRenderContext frc;
-        if (context instanceof Graphics2D) {
-            frc = ((Graphics2D)context).getFontRenderContext();
+        if (context instanceof AndroidGraphics2D) {
+            frc = ((AndroidGraphics2D)context).getFontRenderContext();
         } else {
             frc = new FontRenderContext(null, false, false);
         }
