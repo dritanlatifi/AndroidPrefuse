@@ -260,7 +260,7 @@ public interface Graphics {
 	 * @param height
 	 *            the height of the rectangle for intersection.
 	 */
-	public void clipRect(int x, int y, int width, int height);
+	public boolean clipRect(int x, int y, int width, int height);
 
 	/**
 	 * Copies the rectangle area to another area specified by a distance (dx,
@@ -728,12 +728,12 @@ public interface Graphics {
 	/**
 	 * Gets the bounds of the current clipping area as a rectangle. TODO for
 	 * Dritan: this method exist already in android.graphics.Canvas. Conflict
-	 * because of different return type
+	 * because of different return type => deactivated because of the conflict
 	 * 
 	 * @return a Rectangle object which represents the bounds of the current
 	 *         clipping area.
 	 */
-	public Rectangle getClipBounds();
+//	public Rectangle getClipBounds();
 
 	/**
 	 * Gets the current color of Graphics.

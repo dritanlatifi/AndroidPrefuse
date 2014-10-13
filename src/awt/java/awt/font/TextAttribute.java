@@ -167,13 +167,13 @@ import java.util.HashMap;
  * </tr>
  * <tr bgcolor="#eeeeff">
  * <td valign="TOP">{@link #FOREGROUND}</td>
- * <td valign="TOP">{@link java.awt.Paint}</td>
+ * <td valign="TOP">{@link java.awt.PPaint}</td>
  * <td valign="TOP">none</td>
  * <td valign="TOP">null (use current graphics paint)</td>
  * </tr>
  * <tr>
  * <td valign="TOP">{@link #BACKGROUND}</td>
- * <td valign="TOP">{@link java.awt.Paint}</td>
+ * <td valign="TOP">{@link java.awt.PPaint}</td>
  * <td valign="TOP">none</td>
  * <td valign="TOP">null (do not render background)</td>
  * </tr>
@@ -717,7 +717,7 @@ public final class TextAttribute extends Attribute {
      * <code>Paint</code> regardless of the <code>Paint</code> value
      * set on the <code>Graphics</code> (but see {@link #SWAP_COLORS}).
      *
-     * @see java.awt.Paint
+     * @see java.awt.PPaint
      * @see #SWAP_COLORS
      */
     public static final TextAttribute FOREGROUND =
@@ -736,7 +736,7 @@ public final class TextAttribute extends Attribute {
      * <p>The visual bounds of the text is extended to include the
      * logical bounds, if necessary.  The outline is not affected.
      *
-     * @see java.awt.Paint
+     * @see java.awt.PPaint
      * @see #SWAP_COLORS
      */
     public static final TextAttribute BACKGROUND =

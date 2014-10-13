@@ -249,7 +249,7 @@ public abstract class CopyOfGraphics2D extends CopyOfGraphics{
      * 
      * @return the current Paint of Graphics2D.
      */
-    public abstract Paint getPaint();
+    public abstract PPaint getPaint();
 
     /**
      * Gets the value of single preference for specified key.
@@ -362,7 +362,7 @@ public abstract class CopyOfGraphics2D extends CopyOfGraphics{
      * @param paint
      *            the Paint object.
      */
-    public abstract void setPaint(Paint paint);
+    public abstract void setPaint(PPaint paint);
 
     /**
      * Sets a key-value pair in the current RenderingHints map.
@@ -481,7 +481,7 @@ public abstract class CopyOfGraphics2D extends CopyOfGraphics{
         // According to the spec, color should be used instead of paint,
         // so Graphics.fill3DRect resets paint and
         // it should be restored after the call
-        Paint savedPaint = getPaint();
+        PPaint savedPaint = getPaint();
         super.fill3DRect(x, y, width, height, raised);
         setPaint(savedPaint);
     }
@@ -507,7 +507,7 @@ public abstract class CopyOfGraphics2D extends CopyOfGraphics{
         // According to the spec, color should be used instead of paint,
         // so Graphics.draw3DRect resets paint and
         // it should be restored after the call
-        Paint savedPaint = getPaint();
+        PPaint savedPaint = getPaint();
         super.draw3DRect(x, y, width, height, raised);
         setPaint(savedPaint);
     }

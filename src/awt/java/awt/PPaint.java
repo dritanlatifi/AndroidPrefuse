@@ -31,7 +31,7 @@ import awt.java.awt.image.ColorModel;
  * 
  * @since Android 1.0
  */
-public interface Paint extends Transparency {
+public interface PPaint extends Transparency {
 
     /**
      * Creates the PaintContext which is used to generate color patterns for

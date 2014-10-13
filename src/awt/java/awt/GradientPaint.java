@@ -47,7 +47,7 @@ import org.apache.harmony.awt.internal.nls.Messages;
  * 
  * @since Android 1.0
  */
-public class GradientPaint implements Paint {
+public class GradientPaint implements PPaint {
 
     /**
      * The start point color.
@@ -185,7 +185,7 @@ public class GradientPaint implements Paint {
      * @param hints
      *            the RrenderingHints object.
      * @return the PaintContext for color pattern generating.
-     * @see java.awt.Paint#createContext(java.awt.image.ColorModel,
+     * @see java.awt.PPaint#createContext(java.awt.image.ColorModel,
      *      java.awt.Rectangle, java.awt.geom.Rectangle2D,
      *      java.awt.geom.AffineTransform, java.awt.RenderingHints)
      */

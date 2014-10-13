@@ -242,7 +242,7 @@ public interface Graphics2D extends Graphics {
 	 * 
 	 * @return the current Paint of Graphics2D.
 	 */
-	public Paint getPaint();
+	public PPaint getPaint();
 
 	/**
 	 * Gets the value of single preference for specified key.
@@ -360,7 +360,7 @@ public interface Graphics2D extends Graphics {
 	 * @param paint
 	 *            the Paint object.
 	 */
-	public void setPaint(Paint paint);
+	public void setPaint(PPaint paint);
 
 	/**
 	 * Sets a key-value pair in the current RenderingHints map.

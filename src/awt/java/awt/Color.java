@@ -42,7 +42,7 @@ import org.apache.harmony.awt.internal.nls.Messages;
  * 
  * @since Android 1.0
  */
-public class Color implements Paint, Serializable {
+public class Color implements PPaint, Serializable {
 
     /**
      * The Constant serialVersionUID.
