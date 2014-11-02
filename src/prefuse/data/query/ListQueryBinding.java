@@ -1,8 +1,8 @@
 package prefuse.data.query;
 
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JList;
+//import javax.swing.JComboBox;
+//import javax.swing.JComponent;
+//import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -104,27 +104,27 @@ public class ListQueryBinding extends DynamicQueryBinding {
      * this dynamic query.
      * @see prefuse.data.query.DynamicQueryBinding#createComponent()
      */
-    public JComponent createComponent() {
-        return createCheckboxGroup();
-    }
+//    public JComponent createComponent() {
+//        return createCheckboxGroup();
+//    }
     
     /**
      * Create a new interactive list for interacting with the query.
      * @return a {@link javax.swing.JList} bound to this dynamic query.
      */
-    public JList createList() {
-        JList list = new JList(m_model);
-        list.setSelectionModel(m_model);
-        return list;
-    }
+//    public JList createList() {
+//        JList list = new JList(m_model);
+//        list.setSelectionModel(m_model);
+//        return list;
+//    }
     
     /**
      * Create a new drop-down combo box for interacting with the query.
      * @return a {@link javax.swing.JComboBox} bound to this dynamic query.
      */
-    public JComboBox createComboBox() {
-        return new JComboBox(m_model);
-    }
+//    public JComboBox createComboBox() {
+//        return new JComboBox(m_model);
+//    }
 
     /**
      * Creates a new group of check boxes for interacting with the query.

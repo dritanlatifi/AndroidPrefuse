@@ -1,10 +1,10 @@
 package prefuse.data.query;
 
-import awt.java.awt.event.FocusEvent;
-import awt.java.awt.event.FocusListener;
-
-import javax.swing.JComponent;
-import javax.swing.JSlider;
+//import awt.java.awt.event.FocusEvent;
+//import awt.java.awt.event.FocusListener;
+//
+//import javax.swing.JComponent;
+//import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -29,7 +29,7 @@ public class RangeQueryBinding extends DynamicQueryBinding {
     private ValuedRangeModel m_model;
     private boolean m_ordinal;
     
-    private static FocusListener s_sliderAdj;
+//    private static FocusListener s_sliderAdj;
     
     /**
      * Create a new RangeQueryBinding over the given set and data field.
@@ -135,9 +135,9 @@ public class RangeQueryBinding extends DynamicQueryBinding {
      * query.
      * @see prefuse.data.query.DynamicQueryBinding#createComponent()
      */
-    public JComponent createComponent() {
-        return createHorizontalRangeSlider();
-    }
+//    public JComponent createComponent() {
+//        return createHorizontalRangeSlider();
+//    }
     
     /**
      * Create a new horizontal range slider for interacting with the query.
@@ -178,28 +178,28 @@ public class RangeQueryBinding extends DynamicQueryBinding {
      * This allows you to select a single value at a time.
      * @return a {@link javax.swing.JSlider} bound to this dynamic query.
      */
-    public JSlider createSlider() {
-        JSlider slider = new JSlider(m_model);
-        slider.addFocusListener(getSliderAdjuster());
-        return slider;
-    }
+//    public JSlider createSlider() {
+//        JSlider slider = new JSlider(m_model);
+//        slider.addFocusListener(getSliderAdjuster());
+//        return slider;
+//    }
     
-    private synchronized static FocusListener getSliderAdjuster() {
-        if ( s_sliderAdj == null )
-            s_sliderAdj = new SliderAdjuster();
-        return s_sliderAdj;
-    }
+//    private synchronized static FocusListener getSliderAdjuster() {
+//        if ( s_sliderAdj == null )
+//            s_sliderAdj = new SliderAdjuster();
+//        return s_sliderAdj;
+//    }
     
     // ------------------------------------------------------------------------
-    
-    private static class SliderAdjuster implements FocusListener {
-        public void focusGained(FocusEvent e) {
-            ((JSlider)e.getSource()).setExtent(0);
-        }
-        public void focusLost(FocusEvent e) {
-            // do nothing
-        }
-    } // end of inner class SliderAdjuster
+//    
+//    private static class SliderAdjuster implements FocusListener {
+//        public void focusGained(FocusEvent e) {
+//            ((JSlider)e.getSource()).setExtent(0);
+//        }
+//        public void focusLost(FocusEvent e) {
+//            // do nothing
+//        }
+//    } // end of inner class SliderAdjuster
     
     private class Listener implements ChangeListener {
         public void stateChanged(ChangeEvent e) {

@@ -14,6 +14,7 @@ import awt.java.awt.Dimension;
 import awt.java.awt.Font;
 import awt.java.awt.Graphics;
 import awt.java.awt.AndroidGraphics2D;
+import awt.java.awt.Insets;
 //import awt.java.awt.GraphicsEnvironment;
 import awt.java.awt.Image;
 import awt.java.awt.Point;
@@ -2295,6 +2296,10 @@ public class PDisplay extends View {
 			m_editAttribute = null;
 		}
 		m_editing = false;
+	}
+
+	public Insets getInsets(Insets m_insets) {
+		return m_insets;
 	}
 
 } // end of class Display

@@ -1,6 +1,6 @@
 package prefuse.data.query;
 
-import javax.swing.JComponent;
+//import javax.swing.JComponent;
 
 import prefuse.data.Tuple;
 import prefuse.data.event.TupleSetListener;
@@ -74,9 +74,9 @@ public class SearchQueryBinding extends DynamicQueryBinding {
      * dynamic query.
      * @see prefuse.data.query.DynamicQueryBinding#createComponent()
      */
-    public JComponent createComponent() {
-        return createSearchPanel();
-    }
+//    public JComponent createComponent() {
+//        return createSearchPanel();
+//    }
 
     /**
      * Create a new search text panel for searching over the data.
