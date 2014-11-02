@@ -3,7 +3,7 @@ package prefuse.render;
 import awt.java.awt.Dimension;
 import awt.java.awt.Font;
 import awt.java.awt.FontMetrics;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Image;
 import awt.java.awt.Shape;
 import awt.java.awt.geom.AffineTransform;
@@ -385,7 +385,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
     /**
      * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
      */
-    public void render(Graphics2D g, VisualItem item) {
+    public void render(AndroidGraphics2D g, VisualItem item) {
         RectangularShape shape = (RectangularShape)getShape(item);
         if ( shape == null ) return;
         
@@ -532,7 +532,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
         }
     }
     
-    private final void drawString(Graphics2D g, FontMetrics fm, String text,
+    private final void drawString(AndroidGraphics2D g, FontMetrics fm, String text,
             boolean useInt, double x, double y, double w)
     {
         // compute the x-coordinate

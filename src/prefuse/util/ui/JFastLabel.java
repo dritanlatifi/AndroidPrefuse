@@ -3,7 +3,7 @@ package prefuse.util.ui;
 import awt.java.awt.Font;
 import awt.java.awt.FontMetrics;
 import awt.java.awt.Graphics;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Insets;
 import awt.java.awt.RenderingHints;
 
@@ -144,7 +144,7 @@ public class JFastLabel extends JComponent {
             w = ins.left;
         }
         if ( m_quality ) {
-            ((Graphics2D)g).setRenderingHint(
+            ((AndroidGraphics2D)g).setRenderingHint(
                     RenderingHints.KEY_TEXT_ANTIALIASING,
                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }

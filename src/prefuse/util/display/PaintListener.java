@@ -1,6 +1,6 @@
 package prefuse.util.display;
 
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import java.util.EventListener;
 
 import prefuse.PDisplay;
@@ -19,13 +19,13 @@ public interface PaintListener extends EventListener {
      * @param d the Display about to paint itself
      * @param g the Graphics context for the Display
      */
-    public void prePaint(PDisplay d, Graphics2D g);
+    public void prePaint(PDisplay d, AndroidGraphics2D g);
     
     /**
      * Notification that Display painting has completed.
      * @param d the Display about to paint itself
      * @param g the Graphics context for the Display
      */
-    public void postPaint(PDisplay d, Graphics2D g);
+    public void postPaint(PDisplay d, AndroidGraphics2D g);
     
 } // end of interface PaintListener

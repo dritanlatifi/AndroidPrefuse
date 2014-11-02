@@ -13,7 +13,7 @@ import awt.java.awt.Color;
 import awt.java.awt.Dimension;
 import awt.java.awt.Font;
 import awt.java.awt.Graphics;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 //import awt.java.awt.GraphicsEnvironment;
 import awt.java.awt.Image;
 import awt.java.awt.Point;
@@ -769,7 +769,7 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the Graphics context to prepare.
 	 */
-	protected void prepareGraphics(Graphics2D g) {
+	protected void prepareGraphics(AndroidGraphics2D g) {
 		if (m_transform != null)
 			g.transform(m_transform);
 		setRenderingHints(g);
@@ -784,7 +784,7 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the Graphics context on which to set the rendering hints
 	 */
-	protected void setRenderingHints(Graphics2D g) {
+	protected void setRenderingHints(AndroidGraphics2D g) {
 		if (m_highQuality) {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
@@ -802,18 +802,55 @@ public class PDisplay extends View {
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
 	public void paintComponent(Graphics g) {
+//		if (m_offscreen == null) {
+//			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
+//			damageReport();
+//		}
+//		AndroidGraphics2D g2D = (AndroidGraphics2D) g;
+//		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics();
+//
+//		// Why not fire a pre-paint event here?
+//		// Pre-paint events are fired by the clearRegion method
+//
+//		// paint the visualization
+//		paintDisplay(buf_g2D, getSize());
+//		paintBufferToScreen(g2D);
+//
+//		// fire post-paint events to any painters
+//		firePostPaint(g2D);
+//
+//		buf_g2D.dispose();
+//
+//		// compute frame rate
+//		nframes++;
+//		if (mark < 0) {
+//			mark = System.currentTimeMillis();
+//			nframes = 0;
+//		} else if (nframes == sampleInterval) {
+//			long t = System.currentTimeMillis();
+//			frameRate = (1000.0 * nframes) / (t - mark);
+//			mark = t;
+//			nframes = 0;
+//		}
+	}
+
+	@Override
+	protected void onDraw(Canvas g) {
+		super.onDraw(g);
 		if (m_offscreen == null) {
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
 			damageReport();
 		}
-		Graphics2D g2D = (Graphics2D) g;
-		Graphics2D buf_g2D = (Graphics2D) m_offscreen.getGraphics();
+		AndroidGraphics2D g2D = (AndroidGraphics2D) g;
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics();
 
+		int width = 400; // TODO for Dritan: get screen width 
+		int height =  400; // TODO for Dritan: get screen height
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
-
+				
 		// paint the visualization
-		paintDisplay(buf_g2D, getSize());
+		paintDisplay(buf_g2D, new Dimension(width, height));
 		paintBufferToScreen(g2D);
 
 		// fire post-paint events to any painters
@@ -832,11 +869,7 @@ public class PDisplay extends View {
 			mark = t;
 			nframes = 0;
 		}
-	}
-
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+		
 	}
 
 	/**
@@ -847,7 +880,7 @@ public class PDisplay extends View {
 	 * @param d
 	 *            the rendering width and height of the Display
 	 */
-	public void paintDisplay(Graphics2D g2D, Dimension d) {
+	public void paintDisplay(AndroidGraphics2D g2D, Dimension d) {
 		// if double-locking *ALWAYS* lock on the visualization first
 		synchronized (m_vis) {
 			synchronized (this) {
@@ -954,21 +987,22 @@ public class PDisplay extends View {
 	/**
 	 * Immediately render the given VisualItem to the screen. This method
 	 * bypasses the Display's offscreen buffer.
-	 * 
+	 * TODO for Dritan: see if it is neccessary to implement this method
 	 * @param item
 	 *            the VisualItem to render immediately
 	 */
-	public void renderImmediate(VisualItem item) {
-		Graphics2D g2D = (Graphics2D) this.getGraphics();
-		prepareGraphics(g2D);
-		item.render(g2D);
-	}
+//	public void renderImmediate(VisualItem item) {
+//		this.getC
+//		AndroidGraphics2D g2D = (AndroidGraphics2D) this.getGraphics();
+//		prepareGraphics(g2D);
+//		item.render(g2D);
+//	}
 
 	/**
 	 * Paints the graph to the provided graphics context, for output to a
 	 * printer. This method does not double buffer the painting, in order to
 	 * provide the maximum print quality.
-	 * 
+	 * TODO for Dritan: see if it is neccesary to implement this method
 	 * <b>This method may not be working correctly, and will be repaired at a
 	 * later date.</b>
 	 * 
@@ -976,16 +1010,16 @@ public class PDisplay extends View {
 	 *            the printer graphics context.
 	 */
 	protected void printComponent(Graphics g) {
-		boolean wasHighQuality = m_highQuality;
-		try {
-			// Set the quality to high for the duration of the printing.
-			m_highQuality = true;
-			// Paint directly to the print graphics context.
-			paintDisplay((Graphics2D) g, getSize());
-		} finally {
-			// Reset the quality to the state it was in before printing.
-			m_highQuality = wasHighQuality;
-		}
+//		boolean wasHighQuality = m_highQuality;
+//		try {
+//			// Set the quality to high for the duration of the printing.
+//			m_highQuality = true;
+//			// Paint directly to the print graphics context.
+//			paintDisplay((AndroidGraphics2D) g, getSize());
+//		} finally {
+//			// Reset the quality to the state it was in before printing.
+//			m_highQuality = wasHighQuality;
+//		}
 	}
 
 	/**
@@ -994,7 +1028,7 @@ public class PDisplay extends View {
 	 * 
 	 * @incomplete
 	 */
-	protected void clearRegion(Graphics2D g, Rectangle2D r) {
+	protected void clearRegion(AndroidGraphics2D g, Rectangle2D r) {
 		ColorDrawable bg = (ColorDrawable) getBackground();
 		int color = bg.getColor();
 
@@ -1518,7 +1552,7 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the current graphics context
 	 */
-	protected void firePrePaint(Graphics2D g) {
+	protected void firePrePaint(AndroidGraphics2D g) {
 		if (m_painters != null && m_painters.size() > 0) {
 			Object[] lstnrs = m_painters.getArray();
 			for (int i = 0; i < lstnrs.length; ++i) {
@@ -1538,7 +1572,7 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the current graphics context
 	 */
-	protected void firePostPaint(Graphics2D g) {
+	protected void firePostPaint(AndroidGraphics2D g) {
 		if (m_painters != null && m_painters.size() > 0) {
 			Object[] lstnrs = m_painters.getArray();
 			for (int i = 0; i < lstnrs.length; ++i) {

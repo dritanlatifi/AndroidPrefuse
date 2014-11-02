@@ -2,7 +2,7 @@ package prefuse.visual;
 
 import awt.java.awt.BasicStroke;
 import awt.java.awt.Font;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.geom.Rectangle2D;
 
 import prefuse.Visualization;
@@ -90,7 +90,7 @@ public interface VisualItem extends Tuple {
      * RendererFactory, and then using the Renderer to draw this item.
      * @param g the graphics context to render into.
      */
-    public void render(Graphics2D g);
+    public void render(AndroidGraphics2D g);
     
     /**
      * Get the Renderer instance for drawing this VisualItem. The Renderer is

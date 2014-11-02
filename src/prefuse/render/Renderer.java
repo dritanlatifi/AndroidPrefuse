@@ -1,6 +1,6 @@
 package prefuse.render;
 
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.geom.Point2D;
 import awt.java.awt.image.BufferedImage;
 
@@ -21,15 +21,15 @@ public interface Renderer {
      * things like compute string widths when an external graphics context
      * has not yet been provided.
      */
-    public static final Graphics2D DEFAULT_GRAPHICS = (Graphics2D)
+    public static final AndroidGraphics2D DEFAULT_GRAPHICS = (AndroidGraphics2D)
         new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).getGraphics();
 
     /**
-     * Render item into a Graphics2D context.
-     * @param g the Graphics2D context
+     * Render item into a AndroidGraphics2D context.
+     * @param g the AndroidGraphics2D context
      * @param item the visual item to draw
      */
-    public void render(Graphics2D g, VisualItem item);
+    public void render(AndroidGraphics2D g, VisualItem item);
 
     /**
      * Returns true if the Point is located inside the extents of the item.

@@ -1,7 +1,7 @@
 package prefuse.render;
 
 import awt.java.awt.BasicStroke;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Polygon;
 import awt.java.awt.Shape;
 import awt.java.awt.geom.AffineTransform;
@@ -180,7 +180,7 @@ public class EdgeRenderer extends AbstractShapeRenderer {
     /**
      * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
      */
-    public void render(Graphics2D g, VisualItem item) {
+    public void render(AndroidGraphics2D g, VisualItem item) {
         // render the edge line
         super.render(g, item);
         // render the edge arrow head, if appropriate

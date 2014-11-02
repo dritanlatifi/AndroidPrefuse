@@ -4,16 +4,20 @@
 package awt.java.awt;
 
 import java.text.AttributedCharacterIterator;
+import java.text.CharacterIterator;
 import java.util.Map;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import awt.java.awt.RenderingHints.Key;
 import awt.java.awt.font.FontRenderContext;
 import awt.java.awt.font.GlyphVector;
 import awt.java.awt.geom.AffineTransform;
+import awt.java.awt.geom.GeneralPath;
+import awt.java.awt.geom.PathIterator;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import awt.java.awt.image.BufferedImageOp;
@@ -37,8 +41,10 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public Graphics create(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-		return null;
+		Graphics res = create();
+		res.translate(x, y);
+		res.clipRect(0, 0, width, height);
+		return res;
 	}
 
 	/*
@@ -180,8 +186,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public Graphics create() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	/*
@@ -368,8 +373,8 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void fillOval(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-
+		RectF oval = new RectF(x, y, x + width, y + height);
+		this.drawOval(oval, getCurrentPaint());
 	}
 
 	/*
@@ -390,20 +395,28 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void fillRect(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-
+		RectF rect = new RectF(x, y, x + width, y + height);
+		this.drawRect(rect, getCurrentPaint());
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * (non-Javadoc) FIXME Dritan: this method is not programmed proper. please
+	 * invest more time to make it right
 	 * 
 	 * @see awt.java.awt.Graphics#fillRoundRect(int, int, int, int, int, int)
 	 */
 	@Override
 	public void fillRoundRect(int x, int y, int width, int height,
 			int arcWidth, int arcHeight) {
-		// TODO Auto-generated method stub
-
+		RectF rect = new RectF(x, y, x + width, y + height);
+		float r = height / 2 + (width * width) / (8 * height);
+		double q = 1; // I do not know what q is see =>
+						// http://mathforum.org/library/drmath/view/53027.html
+		double rx = x + width - Math.sqrt(r * r - (q / 2) * (q / 2))
+				* (y + height) / 2;
+		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
+				* (x + width) / 2;
+		this.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
 	}
 
 	/*
@@ -556,8 +569,46 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void draw(Shape s) {
-		// TODO Auto-generated method stub
+		GeneralPath path = (GeneralPath) s;
+		Path aPath = transformPath(path);
+		drawPath(aPath, getCurrentPaint());
+	}
 
+	public Path transformPath(GeneralPath path) {
+		Path aPath = new Path();
+		aPath.reset();
+		PathIterator it = path.getPathIterator(null);
+		while (!it.isDone()) {
+			float coords[] = new float[6];
+			switch (it.currentSegment(coords)) {
+			case PathIterator.SEG_MOVETO:
+				// if (typeSize == 0) {
+				aPath.moveTo(coords[0], coords[1]);
+				break;
+			// }
+			// if (types[typeSize - 1] != PathIterator.SEG_CLOSE
+			// && points[pointSize - 2] == coords[0]
+			// && points[pointSize - 1] == coords[1]) {
+			// break;
+			// }
+			// NO BREAK;
+			case PathIterator.SEG_LINETO:
+				aPath.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_QUADTO:
+				aPath.quadTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CUBICTO:
+				aPath.cubicTo(coords[0], coords[1], coords[2], coords[3],
+						coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				aPath.close();
+				break;
+			}
+			it.next();
+		}
+		return aPath;
 	}
 
 	/*
@@ -624,7 +675,8 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * (non-Javadoc) FIXME Dritan: String attributes are ignored. Fix this if
+	 * there is time or if it's neccessary
 	 * 
 	 * @see
 	 * awt.java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator,
@@ -633,8 +685,12 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	@Override
 	public void drawString(AttributedCharacterIterator iterator, float x,
 			float y) {
-		// TODO Auto-generated method stub
-
+		String myString = "";
+		for (char c = iterator.first(); c != CharacterIterator.DONE; c = iterator
+				.next()) {
+			myString += c;
+		}
+		drawString(myString, x, y);
 	}
 
 	/*
@@ -646,8 +702,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void drawString(AttributedCharacterIterator iterator, int x, int y) {
-		// TODO Auto-generated method stub
-
+		drawString(iterator, (float) x, (float) y);
 	}
 
 	/*

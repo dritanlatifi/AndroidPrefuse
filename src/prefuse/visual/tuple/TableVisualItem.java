@@ -2,7 +2,7 @@ package prefuse.visual.tuple;
 
 import awt.java.awt.BasicStroke;
 import awt.java.awt.Font;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.geom.Rectangle2D;
 
 import prefuse.Visualization;
@@ -104,7 +104,7 @@ public class TableVisualItem extends TableTuple implements VisualItem {
     /**
      * @see prefuse.visual.VisualItem#render(java.awt.Graphics2D)
      */
-    public void render(Graphics2D g) {
+    public void render(AndroidGraphics2D g) {
         getRenderer().render(g, this);
     }
     

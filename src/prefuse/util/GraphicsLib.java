@@ -2,7 +2,7 @@ package prefuse.util;
 
 import awt.java.awt.BasicStroke;
 import awt.java.awt.Color;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Shape;
 import awt.java.awt.Stroke;
 import awt.java.awt.geom.AffineTransform;
@@ -685,7 +685,7 @@ public class GraphicsLib {
      * {@link prefuse.render.AbstractShapeRenderer#RENDER_TYPE_DRAW_AND_FILL}, or
      * {@link prefuse.render.AbstractShapeRenderer#RENDER_TYPE_NONE}.
      */
-    public static void paint(Graphics2D g, VisualItem item,
+    public static void paint(AndroidGraphics2D g, VisualItem item,
                              Shape shape, BasicStroke stroke, int type)
     {
         // if render type is NONE, then there is nothing to do

@@ -5,7 +5,7 @@
 package prefuse.util.display;
 
 import awt.java.awt.Container;
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Image;
 import awt.java.awt.MediaTracker;
 import awt.java.awt.Toolkit;
@@ -83,7 +83,7 @@ public class BackgroundPainter implements PaintListener {
      * Paint the background.
      * @see prefuse.util.display.PaintListener#prePaint(prefuse.PDisplay, java.awt.Graphics2D)
      */
-    public void prePaint(PDisplay d, Graphics2D g) {
+    public void prePaint(PDisplay d, AndroidGraphics2D g) {
         AffineTransform at = g.getTransform();
         boolean translate = isTranslation(at);
         
@@ -186,7 +186,7 @@ public class BackgroundPainter implements PaintListener {
      * Does nothing.
      * @see prefuse.util.display.PaintListener#postPaint(prefuse.PDisplay, java.awt.Graphics2D)
      */
-    public void postPaint(PDisplay d, Graphics2D g) {
+    public void postPaint(PDisplay d, AndroidGraphics2D g) {
         // do nothing
     }
 

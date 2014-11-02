@@ -1,6 +1,6 @@
 package prefuse.util.display;
 
-import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 
 import prefuse.PDisplay;
 import prefuse.util.PrefuseLib;
@@ -18,7 +18,7 @@ public class DebugStatsPainter implements PaintListener {
      * Does nothing.
      * @see prefuse.util.display.PaintListener#prePaint(prefuse.PDisplay, java.awt.Graphics2D)
      */
-    public void prePaint(PDisplay d, Graphics2D g) {
+    public void prePaint(PDisplay d, AndroidGraphics2D g) {
         
     }
     
@@ -26,7 +26,7 @@ public class DebugStatsPainter implements PaintListener {
      * Prints a debugging statistics string in the Display.
      * @see prefuse.util.display.PaintListener#postPaint(prefuse.PDisplay, java.awt.Graphics2D)
      */
-    public void postPaint(PDisplay d, Graphics2D g) {
+    public void postPaint(PDisplay d, AndroidGraphics2D g) {
         g.setFont(d.getFont());
         g.setColor(d.getForeground());
         g.drawString(PrefuseLib.getDisplayStats(d), 5, 15);
