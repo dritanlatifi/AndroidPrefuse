@@ -352,8 +352,9 @@ public class Font implements Serializable {
      *         otherwise.
      */
     public boolean canDisplay(char c) {
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-        return peer.canDisplay(c);
+//        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//        return peer.canDisplay(c);
+    	return true;
     }
 
     /**
@@ -445,7 +446,8 @@ public class Font implements Serializable {
      *         Unicode map of this Font.
      */
     public GlyphVector createGlyphVector(FontRenderContext frc, char[] chars) {
-        return new AndroidGlyphVector(chars, frc, this, 0);
+//        return new AndroidGlyphVector(chars, frc, this, 0);
+    	return null;
     }
 
     /**
@@ -495,7 +497,8 @@ public class Font implements Serializable {
      *         Unicode map of this Font.
      */
     public GlyphVector createGlyphVector(FontRenderContext frc, String str) {
-        return new AndroidGlyphVector(str.toCharArray(), frc, this, 0);
+       // return new AndroidGlyphVector(str.toCharArray(), frc, this, 0);
+    	return null;
 
     }
 
@@ -932,11 +935,12 @@ public class Font implements Serializable {
         }
 
         // FontMetrics fm = AndroidGraphics2D.getInstance().getFontMetrics();
-        FontMetrics fm = new FontMetricsImpl(this);
-        float[] fmet = {
-                fm.getAscent(), fm.getDescent(), fm.getLeading()
-        };
-        return new LineMetricsImpl(chars.length, fmet, null);
+//        FontMetrics fm = new FontMetricsImpl(this);
+//        float[] fmet = {
+//                fm.getAscent(), fm.getDescent(), fm.getLeading()
+//        };
+//        return new LineMetricsImpl(chars.length, fmet, null);
+        return null;
     }
 
     /**
@@ -990,13 +994,13 @@ public class Font implements Serializable {
      */
     public LineMetrics getLineMetrics(String str, FontRenderContext frc) {
         // FontMetrics fm = AndroidGraphics2D.getInstance().getFontMetrics();
-        FontMetrics fm = new FontMetricsImpl(this);
-        float[] fmet = {
-                fm.getAscent(), fm.getDescent(), fm.getLeading()
-        };
-        // Log.i("FONT FMET", fmet.toString());
-        return new LineMetricsImpl(str.length(), fmet, null);
-
+//        FontMetrics fm = new FontMetricsImpl(this);
+//        float[] fmet = {
+//                fm.getAscent(), fm.getDescent(), fm.getLeading()
+//        };
+//        // Log.i("FONT FMET", fmet.toString());
+//        return new LineMetricsImpl(str.length(), fmet, null);
+    	return null;
     }
 
     /**
@@ -1120,53 +1124,55 @@ public class Font implements Serializable {
      * @return a Rectangle2D object.
      */
     public Rectangle2D getStringBounds(char[] chars, int start, int end, FontRenderContext frc) {
-        if (start < 0) {
-            // awt.95=Wrong start index: {0}
-            throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
-        }
-        if (end > chars.length) {
-            // awt.96=Wrong finish index: {0}
-            throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
-        }
-        if (start > end) {
-            // awt.97=Wrong range length: {0}
-            throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
-                    (end - start)));
-        }
-
-        if (frc == null) {
-            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
-        }
-
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-
-        final int TRANSFORM_MASK = AffineTransform.TYPE_GENERAL_ROTATION
-                | AffineTransform.TYPE_GENERAL_TRANSFORM;
-        Rectangle2D bounds;
-
-        AffineTransform transform = getTransform();
-
-        // XXX: for transforms where an angle between basis vectors is not 90
-        // degrees Rectanlge2D class doesn't fit as Logical bounds.
-        if ((transform.getType() & TRANSFORM_MASK) == 0) {
-            int width = 0;
-            for (int i = start; i < end; i++) {
-                width += peer.charWidth(chars[i]);
-            }
-            // LineMetrics nlm = peer.getLineMetrics();
-
-            LineMetrics nlm = getLineMetrics(chars, start, end, frc);
-
-            bounds = transform.createTransformedShape(
-                    new Rectangle2D.Float(0, -nlm.getAscent(), width, nlm.getHeight()))
-                    .getBounds2D();
-        } else {
-            int len = end - start;
-            char[] subChars = new char[len];
-            System.arraycopy(chars, start, subChars, 0, len);
-            bounds = createGlyphVector(frc, subChars).getLogicalBounds();
-        }
-        return bounds;
+//        if (start < 0) {
+//            // awt.95=Wrong start index: {0}
+//            throw new IndexOutOfBoundsException(Messages.getString("awt.95", start)); //$NON-NLS-1$
+//        }
+//        if (end > chars.length) {
+//            // awt.96=Wrong finish index: {0}
+//            throw new IndexOutOfBoundsException(Messages.getString("awt.96", end)); //$NON-NLS-1$
+//        }
+//        if (start > end) {
+//            // awt.97=Wrong range length: {0}
+//            throw new IndexOutOfBoundsException(Messages.getString("awt.97", //$NON-NLS-1$
+//                    (end - start)));
+//        }
+//
+//        if (frc == null) {
+//            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
+//        }
+//
+//        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//
+//        final int TRANSFORM_MASK = AffineTransform.TYPE_GENERAL_ROTATION
+//                | AffineTransform.TYPE_GENERAL_TRANSFORM;
+//        Rectangle2D bounds;
+//
+//        AffineTransform transform = getTransform();
+//
+//        // XXX: for transforms where an angle between basis vectors is not 90
+//        // degrees Rectanlge2D class doesn't fit as Logical bounds.
+//        if ((transform.getType() & TRANSFORM_MASK) == 0) {
+//            int width = 0;
+//            for (int i = start; i < end; i++) {
+//                width += peer.charWidth(chars[i]);
+//            }
+//            // LineMetrics nlm = peer.getLineMetrics();
+//
+//            LineMetrics nlm = getLineMetrics(chars, start, end, frc);
+//
+//            bounds = transform.createTransformedShape(
+//                    new Rectangle2D.Float(0, -nlm.getAscent(), width, nlm.getHeight()))
+//                    .getBounds2D();
+//        } else {
+//            int len = end - start;
+//            char[] subChars = new char[len];
+//            System.arraycopy(chars, start, subChars, 0, len);
+//            bounds = createGlyphVector(frc, subChars).getLogicalBounds();
+//        }
+//        return bounds;
+    	
+    	return null;
     }
 
     /**
@@ -1178,23 +1184,24 @@ public class Font implements Serializable {
      * @return the character's maximum bounds.
      */
     public Rectangle2D getMaxCharBounds(FontRenderContext frc) {
-        if (frc == null) {
-            // awt.00=FontRenderContext is null
-            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$ 
-        }
-
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-
-        Rectangle2D bounds = peer.getMaxCharBounds(frc);
-        AffineTransform transform = getTransform();
-        // !! Documentation doesn't describe meaning of max char bounds
-        // for the fonts that have rotate transforms. For all transforms
-        // returned bounds are the bounds of transformed maxCharBounds
-        // Rectangle2D that corresponds to the font with identity transform.
-        // TODO: resolve this issue to return correct bounds
-        bounds = transform.createTransformedShape(bounds).getBounds2D();
-
-        return bounds;
+//        if (frc == null) {
+//            // awt.00=FontRenderContext is null
+//            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$ 
+//        }
+//
+//        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//
+//        Rectangle2D bounds = peer.getMaxCharBounds(frc);
+//        AffineTransform transform = getTransform();
+//        // !! Documentation doesn't describe meaning of max char bounds
+//        // for the fonts that have rotate transforms. For all transforms
+//        // returned bounds are the bounds of transformed maxCharBounds
+//        // Rectangle2D that corresponds to the font with identity transform.
+//        // TODO: resolve this issue to return correct bounds
+//        bounds = transform.createTransformedShape(bounds).getBounds2D();
+//
+//        return bounds;
+    	return null;
     }
 
     /**
@@ -1238,7 +1245,8 @@ public class Font implements Serializable {
         char[] out = new char[count];
         System.arraycopy(chars, start, out, 0, count);
 
-        return new CommonGlyphVector(out, frc, this, flags);
+//        return new CommonGlyphVector(out, frc, this, flags);
+        return null;
     }
 
     /**
@@ -1275,8 +1283,9 @@ public class Font implements Serializable {
      * @return the postscript name of this Font.
      */
     public String getPSName() {
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-        return peer.getPSName();
+//        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//        return peer.getPSName();
+    	return null;
     }
 
     /**
@@ -1296,12 +1305,12 @@ public class Font implements Serializable {
      */
     @Deprecated
     public awt.java.awt.peer.FontPeer getPeer() {
-        if (fontPeer == null) {
-            fontPeer = (FontPeerImpl)Toolkit.getDefaultToolkit().getGraphicsFactory().getFontPeer(
-                    this);
-        }
-        return fontPeer;
-
+//        if (fontPeer == null) {
+//            fontPeer = (FontPeerImpl)Toolkit.getDefaultToolkit().getGraphicsFactory().getFontPeer(
+//                    this);
+//        }
+//        return fontPeer;
+    	return null;
     }
 
     /**
@@ -1368,8 +1377,9 @@ public class Font implements Serializable {
      * @return true if this Font has uniform line metrics, false otherwise.
      */
     public boolean hasUniformLineMetrics() {
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-        return peer.hasUniformLineMetrics();
+//        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//        return peer.hasUniformLineMetrics();
+    	return true;
     }
 
     /**
@@ -1413,8 +1423,8 @@ public class Font implements Serializable {
      */
     public int getNumGlyphs() {
         if (numGlyphs == -1) {
-            FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-            this.numGlyphs = peer.getNumGlyphs();
+//            FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//            this.numGlyphs = peer.getNumGlyphs();
         }
         return this.numGlyphs;
     }
@@ -1427,8 +1437,8 @@ public class Font implements Serializable {
      */
     public int getMissingGlyphCode() {
         if (missingGlyphCode == -1) {
-            FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-            this.missingGlyphCode = peer.getMissingGlyphCode();
+//            FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//            this.missingGlyphCode = peer.getMissingGlyphCode();
         }
         return this.missingGlyphCode;
     }
@@ -1448,8 +1458,9 @@ public class Font implements Serializable {
      * @return the italic angle of this Font.
      */
     public float getItalicAngle() {
-        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-        return peer.getItalicAngle();
+//        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+//        return peer.getItalicAngle();
+    	return 0;
     }
 
     /**
@@ -1496,44 +1507,45 @@ public class Font implements Serializable {
 
         // ???AWT not supported
 
-        BufferedInputStream buffStream;
-        int bRead = 0;
-        int size = 8192;
-        // memory page size, for the faster reading
-        byte buf[] = new byte[size];
-
-        if (fontFormat != TRUETYPE_FONT) { // awt.9A=Unsupported font format
-            throw new IllegalArgumentException(Messages.getString("awt.9A")); //$NON-NLS-1$ 
-        }
-
-        /* Get font file in system-specific directory */
-
-        File fontFile = Toolkit.getDefaultToolkit().getGraphicsFactory().getFontManager()
-                .getTempFontFile();
-
-        // BEGIN android-modified
-        buffStream = new BufferedInputStream(fontStream, 8192);
-        // END android-modified
-        FileOutputStream fOutStream = new FileOutputStream(fontFile);
-
-        bRead = buffStream.read(buf, 0, size);
-
-        while (bRead != -1) {
-            fOutStream.write(buf, 0, bRead);
-            bRead = buffStream.read(buf, 0, size);
-        }
-
-        buffStream.close();
-        fOutStream.close();
-
-        Font font = null;
-
-        font = Toolkit.getDefaultToolkit().getGraphicsFactory().embedFont(
-                fontFile.getAbsolutePath());
-        if (font == null) { // awt.9B=Can't create font - bad font data
-            throw new FontFormatException(Messages.getString("awt.9B")); //$NON-NLS-1$
-        }
-        return font;
+//        BufferedInputStream buffStream;
+//        int bRead = 0;
+//        int size = 8192;
+//        // memory page size, for the faster reading
+//        byte buf[] = new byte[size];
+//
+//        if (fontFormat != TRUETYPE_FONT) { // awt.9A=Unsupported font format
+//            throw new IllegalArgumentException(Messages.getString("awt.9A")); //$NON-NLS-1$ 
+//        }
+//
+//        /* Get font file in system-specific directory */
+//
+//        File fontFile = Toolkit.getDefaultToolkit().getGraphicsFactory().getFontManager()
+//                .getTempFontFile();
+//
+//        // BEGIN android-modified
+//        buffStream = new BufferedInputStream(fontStream, 8192);
+//        // END android-modified
+//        FileOutputStream fOutStream = new FileOutputStream(fontFile);
+//
+//        bRead = buffStream.read(buf, 0, size);
+//
+//        while (bRead != -1) {
+//            fOutStream.write(buf, 0, bRead);
+//            bRead = buffStream.read(buf, 0, size);
+//        }
+//
+//        buffStream.close();
+//        fOutStream.close();
+//
+//        Font font = null;
+//
+//        font = Toolkit.getDefaultToolkit().getGraphicsFactory().embedFont(
+//                fontFile.getAbsolutePath());
+//        if (font == null) { // awt.9B=Can't create font - bad font data
+//            throw new FontFormatException(Messages.getString("awt.9B")); //$NON-NLS-1$
+//        }
+//        return font;
+    	return null;
     }
 
 }

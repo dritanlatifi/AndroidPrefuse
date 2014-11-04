@@ -20,25 +20,25 @@ package awt.java.awt;
 //import awt.java.awt.dnd.DropTarget;
 import awt.java.awt.event.ComponentEvent;
 import awt.java.awt.event.ComponentListener;
-import awt.java.awt.event.FocusEvent;
-import awt.java.awt.event.FocusListener;
-import awt.java.awt.event.HierarchyBoundsListener;
-import awt.java.awt.event.HierarchyEvent;
-import awt.java.awt.event.HierarchyListener;
-import awt.java.awt.event.InputMethodEvent;
-import awt.java.awt.event.InputMethodListener;
-import awt.java.awt.event.InvocationEvent;
-import awt.java.awt.event.KeyEvent;
-import awt.java.awt.event.KeyListener;
-import awt.java.awt.event.MouseEvent;
-import awt.java.awt.event.MouseListener;
-import awt.java.awt.event.MouseMotionListener;
-import awt.java.awt.event.MouseWheelEvent;
-import awt.java.awt.event.MouseWheelListener;
-import awt.java.awt.event.PaintEvent;
-import awt.java.awt.event.WindowEvent;
-import awt.java.awt.im.InputContext;
-import awt.java.awt.im.InputMethodRequests;
+//import awt.java.awt.event.FocusEvent;
+//import awt.java.awt.event.FocusListener;
+//import awt.java.awt.event.HierarchyBoundsListener;
+//import awt.java.awt.event.HierarchyEvent;
+//import awt.java.awt.event.HierarchyListener;
+//import awt.java.awt.event.InputMethodEvent;
+//import awt.java.awt.event.InputMethodListener;
+//import awt.java.awt.event.InvocationEvent;
+//import awt.java.awt.event.KeyEvent;
+//import awt.java.awt.event.KeyListener;
+//import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.event.MouseListener;
+//import awt.java.awt.event.MouseMotionListener;
+//import awt.java.awt.event.MouseWheelEvent;
+//import awt.java.awt.event.MouseWheelListener;
+//import awt.java.awt.event.PaintEvent;
+//import awt.java.awt.event.WindowEvent;
+//import awt.java.awt.im.InputContext;
+//import awt.java.awt.im.InputMethodRequests;
 import awt.java.awt.image.BufferStrategy;
 import awt.java.awt.image.BufferedImage;
 import awt.java.awt.image.ColorModel;
@@ -46,7 +46,7 @@ import awt.java.awt.image.ImageObserver;
 import awt.java.awt.image.ImageProducer;
 import awt.java.awt.image.VolatileImage;
 import awt.java.awt.image.WritableRaster;
-import awt.java.awt.peer.ComponentPeer;
+//import awt.java.awt.peer.ComponentPeer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -78,12 +78,12 @@ import java.util.Set;
 //import javax.accessibility.AccessibleState;
 //import javax.accessibility.AccessibleStateSet;
 
-import org.apache.harmony.awt.ClipRegion; //import org.apache.harmony.awt.FieldsAccessor;
-import org.apache.harmony.awt.gl.MultiRectArea;
-import org.apache.harmony.awt.internal.nls.Messages;
-import org.apache.harmony.awt.state.State; //import org.apache.harmony.awt.text.TextFieldKit;
-//import org.apache.harmony.awt.text.TextKit;
-import org.apache.harmony.awt.wtk.NativeWindow;
+//import org.apache.harmony.awt.ClipRegion; //import org.apache.harmony.awt.FieldsAccessor;
+//import org.apache.harmony.awt.gl.MultiRectArea;
+//import org.apache.harmony.awt.internal.nls.Messages;
+//import org.apache.harmony.awt.state.State; //import org.apache.harmony.awt.text.TextFieldKit;
+////import org.apache.harmony.awt.text.TextKit;
+//import org.apache.harmony.awt.wtk.NativeWindow;
 import org.apache.harmony.luni.util.NotImplementedException;
 
 /**
@@ -93,8 +93,8 @@ import org.apache.harmony.luni.util.NotImplementedException;
  * 
  * @since Android 1.0
  */
-public abstract class Component implements ImageObserver, MenuContainer, Serializable {
-
+//public abstract class Component implements ImageObserver, MenuContainer, Serializable {
+public abstract class Component implements ImageObserver, Serializable {
     /**
      * The Constant serialVersionUID.
      */
@@ -137,8 +137,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The Constant peer.
      */
-    private static final ComponentPeer peer = new ComponentPeer() {
-    };
+//    private static final ComponentPeer peer = new ComponentPeer() {
+//    };
 
     /**
      * The Constant incrementalImageUpdate.
@@ -148,7 +148,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The toolkit.
      */
-    final transient Toolkit toolkit = Toolkit.getDefaultToolkit();
+//    final transient Toolkit toolkit = Toolkit.getDefaultToolkit();
+    final transient Toolkit toolkit = new Toolkit();
 
     // ???AWT
     /*
@@ -288,6 +289,20 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * { toolkit.lockAWT(); try { return Component.this.getLocale(); } finally {
      * toolkit.unlockAWT(); } } }
      */
+
+    protected class Toolkit
+    {
+    	public boolean lockAWT()
+    	{
+    		return true;
+    	}
+    	public boolean unlockAWT()
+    	{
+    		return true;
+    	}
+    }    
+    
+    
     /**
      * The BltBufferStrategy class provides opportunity of blitting offscreen
      * surfaces to a component. For more information on blitting, see <a
@@ -531,24 +546,24 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          * @throws AWTException
          *             if the capabilities could not be supported or met.
          */
-        protected void createBuffers(int numBuffers, BufferCapabilities caps) throws AWTException {
-            if (numBuffers < 2) {
-                // awt.14C=Number of buffers must be greater than one
-                throw new IllegalArgumentException(Messages.getString("awt.14C")); //$NON-NLS-1$
-            }
-            if (!caps.isPageFlipping()) {
-                // awt.14D=Buffer capabilities should support flipping
-                throw new IllegalArgumentException(Messages.getString("awt.14D")); //$NON-NLS-1$
-            }
-            if (!Component.this.behaviour.isDisplayable()) {
-                // awt.14E=Component should be displayable
-                throw new IllegalStateException(Messages.getString("awt.14E")); //$NON-NLS-1$
-            }
-            // TODO: throw new AWTException("Capabilities are not supported");
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-        }
+//        protected void createBuffers(int numBuffers, BufferCapabilities caps) throws AWTException {
+//            if (numBuffers < 2) {
+//                // awt.14C=Number of buffers must be greater than one
+//                throw new IllegalArgumentException(Messages.getString("awt.14C")); //$NON-NLS-1$
+//            }
+//            if (!caps.isPageFlipping()) {
+//                // awt.14D=Buffer capabilities should support flipping
+//                throw new IllegalArgumentException(Messages.getString("awt.14D")); //$NON-NLS-1$
+//            }
+//            if (!Component.this.behaviour.isDisplayable()) {
+//                // awt.14E=Component should be displayable
+//                throw new IllegalStateException(Messages.getString("awt.14E")); //$NON-NLS-1$
+//            }
+//            // TODO: throw new AWTException("Capabilities are not supported");
+//            if (true) {
+//                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
+//            }
+//        }
 
         /**
          * Destroy buffers.
@@ -633,8 +648,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The internal component's state utilized by the visual theme.
      */
-    class ComponentState implements State {
-
+//    class ComponentState implements State {
+    class ComponentState {
         /**
          * The default minimum size.
          */
@@ -674,7 +689,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          * @return the font.
          */
         public Font getFont() {
-            return Component.this.getFont();
+        	return null;
+//            return Component.this.getFont();
         }
 
         /**
@@ -731,7 +747,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          */
         @SuppressWarnings("deprecation")
         public FontMetrics getFontMetrics() {
-            return toolkit.getFontMetrics(Component.this.getFont());
+//            return toolkit.getFontMetrics(Component.this.getFont());
+        	return null;
         }
 
         /**
@@ -758,8 +775,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          * @return the window id.
          */
         public long getWindowId() {
-            NativeWindow win = getNativeWindow();
-            return (win != null) ? win.getId() : 0;
+//            NativeWindow win = getNativeWindow();
+//            return (win != null) ? win.getId() : 0;
+        	return (Long) null;
         }
 
         /**
@@ -804,7 +822,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The behaviour.
      */
-    final transient ComponentBehavior behaviour;
+//    final transient ComponentBehavior behaviour;
 
     // ???AWT: Container parent;
 
@@ -857,49 +875,49 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The focus listeners.
      */
-    private final AWTListenerList<FocusListener> focusListeners = new AWTListenerList<FocusListener>(
-            this);
+//    private final AWTListenerList<FocusListener> focusListeners = new AWTListenerList<FocusListener>(
+//            this);
 
     /**
      * The hierarchy listeners.
      */
-    private final AWTListenerList<HierarchyListener> hierarchyListeners = new AWTListenerList<HierarchyListener>(
-            this);
+//    private final AWTListenerList<HierarchyListener> hierarchyListeners = new AWTListenerList<HierarchyListener>(
+//            this);
 
     /**
      * The hierarchy bounds listeners.
      */
-    private final AWTListenerList<HierarchyBoundsListener> hierarchyBoundsListeners = new AWTListenerList<HierarchyBoundsListener>(
-            this);
+//    private final AWTListenerList<HierarchyBoundsListener> hierarchyBoundsListeners = new AWTListenerList<HierarchyBoundsListener>(
+//            this);
 
     /**
      * The key listeners.
      */
-    private final AWTListenerList<KeyListener> keyListeners = new AWTListenerList<KeyListener>(this);
+//    private final AWTListenerList<KeyListener> keyListeners = new AWTListenerList<KeyListener>(this);
 
     /**
      * The mouse listeners.
      */
-    private final AWTListenerList<MouseListener> mouseListeners = new AWTListenerList<MouseListener>(
-            this);
+//    private final AWTListenerList<MouseListener> mouseListeners = new AWTListenerList<MouseListener>(
+//            this);
 
     /**
      * The mouse motion listeners.
      */
-    private final AWTListenerList<MouseMotionListener> mouseMotionListeners = new AWTListenerList<MouseMotionListener>(
-            this);
-
-    /**
-     * The mouse wheel listeners.
-     */
-    private final AWTListenerList<MouseWheelListener> mouseWheelListeners = new AWTListenerList<MouseWheelListener>(
-            this);
-
-    /**
-     * The input method listeners.
-     */
-    private final AWTListenerList<InputMethodListener> inputMethodListeners = new AWTListenerList<InputMethodListener>(
-            this);
+//    private final AWTListenerList<MouseMotionListener> mouseMotionListeners = new AWTListenerList<MouseMotionListener>(
+//            this);
+//
+//    /**
+//     * The mouse wheel listeners.
+//     */
+//    private final AWTListenerList<MouseWheelListener> mouseWheelListeners = new AWTListenerList<MouseWheelListener>(
+//            this);
+//
+//    /**
+//     * The input method listeners.
+//     */
+//    private final AWTListenerList<InputMethodListener> inputMethodListeners = new AWTListenerList<InputMethodListener>(
+//            this);
 
     /**
      * The x.
@@ -991,7 +1009,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * Possible keys are: FORWARD_TRAVERSAL_KEYS, BACKWARD_TRAVERSAL_KEYS,
      * UP_CYCLE_TRAVERSAL_KEYS.
      */
-    private final Map<Integer, Set<? extends AWTKeyStroke>> traversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
+//    private final Map<Integer, Set<? extends AWTKeyStroke>> traversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
 
     /**
      * The traversal i ds.
@@ -1048,7 +1066,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The cursor.
      */
-    Cursor cursor;
+//    Cursor cursor;
 
     // ???AWT: DropTarget dropTarget;
 
@@ -1060,7 +1078,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     /**
      * The repaint region.
      */
-    transient MultiRectArea repaintRegion;
+//    transient MultiRectArea repaintRegion;
 
     // ???AWT: transient RedrawManager redrawManager;
     /**
@@ -1115,24 +1133,24 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * Instantiates a new component.
      */
     protected Component() {
-        toolkit.lockAWT();
-        try {
-            orientation = ComponentOrientation.UNKNOWN;
-            redrawManager = null;
-            // ???AWT
-            /*
-             * traversalIDs = this instanceof Container ?
-             * KeyboardFocusManager.contTraversalIDs :
-             * KeyboardFocusManager.compTraversalIDs; for (int element :
-             * traversalIDs) { traversalKeys.put(new Integer(element), null); }
-             * behaviour = createBehavior();
-             */
-            behaviour = null;
-
-            deriveCoalescerFlag();
-        } finally {
-            toolkit.unlockAWT();
-        }
+//        toolkit.lockAWT();
+//        try {
+//            orientation = ComponentOrientation.UNKNOWN;
+//            redrawManager = null;
+//            // ???AWT
+//            /*
+//             * traversalIDs = this instanceof Container ?
+//             * KeyboardFocusManager.contTraversalIDs :
+//             * KeyboardFocusManager.compTraversalIDs; for (int element :
+//             * traversalIDs) { traversalKeys.put(new Integer(element), null); }
+//             * behaviour = createBehavior();
+//             */
+//            behaviour = null;
+//
+//            deriveCoalescerFlag();
+//        } finally {
+//            toolkit.unlockAWT();
+//        }
     }
 
     /**
@@ -1179,13 +1197,13 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      */
     public void setName(String name) {
         String oldName;
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             autoName = false;
             oldName = this.name;
             this.name = name;
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
         firePropertyChange("name", oldName, name); //$NON-NLS-1$
     }
@@ -1196,14 +1214,14 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return the name of this Component.
      */
     public String getName() {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             if ((name == null) && autoName) {
                 name = autoName();
             }
             return name;
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1236,11 +1254,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
          * the following code: Component c = new Component(){};
          * c.setVisible(false); System.out.println(c);
          */
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             return getClass().getName() + "[" + paramString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1261,11 +1279,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *         otherwise.
      */
     public boolean contains(Point p) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             return contains(p.x, p.y);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1281,11 +1299,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *         coordinates, false otherwise.
      */
     public boolean contains(int x, int y) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             return inside(x, y);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1297,11 +1315,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      */
     @Deprecated
     public Dimension size() {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             return new Dimension(w, h);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1363,11 +1381,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            how many leading whitespace characters to prepend.
      */
     public void list(PrintStream out, int indent) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             out.println(getIndentStr(indent) + this);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1378,11 +1396,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the output PrintWriter object.
      */
     public void list(PrintWriter out) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             list(out, 1);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1396,11 +1414,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            how many leading whitespace characters to prepend.
      */
     public void list(PrintWriter out, int indent) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             out.println(getIndentStr(indent) + this);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1427,12 +1445,12 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the output PrintStream object.
      */
     public void list(PrintStream out) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             // default indent = 1
             list(out, 1);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1440,11 +1458,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * Prints a list of this component to the standard system output stream.
      */
     public void list() {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             list(System.out);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1455,11 +1473,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the Graphics to be used for painting.
      */
     public void print(Graphics g) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             paint(g);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1470,11 +1488,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the Graphics to be used for painting.
      */
     public void printAll(Graphics g) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             paintAll(g);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1487,11 +1505,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the height of the Component.
      */
     public void setSize(int width, int height) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             resize(width, height);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1502,11 +1520,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the new size of the Component.
      */
     public void setSize(Dimension d) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
             resize(d);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1521,12 +1539,12 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      */
     @Deprecated
     public void resize(int width, int height) {
-        toolkit.lockAWT();
+//        toolkit.lockAWT();
         try {
-            boundsMaskParam = NativeWindow.BOUNDS_NOMOVE;
+//            boundsMaskParam = NativeWindow.BOUNDS_NOMOVE;
             setBounds(x, y, width, height);
         } finally {
-            toolkit.unlockAWT();
+//            toolkit.unlockAWT();
         }
     }
 
@@ -1555,10 +1573,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean isOpaque() {
         toolkit.lockAWT();
         try {
-            return behaviour.isOpaque();
+//            return behaviour.isOpaque();
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -1696,10 +1715,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean isValid() {
         toolkit.lockAWT();
         try {
-            return valid && behaviour.isDisplayable();
+//            return valid && behaviour.isDisplayable();
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -1726,7 +1746,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         toolkit.lockAWT();
         try {
             prepare4HierarchyChange();
-            behaviour.addNotify();
+//            behaviour.addNotify();
             // ???AWT
             // finishHierarchyChange(this, parent, 0);
             // if (dropTarget != null) {
@@ -1782,7 +1802,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return the tree locking object.
      */
     public final Object getTreeLock() {
-        return toolkit.awtTreeLock;
+//        return toolkit.awtTreeLock;
+    	return null;
     }
 
     /**
@@ -1843,14 +1864,15 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         toolkit.lockAWT();
         try {
             Integer Id = new Integer(id);
-            if (traversalKeys.containsKey(Id)) {
-                return traversalKeys.get(Id) != null;
-            }
-            // awt.14F=invalid focus traversal key identifier
-            throw new IllegalArgumentException(Messages.getString("awt.14F")); //$NON-NLS-1$
+//            if (traversalKeys.containsKey(Id)) {
+//                return traversalKeys.get(Id) != null;
+//            }
+//            // awt.14F=invalid focus traversal key identifier
+//            throw new IllegalArgumentException(Messages.getString("awt.14F")); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -1889,10 +1911,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public int checkImage(Image image, int width, int height, ImageObserver observer) {
         toolkit.lockAWT();
         try {
-            return toolkit.checkImage(image, width, height, observer);
+//            return toolkit.checkImage(image, width, height, observer);
         } finally {
             toolkit.unlockAWT();
         }
+        return 0;
     }
 
     /**
@@ -1909,10 +1932,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public int checkImage(Image image, ImageObserver observer) {
         toolkit.lockAWT();
         try {
-            return toolkit.checkImage(image, -1, -1, observer);
+//            return toolkit.checkImage(image, -1, -1, observer);
         } finally {
             toolkit.unlockAWT();
         }
+        return 0;
     }
 
     /**
@@ -2004,10 +2028,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public Image createImage(ImageProducer producer) {
         toolkit.lockAWT();
         try {
-            return toolkit.createImage(producer);
+//            return toolkit.createImage(producer);
         } finally {
             toolkit.unlockAWT();
         }
+        return null;
     }
 
     /**
@@ -2356,7 +2381,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             return bounds();
         } finally {
             toolkit.unlockAWT();
+            return null;
         }
+        
     }
 
     /**
@@ -2389,9 +2416,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public ColorModel getColorModel() {
         toolkit.lockAWT();
         try {
-            return getToolkit().getColorModel();
+//            return getToolkit().getColorModel();
         } finally {
             toolkit.unlockAWT();
+            return null;
         }
     }
 
@@ -2450,21 +2478,21 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * 
      * @return the Cursor.
      */
-    public Cursor getCursor() {
-        toolkit.lockAWT();
-        try {
-            if (cursor != null) {
-                return cursor;
-                // ???AWT
-                /*
-                 * } else if (parent != null) { return parent.getCursor();
-                 */
-            }
-            return Cursor.getDefaultCursor();
-        } finally {
-            toolkit.unlockAWT();
-        }
-    }
+//    public Cursor getCursor() {
+//        toolkit.lockAWT();
+//        try {
+//            if (cursor != null) {
+//                return cursor;
+//                // ???AWT
+//                /*
+//                 * } else if (parent != null) { return parent.getCursor();
+//                 */
+//            }
+//            return Cursor.getDefaultCursor();
+//        } finally {
+//            toolkit.unlockAWT();
+//        }
+//    }
 
     // ???AWT
     /*
@@ -2507,9 +2535,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return the FontMetrics of the specified Font.
      */
     @SuppressWarnings("deprecation")
-    public FontMetrics getFontMetrics(Font f) {
-        return toolkit.getFontMetrics(f);
-    }
+//    public FontMetrics getFontMetrics(Font f) {
+//        return toolkit.getFontMetrics(f);
+//    }
 
     /**
      * Gets the foreground color of the Component.
@@ -2543,10 +2571,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             if (!isDisplayable()) {
                 return null;
             }
-            Graphics g = behaviour.getGraphics(0, 0, w, h);
-            g.setColor(foreColor);
-            g.setFont(font);
-            return g;
+//            Graphics g = behaviour.getGraphics(0, 0, w, h);
+//            g.setColor(foreColor);
+//            g.setFont(font);
+//            return g;
+            return null;
         } finally {
             toolkit.unlockAWT();
         }
@@ -2604,19 +2633,19 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return the InputContext used by this Component or null if no context is
      *         specifined.
      */
-    public InputContext getInputContext() {
-        toolkit.lockAWT();
-        try {
-            // ???AWT
-            /*
-             * Container parent = getParent(); if (parent != null) { return
-             * parent.getInputContext(); }
-             */
-            return null;
-        } finally {
-            toolkit.unlockAWT();
-        }
-    }
+//    public InputContext getInputContext() {
+//        toolkit.lockAWT();
+//        try {
+//            // ???AWT
+//            /*
+//             * Container parent = getParent(); if (parent != null) { return
+//             * parent.getInputContext(); }
+//             */
+//            return null;
+//        } finally {
+//            toolkit.unlockAWT();
+//        }
+//    }
 
     /**
      * Gets the input method request handler which supports requests from input
@@ -2625,9 +2654,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return the input method request handler which supports requests from
      *         input methods for this component, or null for default.
      */
-    public InputMethodRequests getInputMethodRequests() {
-        return null;
-    }
+//    public InputMethodRequests getInputMethodRequests() {
+//        return null;
+//    }
 
     /**
      * Gets the locale of this Component.
@@ -2676,7 +2705,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             }
             // awt.151=component must be showing on the screen to determine its
             // location
-            throw new IllegalComponentStateException(Messages.getString("awt.151")); //$NON-NLS-1$
+            throw new IllegalComponentStateException("message"); //$NON-NLS-1$
         } finally {
             toolkit.unlockAWT();
         }
@@ -2690,17 +2719,17 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @deprecated Replaced by isDisplayable().
      */
     @Deprecated
-    public ComponentPeer getPeer() {
-        toolkit.lockAWT();
-        try {
-            if (behaviour.isDisplayable()) {
-                return peer;
-            }
-            return null;
-        } finally {
-            toolkit.unlockAWT();
-        }
-    }
+//    public ComponentPeer getPeer() {
+//        toolkit.lockAWT();
+//        try {
+//            if (behaviour.isDisplayable()) {
+//                return peer;
+//            }
+//            return null;
+//        } finally {
+//            toolkit.unlockAWT();
+//        }
+//    }
 
     /**
      * Gets an array of the property change listeners registered to this
@@ -2854,7 +2883,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             prepare4HierarchyChange();
             visible = false;
             moveFocusOnHide();
-            behaviour.setVisible(false);
+//            behaviour.setVisible(false);
             postEvent(new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN));
             // ???AWT: finishHierarchyChange(this, parent, 0);
             notifyInputMethod(null);
@@ -2924,10 +2953,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean isCursorSet() {
         toolkit.lockAWT();
         try {
-            return cursor != null;
+//            return cursor != null;
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -2938,10 +2968,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean isDisplayable() {
         toolkit.lockAWT();
         try {
-            return behaviour.isDisplayable();
+//            return behaviour.isDisplayable();
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -3091,10 +3122,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean isLightweight() {
         toolkit.lockAWT();
         try {
-            return behaviour.isLightweight();
+//            return behaviour.isLightweight();
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -3342,7 +3374,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public void move(int x, int y) {
         toolkit.lockAWT();
         try {
-            boundsMaskParam = NativeWindow.BOUNDS_NOSIZE;
+//            boundsMaskParam = NativeWindow.BOUNDS_NOSIZE;
             setBounds(x, y, w, h);
         } finally {
             toolkit.unlockAWT();
@@ -3408,10 +3440,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean prepareImage(Image image, ImageObserver observer) {
         toolkit.lockAWT();
         try {
-            return toolkit.prepareImage(image, -1, -1, observer);
+//            return toolkit.prepareImage(image, -1, -1, observer);
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -3432,10 +3465,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public boolean prepareImage(Image image, int width, int height, ImageObserver observer) {
         toolkit.lockAWT();
         try {
-            return toolkit.prepareImage(image, width, height, observer);
+//            return toolkit.prepareImage(image, width, height, observer);
         } finally {
             toolkit.unlockAWT();
         }
+        return true;
     }
 
     /**
@@ -3450,7 +3484,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
              */
             prepare4HierarchyChange();
             // /???AWT: moveFocus();
-            behaviour.removeNotify();
+//            behaviour.removeNotify();
             // ???AWT: finishHierarchyChange(this, parent, 0);
             removeNotifyInputContext();
         } finally {
@@ -3465,10 +3499,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         if (!inputMethodsEnabled) {
             return;
         }
-        InputContext ic = getInputContext();
-        if (ic != null) {
+//        InputContext ic = getInputContext();
+//        if (ic != null) {
             // ???AWT: ic.removeNotify(this);
-        }
+//        }
     }
 
     /**
@@ -3573,7 +3607,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the e.
      */
     void postEvent(AWTEvent e) {
-        getToolkit().getSystemEventQueueImpl().postEvent(e);
+//        getToolkit().getSystemEventQueueImpl().postEvent(e);
     }
 
     /**
@@ -3751,16 +3785,16 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         if ((oldX != this.x) || (oldY != this.y)) {
             // ???AWT: invalidateRealParent();
             postEvent(new ComponentEvent(this, ComponentEvent.COMPONENT_MOVED));
-            spreadHierarchyBoundsEvents(this, HierarchyEvent.ANCESTOR_MOVED);
+//            spreadHierarchyBoundsEvents(this, HierarchyEvent.ANCESTOR_MOVED);
         }
         // Resized
         if ((oldW != this.w) || (oldH != this.h)) {
             invalidate();
             postEvent(new ComponentEvent(this, ComponentEvent.COMPONENT_RESIZED));
-            spreadHierarchyBoundsEvents(this, HierarchyEvent.ANCESTOR_RESIZED);
+//            spreadHierarchyBoundsEvents(this, HierarchyEvent.ANCESTOR_RESIZED);
         }
         if (updateBehavior) {
-            behaviour.setBounds(this.x, this.y, this.w, this.h, bMask);
+//            behaviour.setBounds(this.x, this.y, this.w, this.h, bMask);
         }
         notifyInputMethod(new Rectangle(x, y, w, h));
     }
@@ -3790,14 +3824,14 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            the b mask.
      */
     private void setBoundsFields(int x, int y, int w, int h, int bMask) {
-        if ((bMask & NativeWindow.BOUNDS_NOSIZE) == 0) {
+//        if ((bMask & NativeWindow.BOUNDS_NOSIZE) == 0) {
             this.w = w;
             this.h = h;
-        }
-        if ((bMask & NativeWindow.BOUNDS_NOMOVE) == 0) {
+//        }
+//        if ((bMask & NativeWindow.BOUNDS_NOMOVE) == 0) {
             this.x = x;
             this.y = y;
-        }
+//        }
     }
 
     /**
@@ -3878,15 +3912,15 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param cursor
      *            the new Cursor.
      */
-    public void setCursor(Cursor cursor) {
-        toolkit.lockAWT();
-        try {
-            this.cursor = cursor;
-            setCursor();
-        } finally {
-            toolkit.unlockAWT();
-        }
-    }
+//    public void setCursor(Cursor cursor) {
+//        toolkit.lockAWT();
+//        try {
+//            this.cursor = cursor;
+//            setCursor();
+//        } finally {
+//            toolkit.unlockAWT();
+//        }
+//    }
 
     /**
      * Set current cursor shape to Component's Cursor.
@@ -3894,7 +3928,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     void setCursor() {
         if (isDisplayable() && isShowing()) {
             Rectangle absRect = new Rectangle(getLocationOnScreen(), getSize());
-            Point absPointerPos = toolkit.dispatcher.mouseDispatcher.getPointerPos();
+//            Point absPointerPos = toolkit.dispatcher.mouseDispatcher.getPointerPos();
             // ???AWT
             /*
              * if (absRect.contains(absPointerPos)) { // set Cursor only on
@@ -3977,7 +4011,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             if (!enabled) {
                 moveFocusOnHide();
             }
-            behaviour.setEnabled(value);
+//            behaviour.setEnabled(value);
         }
     }
 
@@ -4230,7 +4264,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
             mapToDisplay(true);
             validate();
             visible = true;
-            behaviour.setVisible(true);
+//            behaviour.setVisible(true);
             postEvent(new ComponentEvent(this, ComponentEvent.COMPONENT_SHOWN));
             // ???AWT: finishHierarchyChange(this, parent, 0);
             notifyInputMethod(new Rectangle(x, y, w, h));
@@ -4297,9 +4331,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     public void validate() {
         toolkit.lockAWT();
         try {
-            if (!behaviour.isDisplayable()) {
-                return;
-            }
+//            if (!behaviour.isDisplayable()) {
+//                return;
+//            }
             validateImpl();
         } finally {
             toolkit.unlockAWT();
@@ -4318,9 +4352,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * 
      * @return the native window.
      */
-    NativeWindow getNativeWindow() {
-        return behaviour.getNativeWindow();
-    }
+//    NativeWindow getNativeWindow() {
+//        return behaviour.getNativeWindow();
+//    }
 
     /**
      * Checks whether or not a maximum size is set for the Component.
@@ -4772,21 +4806,21 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         toolkit.lockAWT();
         try {
             // call system listeners under AWT lock
-            if (eventMask == AWTEvent.FOCUS_EVENT_MASK) {
-                preprocessFocusEvent((FocusEvent)e);
-            } else if (eventMask == AWTEvent.KEY_EVENT_MASK) {
-                preprocessKeyEvent((KeyEvent)e);
-            } else if (eventMask == AWTEvent.MOUSE_EVENT_MASK) {
-                preprocessMouseEvent((MouseEvent)e);
-            } else if (eventMask == AWTEvent.MOUSE_MOTION_EVENT_MASK) {
-                preprocessMouseMotionEvent((MouseEvent)e);
-            } else if (eventMask == AWTEvent.COMPONENT_EVENT_MASK) {
-                preprocessComponentEvent((ComponentEvent)e);
-            } else if (eventMask == AWTEvent.MOUSE_WHEEL_EVENT_MASK) {
-                preprocessMouseWheelEvent((MouseWheelEvent)e);
-            } else if (eventMask == AWTEvent.INPUT_METHOD_EVENT_MASK) {
-                preprocessInputMethodEvent((InputMethodEvent)e);
-            }
+//            if (eventMask == AWTEvent.FOCUS_EVENT_MASK) {
+//                preprocessFocusEvent((FocusEvent)e);
+//            } else if (eventMask == AWTEvent.KEY_EVENT_MASK) {
+//                preprocessKeyEvent((KeyEvent)e);
+//            } else if (eventMask == AWTEvent.MOUSE_EVENT_MASK) {
+//                preprocessMouseEvent((MouseEvent)e);
+//            } else if (eventMask == AWTEvent.MOUSE_MOTION_EVENT_MASK) {
+//                preprocessMouseMotionEvent((MouseEvent)e);
+//            } else if (eventMask == AWTEvent.COMPONENT_EVENT_MASK) {
+//                preprocessComponentEvent((ComponentEvent)e);
+//            } else if (eventMask == AWTEvent.MOUSE_WHEEL_EVENT_MASK) {
+//                preprocessMouseWheelEvent((MouseWheelEvent)e);
+//            } else if (eventMask == AWTEvent.INPUT_METHOD_EVENT_MASK) {
+//                preprocessInputMethodEvent((InputMethodEvent)e);
+//            }
         } finally {
             toolkit.unlockAWT();
         }
@@ -4798,9 +4832,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e.
      */
-    private void preprocessInputMethodEvent(InputMethodEvent e) {
-        processInputMethodEventImpl(e, inputMethodListeners.getSystemListeners());
-    }
+//    private void preprocessInputMethodEvent(InputMethodEvent e) {
+//        processInputMethodEventImpl(e, inputMethodListeners.getSystemListeners());
+//    }
 
     /**
      * Preprocess mouse wheel event.
@@ -4808,9 +4842,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e.
      */
-    private void preprocessMouseWheelEvent(MouseWheelEvent e) {
-        processMouseWheelEventImpl(e, mouseWheelListeners.getSystemListeners());
-    }
+//    private void preprocessMouseWheelEvent(MouseWheelEvent e) {
+//        processMouseWheelEventImpl(e, mouseWheelListeners.getSystemListeners());
+//    }
 
     /**
      * Process mouse wheel event impl.
@@ -4820,15 +4854,15 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param c
      *            the c.
      */
-    private void processMouseWheelEventImpl(MouseWheelEvent e, Collection<MouseWheelListener> c) {
-        for (MouseWheelListener listener : c) {
-            switch (e.getID()) {
-                case MouseEvent.MOUSE_WHEEL:
-                    listener.mouseWheelMoved(e);
-                    break;
-            }
-        }
-    }
+//    private void processMouseWheelEventImpl(MouseWheelEvent e, Collection<MouseWheelListener> c) {
+//        for (MouseWheelListener listener : c) {
+//            switch (e.getID()) {
+//                case MouseEvent.MOUSE_WHEEL:
+//                    listener.mouseWheelMoved(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Preprocess component event.
@@ -4846,9 +4880,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e.
      */
-    void preprocessMouseMotionEvent(MouseEvent e) {
-        processMouseMotionEventImpl(e, mouseMotionListeners.getSystemListeners());
-    }
+//    void preprocessMouseMotionEvent(MouseEvent e) {
+//        processMouseMotionEventImpl(e, mouseMotionListeners.getSystemListeners());
+//    }
 
     /**
      * Preprocess mouse event.
@@ -4856,9 +4890,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e
      */
-    void preprocessMouseEvent(MouseEvent e) {
-        processMouseEventImpl(e, mouseListeners.getSystemListeners());
-    }
+//    void preprocessMouseEvent(MouseEvent e) {
+//        processMouseEventImpl(e, mouseListeners.getSystemListeners());
+//    }
 
     /**
      * Preprocess key event.
@@ -4866,9 +4900,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e.
      */
-    void preprocessKeyEvent(KeyEvent e) {
-        processKeyEventImpl(e, keyListeners.getSystemListeners());
-    }
+//    void preprocessKeyEvent(KeyEvent e) {
+//        processKeyEventImpl(e, keyListeners.getSystemListeners());
+//    }
 
     /**
      * Preprocess focus event.
@@ -4876,9 +4910,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e.
      */
-    void preprocessFocusEvent(FocusEvent e) {
-        processFocusEventImpl(e, focusListeners.getSystemListeners());
-    }
+//    void preprocessFocusEvent(FocusEvent e) {
+//        processFocusEventImpl(e, focusListeners.getSystemListeners());
+//    }
 
     /**
      * Processes AWTEvent occurred on this component.
@@ -4886,28 +4920,28 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the AWTEvent.
      */
-    protected void processEvent(AWTEvent e) {
-        long eventMask = toolkit.eventTypeLookup.getEventMask(e);
-        if (eventMask == AWTEvent.COMPONENT_EVENT_MASK) {
-            processComponentEvent((ComponentEvent)e);
-        } else if (eventMask == AWTEvent.FOCUS_EVENT_MASK) {
-            processFocusEvent((FocusEvent)e);
-        } else if (eventMask == AWTEvent.KEY_EVENT_MASK) {
-            processKeyEvent((KeyEvent)e);
-        } else if (eventMask == AWTEvent.MOUSE_EVENT_MASK) {
-            processMouseEvent((MouseEvent)e);
-        } else if (eventMask == AWTEvent.MOUSE_WHEEL_EVENT_MASK) {
-            processMouseWheelEvent((MouseWheelEvent)e);
-        } else if (eventMask == AWTEvent.MOUSE_MOTION_EVENT_MASK) {
-            processMouseMotionEvent((MouseEvent)e);
-        } else if (eventMask == AWTEvent.HIERARCHY_EVENT_MASK) {
-            processHierarchyEvent((HierarchyEvent)e);
-        } else if (eventMask == AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) {
-            processHierarchyBoundsEvent((HierarchyEvent)e);
-        } else if (eventMask == AWTEvent.INPUT_METHOD_EVENT_MASK) {
-            processInputMethodEvent((InputMethodEvent)e);
-        }
-    }
+//    protected void processEvent(AWTEvent e) {
+//        long eventMask = toolkit.eventTypeLookup.getEventMask(e);
+//        if (eventMask == AWTEvent.COMPONENT_EVENT_MASK) {
+//            processComponentEvent((ComponentEvent)e);
+//        } else if (eventMask == AWTEvent.FOCUS_EVENT_MASK) {
+//            processFocusEvent((FocusEvent)e);
+//        } else if (eventMask == AWTEvent.KEY_EVENT_MASK) {
+//            processKeyEvent((KeyEvent)e);
+//        } else if (eventMask == AWTEvent.MOUSE_EVENT_MASK) {
+//            processMouseEvent((MouseEvent)e);
+//        } else if (eventMask == AWTEvent.MOUSE_WHEEL_EVENT_MASK) {
+//            processMouseWheelEvent((MouseWheelEvent)e);
+//        } else if (eventMask == AWTEvent.MOUSE_MOTION_EVENT_MASK) {
+//            processMouseMotionEvent((MouseEvent)e);
+//        } else if (eventMask == AWTEvent.HIERARCHY_EVENT_MASK) {
+//            processHierarchyEvent((HierarchyEvent)e);
+//        } else if (eventMask == AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) {
+//            processHierarchyBoundsEvent((HierarchyEvent)e);
+//        } else if (eventMask == AWTEvent.INPUT_METHOD_EVENT_MASK) {
+//            processInputMethodEvent((InputMethodEvent)e);
+//        }
+//    }
 
     /**
      * Gets an array of all listener's objects based on the specified listener
@@ -4918,31 +4952,31 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return an array of all listener's objects based on the specified
      *         listener type and registered to this Component.
      */
-    @SuppressWarnings("unchecked")
-    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
-        if (ComponentListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getComponentListeners();
-        } else if (FocusListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getFocusListeners();
-        } else if (HierarchyBoundsListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getHierarchyBoundsListeners();
-        } else if (HierarchyListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getHierarchyListeners();
-        } else if (InputMethodListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getInputMethodListeners();
-        } else if (KeyListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getKeyListeners();
-        } else if (MouseWheelListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getMouseWheelListeners();
-        } else if (MouseMotionListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getMouseMotionListeners();
-        } else if (MouseListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getMouseListeners();
-        } else if (PropertyChangeListener.class.isAssignableFrom(listenerType)) {
-            return (T[])getPropertyChangeListeners();
-        }
-        return (T[])Array.newInstance(listenerType, 0);
-    }
+//    @SuppressWarnings("unchecked")
+//    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
+//        if (ComponentListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getComponentListeners();
+//        } else if (FocusListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getFocusListeners();
+//        } else if (HierarchyBoundsListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getHierarchyBoundsListeners();
+//        } else if (HierarchyListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getHierarchyListeners();
+//        } else if (InputMethodListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getInputMethodListeners();
+//        } else if (KeyListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getKeyListeners();
+//        } else if (MouseWheelListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getMouseWheelListeners();
+//        } else if (MouseMotionListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getMouseMotionListeners();
+//        } else if (MouseListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getMouseListeners();
+//        } else if (PropertyChangeListener.class.isAssignableFrom(listenerType)) {
+//            return (T[])getPropertyChangeListeners();
+//        }
+//        return (T[])Array.newInstance(listenerType, 0);
+//    }
 
     /**
      * Process paint event.
@@ -4950,28 +4984,28 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param event
      *            the event.
      */
-    private void processPaintEvent(PaintEvent event) {
-        if (redrawManager == null) {
-            return;
-        }
-        Rectangle clipRect = event.getUpdateRect();
-        if ((clipRect.width <= 0) || (clipRect.height <= 0)) {
-            return;
-        }
-        Graphics g = getGraphics();
-        if (g == null) {
-            return;
-        }
-        initGraphics(g, event);
-        if (!getIgnoreRepaint()) {
-            if (event.getID() == PaintEvent.PAINT) {
-                paint(g);
-            } else {
-                update(g);
-            }
-        }
-        g.dispose();
-    }
+//    private void processPaintEvent(PaintEvent event) {
+//        if (redrawManager == null) {
+//            return;
+//        }
+//        Rectangle clipRect = event.getUpdateRect();
+//        if ((clipRect.width <= 0) || (clipRect.height <= 0)) {
+//            return;
+//        }
+//        Graphics g = getGraphics();
+//        if (g == null) {
+//            return;
+//        }
+//        initGraphics(g, event);
+//        if (!getIgnoreRepaint()) {
+//            if (event.getID() == PaintEvent.PAINT) {
+//                paint(g);
+//            } else {
+//                update(g);
+//            }
+//        }
+//        g.dispose();
+//    }
 
     /**
      * Inits the graphics.
@@ -4981,22 +5015,22 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the e.
      */
-    void initGraphics(Graphics g, PaintEvent e) {
-        Rectangle clip = e.getUpdateRect();
-        if (clip instanceof ClipRegion) {
-            g.setClip(((ClipRegion)clip).getClip());
-        } else {
-            g.setClip(clip);
-        }
-        if (isPrepainter()) {
-            prepaint(g);
-        } else if (!isLightweight() && (e.getID() == PaintEvent.PAINT)) {
-            g.setColor(getBackground());
-            g.fillRect(0, 0, w, h);
-        }
-        g.setFont(getFont());
-        g.setColor(getForeground());
-    }
+//    void initGraphics(Graphics g, PaintEvent e) {
+//        Rectangle clip = e.getUpdateRect();
+//        if (clip instanceof ClipRegion) {
+//            g.setClip(((ClipRegion)clip).getClip());
+//        } else {
+//            g.setClip(clip);
+//        }
+//        if (isPrepainter()) {
+//            prepaint(g);
+//        } else if (!isLightweight() && (e.getID() == PaintEvent.PAINT)) {
+//            g.setColor(getBackground());
+//            g.fillRect(0, 0, w, h);
+//        }
+//        g.setFont(getFont());
+//        g.setColor(getForeground());
+//    }
 
     /**
      * Enables the events with the specified event mask to be delivered to this
@@ -5158,9 +5192,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * 
      * @return the array of focus listeners registered for this Component.
      */
-    public FocusListener[] getFocusListeners() {
-        return focusListeners.getUserListeners(new FocusListener[0]);
-    }
+//    public FocusListener[] getFocusListeners() {
+//        return focusListeners.getUserListeners(new FocusListener[0]);
+//    }
 
     /**
      * Adds the specified focus listener to the Component for receiving focus
@@ -5169,9 +5203,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the FocusListener.
      */
-    public void addFocusListener(FocusListener l) {
-        focusListeners.addUserListener(l);
-    }
+//    public void addFocusListener(FocusListener l) {
+//        focusListeners.addUserListener(l);
+//    }
 
     /**
      * Adds the awt focus listener.
@@ -5179,10 +5213,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the l.
      */
-    void addAWTFocusListener(FocusListener l) {
-        enableAWTEvents(AWTEvent.FOCUS_EVENT_MASK);
-        focusListeners.addSystemListener(l);
-    }
+//    void addAWTFocusListener(FocusListener l) {
+//        enableAWTEvents(AWTEvent.FOCUS_EVENT_MASK);
+//        focusListeners.addSystemListener(l);
+//    }
 
     /**
      * Removes the focus listener registered for this Component.
@@ -5190,9 +5224,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the FocusListener.
      */
-    public void removeFocusListener(FocusListener l) {
-        focusListeners.removeUserListener(l);
-    }
+//    public void removeFocusListener(FocusListener l) {
+//        focusListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a FocusEvent that has occurred on this component by dispatching
@@ -5201,9 +5235,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the FocusEvent.
      */
-    protected void processFocusEvent(FocusEvent e) {
-        processFocusEventImpl(e, focusListeners.getUserListeners());
-    }
+//    protected void processFocusEvent(FocusEvent e) {
+//        processFocusEventImpl(e, focusListeners.getUserListeners());
+//    }
 
     /**
      * Process focus event impl.
@@ -5213,27 +5247,27 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param c
      *            the c.
      */
-    private void processFocusEventImpl(FocusEvent e, Collection<FocusListener> c) {
-        for (FocusListener listener : c) {
-            switch (e.getID()) {
-                case FocusEvent.FOCUS_GAINED:
-                    listener.focusGained(e);
-                    break;
-                case FocusEvent.FOCUS_LOST:
-                    listener.focusLost(e);
-                    break;
-            }
-        }
-    }
+//    private void processFocusEventImpl(FocusEvent e, Collection<FocusListener> c) {
+//        for (FocusListener listener : c) {
+//            switch (e.getID()) {
+//                case FocusEvent.FOCUS_GAINED:
+//                    listener.focusGained(e);
+//                    break;
+//                case FocusEvent.FOCUS_LOST:
+//                    listener.focusLost(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Gets an array of registered HierarchyListeners for this Component.
      * 
      * @return an array of registered HierarchyListeners for this Component.
      */
-    public HierarchyListener[] getHierarchyListeners() {
-        return hierarchyListeners.getUserListeners(new HierarchyListener[0]);
-    }
+//    public HierarchyListener[] getHierarchyListeners() {
+//        return hierarchyListeners.getUserListeners(new HierarchyListener[0]);
+//    }
 
     /**
      * Adds the specified hierarchy listener.
@@ -5241,9 +5275,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the HierarchyListener.
      */
-    public void addHierarchyListener(HierarchyListener l) {
-        hierarchyListeners.addUserListener(l);
-    }
+//    public void addHierarchyListener(HierarchyListener l) {
+//        hierarchyListeners.addUserListener(l);
+//    }
 
     /**
      * Removes the hierarchy listener registered for this component.
@@ -5251,9 +5285,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the HierarchyListener.
      */
-    public void removeHierarchyListener(HierarchyListener l) {
-        hierarchyListeners.removeUserListener(l);
-    }
+//    public void removeHierarchyListener(HierarchyListener l) {
+//        hierarchyListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a hierarchy event that has occurred on this component by
@@ -5262,15 +5296,15 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the HierarchyEvent.
      */
-    protected void processHierarchyEvent(HierarchyEvent e) {
-        for (HierarchyListener listener : hierarchyListeners.getUserListeners()) {
-            switch (e.getID()) {
-                case HierarchyEvent.HIERARCHY_CHANGED:
-                    listener.hierarchyChanged(e);
-                    break;
-            }
-        }
-    }
+//    protected void processHierarchyEvent(HierarchyEvent e) {
+//        for (HierarchyListener listener : hierarchyListeners.getUserListeners()) {
+//            switch (e.getID()) {
+//                case HierarchyEvent.HIERARCHY_CHANGED:
+//                    listener.hierarchyChanged(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Gets an array of HierarchyBoundsListener objects registered to this
@@ -5278,9 +5312,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * 
      * @return an array of HierarchyBoundsListener objects.
      */
-    public HierarchyBoundsListener[] getHierarchyBoundsListeners() {
-        return hierarchyBoundsListeners.getUserListeners(new HierarchyBoundsListener[0]);
-    }
+//    public HierarchyBoundsListener[] getHierarchyBoundsListeners() {
+//        return hierarchyBoundsListeners.getUserListeners(new HierarchyBoundsListener[0]);
+//    }
 
     /**
      * Adds the specified hierarchy bounds listener.
@@ -5288,9 +5322,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the HierarchyBoundsListener.
      */
-    public void addHierarchyBoundsListener(HierarchyBoundsListener l) {
-        hierarchyBoundsListeners.addUserListener(l);
-    }
+//    public void addHierarchyBoundsListener(HierarchyBoundsListener l) {
+//        hierarchyBoundsListeners.addUserListener(l);
+//    }
 
     /**
      * Removes the hierarchy bounds listener registered for this Component.
@@ -5298,9 +5332,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the HierarchyBoundsListener.
      */
-    public void removeHierarchyBoundsListener(HierarchyBoundsListener l) {
-        hierarchyBoundsListeners.removeUserListener(l);
-    }
+//    public void removeHierarchyBoundsListener(HierarchyBoundsListener l) {
+//        hierarchyBoundsListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a hierarchy bounds event that has occurred on this component by
@@ -5309,27 +5343,27 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the HierarchyBoundsEvent.
      */
-    protected void processHierarchyBoundsEvent(HierarchyEvent e) {
-        for (HierarchyBoundsListener listener : hierarchyBoundsListeners.getUserListeners()) {
-            switch (e.getID()) {
-                case HierarchyEvent.ANCESTOR_MOVED:
-                    listener.ancestorMoved(e);
-                    break;
-                case HierarchyEvent.ANCESTOR_RESIZED:
-                    listener.ancestorResized(e);
-                    break;
-            }
-        }
-    }
+//    protected void processHierarchyBoundsEvent(HierarchyEvent e) {
+//        for (HierarchyBoundsListener listener : hierarchyBoundsListeners.getUserListeners()) {
+//            switch (e.getID()) {
+//                case HierarchyEvent.ANCESTOR_MOVED:
+//                    listener.ancestorMoved(e);
+//                    break;
+//                case HierarchyEvent.ANCESTOR_RESIZED:
+//                    listener.ancestorResized(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Gets an array of the key listeners registered to the Component.
      * 
      * @return an array of the key listeners registered to the Component.
      */
-    public KeyListener[] getKeyListeners() {
-        return keyListeners.getUserListeners(new KeyListener[0]);
-    }
+//    public KeyListener[] getKeyListeners() {
+//        return keyListeners.getUserListeners(new KeyListener[0]);
+//    }
 
     /**
      * Adds the specified key listener.
@@ -5337,9 +5371,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the KeyListener.
      */
-    public void addKeyListener(KeyListener l) {
-        keyListeners.addUserListener(l);
-    }
+//    public void addKeyListener(KeyListener l) {
+//        keyListeners.addUserListener(l);
+//    }
 
     /**
      * Adds the awt key listener.
@@ -5347,10 +5381,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the l.
      */
-    void addAWTKeyListener(KeyListener l) {
-        enableAWTEvents(AWTEvent.KEY_EVENT_MASK);
-        keyListeners.addSystemListener(l);
-    }
+//    void addAWTKeyListener(KeyListener l) {
+//        enableAWTEvents(AWTEvent.KEY_EVENT_MASK);
+//        keyListeners.addSystemListener(l);
+//    }
 
     /**
      * Removes the key listener registered for this Component.
@@ -5358,9 +5392,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the KeyListener.
      */
-    public void removeKeyListener(KeyListener l) {
-        keyListeners.removeUserListener(l);
-    }
+//    public void removeKeyListener(KeyListener l) {
+//        keyListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a key event that has occurred on this component by dispatching
@@ -5369,9 +5403,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the KeyEvent.
      */
-    protected void processKeyEvent(KeyEvent e) {
-        processKeyEventImpl(e, keyListeners.getUserListeners());
-    }
+//    protected void processKeyEvent(KeyEvent e) {
+//        processKeyEventImpl(e, keyListeners.getUserListeners());
+//    }
 
     /**
      * Process key event impl.
@@ -5381,30 +5415,30 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param c
      *            the c.
      */
-    private void processKeyEventImpl(KeyEvent e, Collection<KeyListener> c) {
-        for (KeyListener listener : c) {
-            switch (e.getID()) {
-                case KeyEvent.KEY_PRESSED:
-                    listener.keyPressed(e);
-                    break;
-                case KeyEvent.KEY_RELEASED:
-                    listener.keyReleased(e);
-                    break;
-                case KeyEvent.KEY_TYPED:
-                    listener.keyTyped(e);
-                    break;
-            }
-        }
-    }
+//    private void processKeyEventImpl(KeyEvent e, Collection<KeyListener> c) {
+//        for (KeyListener listener : c) {
+//            switch (e.getID()) {
+//                case KeyEvent.KEY_PRESSED:
+//                    listener.keyPressed(e);
+//                    break;
+//                case KeyEvent.KEY_RELEASED:
+//                    listener.keyReleased(e);
+//                    break;
+//                case KeyEvent.KEY_TYPED:
+//                    listener.keyTyped(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Gets an array of the mouse listeners registered to the Component.
      * 
      * @return an array of the mouse listeners registered to the Component.
      */
-    public MouseListener[] getMouseListeners() {
-        return mouseListeners.getUserListeners(new MouseListener[0]);
-    }
+//    public MouseListener[] getMouseListeners() {
+//        return mouseListeners.getUserListeners(new MouseListener[0]);
+//    }
 
     /**
      * Adds the specified mouse listener.
@@ -5412,9 +5446,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the MouseListener.
      */
-    public void addMouseListener(MouseListener l) {
-        mouseListeners.addUserListener(l);
-    }
+//    public void addMouseListener(MouseListener l) {
+//        mouseListeners.addUserListener(l);
+//    }
 
     /**
      * Adds the awt mouse listener.
@@ -5422,10 +5456,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the l.
      */
-    void addAWTMouseListener(MouseListener l) {
-        enableAWTEvents(AWTEvent.MOUSE_EVENT_MASK);
-        mouseListeners.addSystemListener(l);
-    }
+//    void addAWTMouseListener(MouseListener l) {
+//        enableAWTEvents(AWTEvent.MOUSE_EVENT_MASK);
+//        mouseListeners.addSystemListener(l);
+//    }
 
     /**
      * Adds the awt mouse motion listener.
@@ -5433,10 +5467,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the l.
      */
-    void addAWTMouseMotionListener(MouseMotionListener l) {
-        enableAWTEvents(AWTEvent.MOUSE_MOTION_EVENT_MASK);
-        mouseMotionListeners.addSystemListener(l);
-    }
+//    void addAWTMouseMotionListener(MouseMotionListener l) {
+//        enableAWTEvents(AWTEvent.MOUSE_MOTION_EVENT_MASK);
+//        mouseMotionListeners.addSystemListener(l);
+//    }
 
     /**
      * Adds the awt component listener.
@@ -5455,10 +5489,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the l.
      */
-    void addAWTInputMethodListener(InputMethodListener l) {
-        enableAWTEvents(AWTEvent.INPUT_METHOD_EVENT_MASK);
-        inputMethodListeners.addSystemListener(l);
-    }
+//    void addAWTInputMethodListener(InputMethodListener l) {
+//        enableAWTEvents(AWTEvent.INPUT_METHOD_EVENT_MASK);
+//        inputMethodListeners.addSystemListener(l);
+//    }
 
     /**
      * Adds the awt mouse wheel listener.
@@ -5466,10 +5500,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the l.
      */
-    void addAWTMouseWheelListener(MouseWheelListener l) {
-        enableAWTEvents(AWTEvent.MOUSE_WHEEL_EVENT_MASK);
-        mouseWheelListeners.addSystemListener(l);
-    }
+//    void addAWTMouseWheelListener(MouseWheelListener l) {
+//        enableAWTEvents(AWTEvent.MOUSE_WHEEL_EVENT_MASK);
+//        mouseWheelListeners.addSystemListener(l);
+//    }
 
     /**
      * Removes the mouse listener registered for this Component.
@@ -5477,9 +5511,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the MouseListener.
      */
-    public void removeMouseListener(MouseListener l) {
-        mouseListeners.removeUserListener(l);
-    }
+//    public void removeMouseListener(MouseListener l) {
+//        mouseListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a mouse event that has occurred on this component by
@@ -5488,9 +5522,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the MouseEvent.
      */
-    protected void processMouseEvent(MouseEvent e) {
-        processMouseEventImpl(e, mouseListeners.getUserListeners());
-    }
+//    protected void processMouseEvent(MouseEvent e) {
+//        processMouseEventImpl(e, mouseListeners.getUserListeners());
+//    }
 
     /**
      * Process mouse event impl.
@@ -5500,27 +5534,27 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param c
      *            the c.
      */
-    private void processMouseEventImpl(MouseEvent e, Collection<MouseListener> c) {
-        for (MouseListener listener : c) {
-            switch (e.getID()) {
-                case MouseEvent.MOUSE_CLICKED:
-                    listener.mouseClicked(e);
-                    break;
-                case MouseEvent.MOUSE_ENTERED:
-                    listener.mouseEntered(e);
-                    break;
-                case MouseEvent.MOUSE_EXITED:
-                    listener.mouseExited(e);
-                    break;
-                case MouseEvent.MOUSE_PRESSED:
-                    listener.mousePressed(e);
-                    break;
-                case MouseEvent.MOUSE_RELEASED:
-                    listener.mouseReleased(e);
-                    break;
-            }
-        }
-    }
+//    private void processMouseEventImpl(MouseEvent e, Collection<MouseListener> c) {
+//        for (MouseListener listener : c) {
+//            switch (e.getID()) {
+//                case MouseEvent.MOUSE_CLICKED:
+//                    listener.mouseClicked(e);
+//                    break;
+//                case MouseEvent.MOUSE_ENTERED:
+//                    listener.mouseEntered(e);
+//                    break;
+//                case MouseEvent.MOUSE_EXITED:
+//                    listener.mouseExited(e);
+//                    break;
+//                case MouseEvent.MOUSE_PRESSED:
+//                    listener.mousePressed(e);
+//                    break;
+//                case MouseEvent.MOUSE_RELEASED:
+//                    listener.mouseReleased(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Process mouse motion event impl.
@@ -5530,27 +5564,27 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param c
      *            the c.
      */
-    private void processMouseMotionEventImpl(MouseEvent e, Collection<MouseMotionListener> c) {
-        for (MouseMotionListener listener : c) {
-            switch (e.getID()) {
-                case MouseEvent.MOUSE_DRAGGED:
-                    listener.mouseDragged(e);
-                    break;
-                case MouseEvent.MOUSE_MOVED:
-                    listener.mouseMoved(e);
-                    break;
-            }
-        }
-    }
+//    private void processMouseMotionEventImpl(MouseEvent e, Collection<MouseMotionListener> c) {
+//        for (MouseMotionListener listener : c) {
+//            switch (e.getID()) {
+//                case MouseEvent.MOUSE_DRAGGED:
+//                    listener.mouseDragged(e);
+//                    break;
+//                case MouseEvent.MOUSE_MOVED:
+//                    listener.mouseMoved(e);
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Gets an array of the mouse motion listeners registered to the Component.
      * 
      * @return an array of the MouseMotionListeners registered to the Component.
      */
-    public MouseMotionListener[] getMouseMotionListeners() {
-        return mouseMotionListeners.getUserListeners(new MouseMotionListener[0]);
-    }
+//    public MouseMotionListener[] getMouseMotionListeners() {
+//        return mouseMotionListeners.getUserListeners(new MouseMotionListener[0]);
+//    }
 
     /**
      * Adds the specified mouse motion listener.
@@ -5558,9 +5592,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the MouseMotionListener.
      */
-    public void addMouseMotionListener(MouseMotionListener l) {
-        mouseMotionListeners.addUserListener(l);
-    }
+//    public void addMouseMotionListener(MouseMotionListener l) {
+//        mouseMotionListeners.addUserListener(l);
+//    }
 
     /**
      * Removes the mouse motion listener registered for this component.
@@ -5568,9 +5602,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the MouseMotionListener.
      */
-    public void removeMouseMotionListener(MouseMotionListener l) {
-        mouseMotionListeners.removeUserListener(l);
-    }
+//    public void removeMouseMotionListener(MouseMotionListener l) {
+//        mouseMotionListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a mouse motion event that has occurred on this component by
@@ -5579,18 +5613,18 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the MouseEvent.
      */
-    protected void processMouseMotionEvent(MouseEvent e) {
-        processMouseMotionEventImpl(e, mouseMotionListeners.getUserListeners());
-    }
+//    protected void processMouseMotionEvent(MouseEvent e) {
+//        processMouseMotionEventImpl(e, mouseMotionListeners.getUserListeners());
+//    }
 
     /**
      * Gets an array of the mouse wheel listeners registered to the Component.
      * 
      * @return an array of the MouseWheelListeners registered to the Component.
      */
-    public MouseWheelListener[] getMouseWheelListeners() {
-        return mouseWheelListeners.getUserListeners(new MouseWheelListener[0]);
-    }
+//    public MouseWheelListener[] getMouseWheelListeners() {
+//        return mouseWheelListeners.getUserListeners(new MouseWheelListener[0]);
+//    }
 
     /**
      * Adds the specified mouse wheel listener.
@@ -5598,9 +5632,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the MouseWheelListener.
      */
-    public void addMouseWheelListener(MouseWheelListener l) {
-        mouseWheelListeners.addUserListener(l);
-    }
+//    public void addMouseWheelListener(MouseWheelListener l) {
+//        mouseWheelListeners.addUserListener(l);
+//    }
 
     /**
      * Removes the mouse wheel listener registered for this component.
@@ -5608,9 +5642,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the MouseWheelListener.
      */
-    public void removeMouseWheelListener(MouseWheelListener l) {
-        mouseWheelListeners.removeUserListener(l);
-    }
+//    public void removeMouseWheelListener(MouseWheelListener l) {
+//        mouseWheelListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes a mouse wheel event that has occurred on this component by
@@ -5619,9 +5653,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the MouseWheelEvent.
      */
-    protected void processMouseWheelEvent(MouseWheelEvent e) {
-        processMouseWheelEventImpl(e, mouseWheelListeners.getUserListeners());
-    }
+//    protected void processMouseWheelEvent(MouseWheelEvent e) {
+//        processMouseWheelEventImpl(e, mouseWheelListeners.getUserListeners());
+//    }
 
     /**
      * Gets an array of the InputMethodListener listeners registered to the
@@ -5630,9 +5664,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @return an array of the InputMethodListener listeners registered to the
      *         Component.
      */
-    public InputMethodListener[] getInputMethodListeners() {
-        return inputMethodListeners.getUserListeners(new InputMethodListener[0]);
-    }
+//    public InputMethodListener[] getInputMethodListeners() {
+//        return inputMethodListeners.getUserListeners(new InputMethodListener[0]);
+//    }
 
     /**
      * Adds the specified input method listener.
@@ -5640,9 +5674,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the InputMethodListener.
      */
-    public void addInputMethodListener(InputMethodListener l) {
-        inputMethodListeners.addUserListener(l);
-    }
+//    public void addInputMethodListener(InputMethodListener l) {
+//        inputMethodListeners.addUserListener(l);
+//    }
 
     /**
      * Removes the input method listener registered for this component.
@@ -5650,9 +5684,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param l
      *            the InputMethodListener.
      */
-    public void removeInputMethodListener(InputMethodListener l) {
-        inputMethodListeners.removeUserListener(l);
-    }
+//    public void removeInputMethodListener(InputMethodListener l) {
+//        inputMethodListeners.removeUserListener(l);
+//    }
 
     /**
      * Processes an input method event that has occurred on this component by
@@ -5661,9 +5695,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param e
      *            the InputMethodEvent.
      */
-    protected void processInputMethodEvent(InputMethodEvent e) {
-        processInputMethodEventImpl(e, inputMethodListeners.getUserListeners());
-    }
+//    protected void processInputMethodEvent(InputMethodEvent e) {
+//        processInputMethodEventImpl(e, inputMethodListeners.getUserListeners());
+//    }
 
     /**
      * Process input method event impl.
@@ -5673,18 +5707,18 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param c
      *            the c.
      */
-    private void processInputMethodEventImpl(InputMethodEvent e, Collection<InputMethodListener> c) {
-        for (InputMethodListener listener : c) {
-            switch (e.getID()) {
-                case InputMethodEvent.CARET_POSITION_CHANGED:
-                    listener.caretPositionChanged(e);
-                    break;
-                case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
-                    listener.inputMethodTextChanged(e);
-                    break;
-            }
-        }
-    }
+//    private void processInputMethodEventImpl(InputMethodEvent e, Collection<InputMethodListener> c) {
+//        for (InputMethodListener listener : c) {
+//            switch (e.getID()) {
+//                case InputMethodEvent.CARET_POSITION_CHANGED:
+//                    listener.caretPositionChanged(e);
+//                    break;
+//                case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
+//                    listener.inputMethodTextChanged(e);
+//                    break;
+//            }
+//        }
+//    }
 
     // ???AWT
     /*
@@ -5720,11 +5754,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 }
             }
         };
-        if (Thread.currentThread() instanceof EventDispatchThread) {
-            r.run();
-        } else {
-            toolkit.getSystemEventQueueImpl().postEvent(new InvocationEvent(this, r));
-        }
+//        if (Thread.currentThread() instanceof EventDispatchThread) {
+//            r.run();
+//        } else {
+//            toolkit.getSystemEventQueueImpl().postEvent(new InvocationEvent(this, r));
+//        }
     }
 
     /**
@@ -5737,11 +5771,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      */
     void setCaretPosImpl(int x, int y) {
         Component c = this;
-        while ((c != null) && c.behaviour.isLightweight()) {
-            x += c.x;
-            y += c.y;
-            // ???AWT: c = c.getParent();
-        }
+//        while ((c != null) && c.behaviour.isLightweight()) {
+//            x += c.x;
+//            y += c.y;
+//            // ???AWT: c = c.getParent();
+//        }
         if (c == null) {
             return;
         }
@@ -5812,9 +5846,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      * @param win
      *            the win.
      */
-    void nativeWindowCreated(NativeWindow win) {
-        // to be overridden
-    }
+//    void nativeWindowCreated(NativeWindow win) {
+//        // to be overridden
+//    }
 
     /**
      * Determine the component's area hidden behind the windows that have higher
@@ -6004,17 +6038,20 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
      *            event to pass to InputContext.dispatchEvent().
      * @return true if event was consumed by IM, false otherwise.
      */
-    private boolean dispatchEventToIM(AWTEvent e) {
-        InputContext ic = getInputContext();
-        if (ic == null) {
-            return false;
-        }
-        int id = e.getID();
-        boolean isInputEvent = ((id >= KeyEvent.KEY_FIRST) && (id <= KeyEvent.KEY_LAST))
-                || ((id >= MouseEvent.MOUSE_FIRST) && (id <= MouseEvent.MOUSE_LAST));
-        if (((id >= FocusEvent.FOCUS_FIRST) && (id <= FocusEvent.FOCUS_LAST)) || isInputEvent) {
-            ic.dispatchEvent(e);
-        }
-        return e.isConsumed();
-    }
+//    private boolean dispatchEventToIM(AWTEvent e) {
+//        InputContext ic = getInputContext();
+//        if (ic == null) {
+//            return false;
+//        }
+//        int id = e.getID();
+//        boolean isInputEvent = ((id >= KeyEvent.KEY_FIRST) && (id <= KeyEvent.KEY_LAST))
+//                || ((id >= MouseEvent.MOUSE_FIRST) && (id <= MouseEvent.MOUSE_LAST));
+//        if (((id >= FocusEvent.FOCUS_FIRST) && (id <= FocusEvent.FOCUS_LAST)) || isInputEvent) {
+//            ic.dispatchEvent(e);
+//        }
+//        return e.isConsumed();
+//    }
+
 }
+
+
