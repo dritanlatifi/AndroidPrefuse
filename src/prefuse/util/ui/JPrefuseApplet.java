@@ -1,6 +1,6 @@
 package prefuse.util.ui;
 
-import javax.swing.JApplet;
+//import javax.swing.JApplet;
 
 import prefuse.activity.ActivityManager;
 
@@ -13,7 +13,8 @@ import prefuse.activity.ActivityManager;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class JPrefuseApplet extends JApplet {
+//public class JPrefuseApplet extends JApplet {
+public class JPrefuseApplet {
     
     /**
      * Automatically shuts down the ActivityManager when the applet is

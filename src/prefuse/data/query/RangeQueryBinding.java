@@ -144,20 +144,20 @@ public class RangeQueryBinding extends DynamicQueryBinding {
      * @return a {@link prefuse.util.ui.JRangeSlider} bound to this dynamic
      * query.
      */
-    public JRangeSlider createHorizontalRangeSlider() {
-        return createRangeSlider(JRangeSlider.HORIZONTAL, 
-                JRangeSlider.LEFTRIGHT_TOPBOTTOM);
-    }
+//    public JRangeSlider createHorizontalRangeSlider() {
+//        return createRangeSlider(JRangeSlider.HORIZONTAL, 
+//                JRangeSlider.LEFTRIGHT_TOPBOTTOM);
+//    }
 
     /**
      * Create a new vertical range slider for interacting with the query.
      * @return a {@link prefuse.util.ui.JRangeSlider} bound to this dynamic
      * query.
      */
-    public JRangeSlider createVerticalRangeSlider() {
-        return createRangeSlider(JRangeSlider.VERTICAL, 
-                JRangeSlider.RIGHTLEFT_BOTTOMTOP);
-    }
+//    public JRangeSlider createVerticalRangeSlider() {
+//        return createRangeSlider(JRangeSlider.VERTICAL, 
+//                JRangeSlider.RIGHTLEFT_BOTTOMTOP);
+//    }
     
     /**
      * Create a new range slider for interacting with the query, using the
@@ -169,9 +169,9 @@ public class RangeQueryBinding extends DynamicQueryBinding {
      * @return a {@link prefuse.util.ui.JRangeSlider} bound to this dynamic
      * query.
      */
-    public JRangeSlider createRangeSlider(int orientation, int direction) {
-        return new JRangeSlider(m_model, orientation, direction);
-    }
+//    public JRangeSlider createRangeSlider(int orientation, int direction) {
+//        return new JRangeSlider(m_model, orientation, direction);
+//    }
     
     /**
      * Create a new regular (non-range) slider for interacting with the query.

@@ -4,14 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.filechooser.FileFilter;
+//import javax.swing.filechooser.FileFilter;
 
 /**
  * A simple file filter for a particular file extension.
  *  
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class SimpleFileFilter extends FileFilter {
+//public class SimpleFileFilter extends FileFilter {
+public class SimpleFileFilter {
     
     private ArrayList exts = new ArrayList();
     private String desc;

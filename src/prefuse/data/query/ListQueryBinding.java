@@ -131,22 +131,22 @@ public class ListQueryBinding extends DynamicQueryBinding {
      * @return a {@link prefuse.util.ui.JToggleGroup} of check boxes bound to
      * this dynamic query.
      */
-    public JToggleGroup createCheckboxGroup() {
-        return createToggleGroup(JToggleGroup.CHECKBOX);
-    }
+//    public JToggleGroup createCheckboxGroup() {
+//        return createToggleGroup(JToggleGroup.CHECKBOX);
+//    }
     
     /**
      * Creates a new group of radio buttons for interacting with the query.
      * @return a {@link prefuse.util.ui.JToggleGroup} of radio buttons bound to
      * this dynamic query.
      */
-    public JToggleGroup createRadioGroup() {
-        return createToggleGroup(JToggleGroup.RADIO);
-    }
+//    public JToggleGroup createRadioGroup() {
+//        return createToggleGroup(JToggleGroup.RADIO);
+//    }
     
-    private JToggleGroup createToggleGroup(int type) {
-        return new JToggleGroup(type, m_model, m_model);
-    }
+//    private JToggleGroup createToggleGroup(int type) {
+//        return new JToggleGroup(type, m_model, m_model);
+//    }
     
     // ------------------------------------------------------------------------
     

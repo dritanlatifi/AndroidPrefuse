@@ -83,9 +83,9 @@ public class SearchQueryBinding extends DynamicQueryBinding {
      * @return a {@link prefuse.util.ui.JSearchPanel} bound to this
      * dynamic query.
      */
-    public JSearchPanel createSearchPanel() {
-        return createSearchPanel(m_set instanceof PrefixSearchTupleSet);
-    }
+//    public JSearchPanel createSearchPanel() {
+//        return createSearchPanel(m_set instanceof PrefixSearchTupleSet);
+//    }
     
     /**
      * Create a new search text panel for searching over the data.
@@ -96,11 +96,11 @@ public class SearchQueryBinding extends DynamicQueryBinding {
      * @return a {@link prefuse.util.ui.JSearchPanel} bound to this
      * dynamic query.
      */
-    public JSearchPanel createSearchPanel(boolean monitorKeystrokes) {
-        JSearchPanel jsp = new JSearchPanel(m_set, m_field, monitorKeystrokes);
-        if ( m_lock != null ) { jsp.setLock(m_lock); }
-        return jsp;
-    }
+//    public JSearchPanel createSearchPanel(boolean monitorKeystrokes) {
+//        JSearchPanel jsp = new JSearchPanel(m_set, m_field, monitorKeystrokes);
+//        if ( m_lock != null ) { jsp.setLock(m_lock); }
+//        return jsp;
+//    }
     
     // ------------------------------------------------------------------------
     
