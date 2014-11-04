@@ -1,8 +1,10 @@
 package prefuse;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -217,7 +219,7 @@ public class PDisplay extends View {
 			Predicate predicate) {
 		super(context);
 		// setDoubleBuffered(false);
-		setBackgroundColor(android.graphics.Color.WHITE);
+		setBackgroundColor(android.graphics.Color.GRAY);
 
 		// initialize text editor
 		m_editing = false;
@@ -651,9 +653,9 @@ public class PDisplay extends View {
 		// }
 		// }
 		// if (img == null) {
-		// return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		 return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		// }
-		return img;
+//		return img;
 	}
 
 	/**
@@ -835,24 +837,39 @@ public class PDisplay extends View {
 //		}
 	}
 
-	@Override
+	@SuppressLint("DrawAllocation") @Override
 	protected void onDraw(Canvas g) {
 		super.onDraw(g);
+		
+		/*  TEST DRAW CODE */
+		int x = getWidth();
+        int y = getHeight();
+        int radius;
+        radius = 100;
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(android.graphics.Color.WHITE);
+        g.drawPaint(paint);
+        // Use Color.parseColor to define HTML colors
+        paint.setColor(android.graphics.Color.parseColor("#CD5C5C"));
+//        g.drawCircle(x / 2, y / 2, radius, paint);		
+        /*  END TEST DRAW CODE */
+        
 		if (m_offscreen == null) {
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
 			damageReport();
 		}
-		AndroidGraphics2D g2D = (AndroidGraphics2D) g;
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics();
+		AndroidGraphics2D g2D = new AndroidGraphics2D( g );
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g); // TODO for Dritan: Analyze why this is necessary
 
-		int width = 400; // TODO for Dritan: get screen width 
-		int height =  400; // TODO for Dritan: get screen height
+		int width =  getWidth();; // TODO for Dritan: get screen width 
+		int height =  getHeight(); // TODO for Dritan: get screen height
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
 				
 		// paint the visualization
-		paintDisplay(buf_g2D, new Dimension(width, height));
-		paintBufferToScreen(g2D);
+		paintDisplay(buf_g2D, new Dimension(width, height)); // TODO for Dritan: Analyze why this is necessary
+		paintBufferToScreen(g2D); // TODO for Dritan: Analyze why this is necessary
 
 		// fire post-paint events to any painters
 		firePostPaint(g2D);

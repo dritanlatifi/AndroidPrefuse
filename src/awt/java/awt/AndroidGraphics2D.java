@@ -30,9 +30,16 @@ import awt.java.awt.image.renderable.RenderableImage;
  * @author Dritan
  * 
  */
-public class AndroidGraphics2D extends Canvas implements Graphics2D {
+public class AndroidGraphics2D implements Graphics2D {
 
 	Paint currentPaint = new Paint();
+	Canvas canvas = null;
+	AffineTransform afineTransform = new AffineTransform();
+	
+	public AndroidGraphics2D(Canvas canvas)
+	{
+		this.canvas = canvas;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -65,7 +72,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void drawChars(char[] chars, int off, int len, int x, int y) {
-		this.drawText(chars, off, len, x, y, getCurrentPaint());
+		canvas.drawText(chars, off, len, x, y, getCurrentPaint());
 	}
 
 	/*
@@ -87,7 +94,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	@Override
 	public void drawRect(int x, int y, int width, int height) {
 		RectF rect = new RectF(x, y, x + width, y + height);
-		this.drawRect(rect, getCurrentPaint());
+		canvas.drawRect(rect, getCurrentPaint());
 	}
 
 	/*
@@ -208,7 +215,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	@Override
 	public void drawArc(int x, int y, int width, int height, int sa, int ea) {
 		RectF oval = new RectF(x, y, x + width, y + height);
-		this.drawArc(oval, sa, ea, false, getCurrentPaint());
+		canvas.drawArc(oval, sa, ea, false, getCurrentPaint());
 	}
 
 	/*
@@ -297,7 +304,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2) {
-		this.drawLine((float) x1, (float) y1, (float) x2, (float) y2,
+		canvas.drawLine((float) x1, (float) y1, (float) x2, (float) y2,
 				getCurrentPaint());
 	}
 
@@ -309,7 +316,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	@Override
 	public void drawOval(int x, int y, int width, int height) {
 		RectF oval = new RectF(x, y, x + width, y + height);
-		this.drawOval(oval, getCurrentPaint());
+		canvas.drawOval(oval, getCurrentPaint());
 	}
 
 	/*
@@ -351,7 +358,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 				* (y + height) / 2;
 		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
 				* (x + width) / 2;
-		this.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
+		canvas.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
 
 	}
 
@@ -374,7 +381,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	@Override
 	public void fillOval(int x, int y, int width, int height) {
 		RectF oval = new RectF(x, y, x + width, y + height);
-		this.drawOval(oval, getCurrentPaint());
+		canvas.drawOval(oval, getCurrentPaint());
 	}
 
 	/*
@@ -396,7 +403,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	@Override
 	public void fillRect(int x, int y, int width, int height) {
 		RectF rect = new RectF(x, y, x + width, y + height);
-		this.drawRect(rect, getCurrentPaint());
+		canvas.drawRect(rect, getCurrentPaint());
 	}
 
 	/*
@@ -416,7 +423,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 				* (y + height) / 2;
 		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
 				* (x + width) / 2;
-		this.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
+		canvas.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
 	}
 
 	/*
@@ -503,7 +510,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void setColor(Color c) {
-		// TODO Auto-generated method stub
+		this.currentPaint.setColor(c.getAndroidColorRepresentation());
 
 	}
 
@@ -571,7 +578,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	public void draw(Shape s) {
 		GeneralPath path = (GeneralPath) s;
 		Path aPath = transformPath(path);
-		drawPath(aPath, getCurrentPaint());
+		canvas.drawPath(aPath, getCurrentPaint());
 	}
 
 	public Path transformPath(GeneralPath path) {
@@ -712,7 +719,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void drawString(String s, float x, float y) {
-		this.drawText(s, x, y, getCurrentPaint());
+		canvas.drawText(s, x, y, getCurrentPaint());
 	}
 
 	/*
@@ -722,7 +729,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void drawString(String str, int x, int y) {
-		this.drawText(str, x, y, getCurrentPaint());
+		canvas.drawText(str, x, y, getCurrentPaint());
 	}
 
 	/*
@@ -836,8 +843,8 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public AffineTransform getTransform() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return afineTransform;
 	}
 
 	/*
@@ -914,7 +921,7 @@ public class AndroidGraphics2D extends Canvas implements Graphics2D {
 	 */
 	@Override
 	public void setPaint(PPaint paint) {
-		// TODO Auto-generated method stub
+		this.currentPaint.setColor(paint.getAndroidColorRepresentation());
 
 	}
 

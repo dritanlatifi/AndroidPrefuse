@@ -54,4 +54,6 @@ public interface PPaint extends Transparency {
      */
     PaintContext createContext(ColorModel cm, Rectangle deviceBounds, Rectangle2D userBounds,
             AffineTransform xform, RenderingHints hints);
+    
+    public int getAndroidColorRepresentation();
 }

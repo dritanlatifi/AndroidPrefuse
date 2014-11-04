@@ -23,8 +23,10 @@ package awt.java.awt.image;
 
 //import com.android.internal.awt.AndroidGraphics2D;
 
+import android.graphics.Canvas;
 import awt.java.awt.Graphics;
 import awt.java.awt.Graphics2D;
+import awt.java.awt.AndroidGraphics2D;
 //import awt.java.awt.GraphicsEnvironment;
 import awt.java.awt.Image;
 import awt.java.awt.Point;
@@ -709,7 +711,7 @@ public class BufferedImage extends Image implements WritableRenderedImage, Trans
      * 
      * @return the graphics2D object.
      */
-    public Graphics2D createGraphics() {
+    public AndroidGraphics2D createGraphics() {
 //        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         // return ge.createGraphics(this);
         // ???AWT hack, FIXME
@@ -718,11 +720,20 @@ public class BufferedImage extends Image implements WritableRenderedImage, Trans
         return null;
     }
 
+    public AndroidGraphics2D createGraphics(Canvas canvas) {
+    	return new AndroidGraphics2D(canvas);
+  }    
+    
     @Override
-    public Graphics getGraphics() {
+    public AndroidGraphics2D getGraphics() {
         return createGraphics();
     }
 
+    public AndroidGraphics2D getGraphics(Canvas canvas) {
+        return createGraphics( canvas );
+    }
+
+    
     /**
      * Coerces the data to achieve the state which is specified by the
      * isAlphaPremultiplied variable.

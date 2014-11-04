@@ -51,20 +51,20 @@ public class MainActivity extends Activity {
 
 		cal.set(2007, 11, 23);
 		table.set(0, 0, cal.getTime());
-		table.set(0, 1, new Double(21.0));
-		table.set(0, 2, new Double(236));
+		table.set(0, 1, 21.0);
+		table.set(0, 2, 236.0);
 		table.set(0, 3, "F");
 
 		cal.set(2008, 6, 22);
 		table.set(1, 0, cal.getTime());
-		table.set(1, 1, new Double(35.8));
-		table.set(1, 2, new Double(400));
+		table.set(1, 1,35.8);
+		table.set(1, 2, 400.0);
 		table.set(1, 3, "F");
 
 		cal.set(2009, 3, 8);
 		table.set(2, 0, cal.getTime());
-		table.set(2, 1, new Double(28.8));
-		table.set(2, 2, new Double(309));
+		table.set(2, 1, 28.8);
+		table.set(2, 2, 309.0);
 		table.set(2, 3, "T");
 
 		return table;

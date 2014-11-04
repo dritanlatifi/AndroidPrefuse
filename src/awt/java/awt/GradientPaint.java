@@ -38,7 +38,7 @@ import org.apache.harmony.awt.internal.nls.Messages;
  * the connecting segment, cycling back and forth between the two colors. If
  * not, the mode is acyclic which means that all points on the line outside the
  * connecting line segment are given the same color as the closest of the two
- * specified points.
+ * specified point
  * <p>
  * The color of points that are not on the line connecting the two specified
  * points are given by perpendicular projection: by taking the set of lines
@@ -252,4 +252,24 @@ public class GradientPaint implements PPaint {
     public boolean isCyclic() {
         return cyclic;
     }
+    
+    /**
+     * get Hexadecimal representation of this color
+     * TODO for Dritan: this is not a definitive implementation
+     * @return
+     */
+    public String getHexColor()
+    {
+    	String hex = "#"+Integer.toHexString(color1.getRGB()).substring(2);
+    	return hex;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getAndroidColorRepresentation()
+    {
+    	return android.graphics.Color.parseColor( this.getHexColor() );
+    }    
 }
