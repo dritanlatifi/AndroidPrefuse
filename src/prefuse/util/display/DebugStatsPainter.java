@@ -27,9 +27,9 @@ public class DebugStatsPainter implements PaintListener {
      * @see prefuse.util.display.PaintListener#postPaint(prefuse.PDisplay, java.awt.Graphics2D)
      */
     public void postPaint(PDisplay d, AndroidGraphics2D g) {
-        g.setFont(d.getFont());
-        g.setColor(d.getForeground());
-        g.drawString(PrefuseLib.getDisplayStats(d), 5, 15);
+//        g.setFont(d.getFont());
+//        g.setColor(d.getForeground());
+//        g.drawString(PrefuseLib.getDisplayStats(d), 5, 15);
     }
 
 } // end of class DebugStatsPainter

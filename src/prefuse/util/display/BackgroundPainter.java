@@ -4,11 +4,11 @@
  */
 package prefuse.util.display;
 
-import awt.java.awt.Container;
+//import awt.java.awt.Container;
 import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Image;
-import awt.java.awt.MediaTracker;
-import awt.java.awt.Toolkit;
+//import awt.java.awt.MediaTracker;
+//import awt.java.awt.Toolkit;
 import awt.java.awt.geom.AffineTransform;
 
 import prefuse.PDisplay;
@@ -50,9 +50,9 @@ public class BackgroundPainter implements PaintListener {
      */
     public BackgroundPainter(String imageLocation, boolean fixed, boolean tile)
     {
-        this(Toolkit.getDefaultToolkit()
-                .getImage(IOLib.urlFromString(imageLocation)),
-             fixed, tile);        
+//        this(Toolkit.getDefaultToolkit()
+//                .getImage(IOLib.urlFromString(imageLocation)),
+//             fixed, tile);        
     }
     
     /**
@@ -68,12 +68,12 @@ public class BackgroundPainter implements PaintListener {
         m_img = image;
         
         // make sure the image is completely loaded
-        MediaTracker mt = new MediaTracker(new Container());
-        mt.addImage(m_img, 0);
-        try {
-            mt.waitForID(0);
-        } catch ( Exception e ) { e.printStackTrace(); }
-        mt.removeImage(m_img, 0);
+//        MediaTracker mt = new MediaTracker(new Container());
+//        mt.addImage(m_img, 0);
+//        try {
+//            mt.waitForID(0);
+//        } catch ( Exception e ) { e.printStackTrace(); }
+//        mt.removeImage(m_img, 0);
         
         m_fixed = fixed;
         m_tiled = tile;

@@ -2,8 +2,8 @@ package prefuse.render;
 
 import awt.java.awt.Component;
 import awt.java.awt.Image;
-import awt.java.awt.MediaTracker;
-import awt.java.awt.Toolkit;
+//import awt.java.awt.MediaTracker;
+//import awt.java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,7 +44,7 @@ public class ImageFactory {
     protected Map loadMap = new HashMap(50);
 
     protected final Component component = new Component() {};
-    protected final MediaTracker tracker = new MediaTracker(component);
+//    protected final MediaTracker tracker = new MediaTracker(component);
     protected int nextTrackerID = 0;
 
     /**
@@ -136,7 +136,7 @@ public class ImageFactory {
                 System.err.println("Null image: " + imageLocation);
                 return null;
             }
-            image = Toolkit.getDefaultToolkit().createImage(imageURL);
+//            image = Toolkit.getDefaultToolkit().createImage(imageURL);
             
             // if set for synchronous mode, block for image to load.
             if ( !m_asynch ) {
@@ -144,16 +144,16 @@ public class ImageFactory {
                 addImage(imageLocation, image);
             } else {
                 int id = ++nextTrackerID;
-                tracker.addImage(image, id);
+//                tracker.addImage(image, id);
                 loadMap.put(imageLocation, new LoadMapEntry(id,image));    
             }
         } else if ( image == null && loadMap.containsKey(imageLocation) ) {
             LoadMapEntry entry = (LoadMapEntry)loadMap.get(imageLocation);
-            if ( tracker.checkID(entry.id, true) ) {
-                addImage(imageLocation, entry.image);
-                loadMap.remove(imageLocation);
-                tracker.removeImage(entry.image, entry.id);
-            }
+//            if ( tracker.checkID(entry.id, true) ) {
+//                addImage(imageLocation, entry.image);
+//                loadMap.remove(imageLocation);
+//                tracker.removeImage(entry.image, entry.id);
+//            }
         } else {
             return image;
         }
@@ -183,14 +183,14 @@ public class ImageFactory {
      * @param image the image to wait for
      */
     protected void waitForImage(Image image) {
-        int id = ++nextTrackerID;
-        tracker.addImage(image, id);
-        try {
-            tracker.waitForID(id, 0);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        tracker.removeImage(image, id);
+//        int id = ++nextTrackerID;
+//        tracker.addImage(image, id);
+//        try {
+//            tracker.waitForID(id, 0);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        tracker.removeImage(image, id);
     }
     
     /**
