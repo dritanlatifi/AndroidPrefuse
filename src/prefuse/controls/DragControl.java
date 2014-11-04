@@ -1,10 +1,10 @@
 package prefuse.controls;
 
-import awt.java.awt.Cursor;
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.Cursor;
+//import awt.java.awt.event.MouseEvent;
 import awt.java.awt.geom.Point2D;
 
-import javax.swing.SwingUtilities;
+//import javax.swing.SwingUtilities;
 
 import prefuse.PDisplay;
 import prefuse.data.Table;
@@ -99,84 +99,84 @@ public class DragControl extends ControlAdapter implements TableListener {
     /**
      * @see prefuse.controls.Control#itemEntered(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemEntered(VisualItem item, MouseEvent e) {
-        PDisplay d = (PDisplay)e.getSource();
-        d.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        activeItem = item;
-        if ( fixOnMouseOver ) {
-            wasFixed = item.isFixed();
-            resetItem = true;
-            item.setFixed(true);
-            item.getTable().addTableListener(this);
-        }
-    }
+//    public void itemEntered(VisualItem item, MouseEvent e) {
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        activeItem = item;
+//        if ( fixOnMouseOver ) {
+//            wasFixed = item.isFixed();
+//            resetItem = true;
+//            item.setFixed(true);
+//            item.getTable().addTableListener(this);
+//        }
+//    }
     
     /**
      * @see prefuse.controls.Control#itemExited(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemExited(VisualItem item, MouseEvent e) {
-        if ( activeItem == item ) {
-            activeItem = null;
-            item.getTable().removeTableListener(this);
-            if ( resetItem ) item.setFixed(wasFixed);
-        }
-        PDisplay d = (PDisplay)e.getSource();
-        d.setCursor(Cursor.getDefaultCursor());
-    } //
+//    public void itemExited(VisualItem item, MouseEvent e) {
+//        if ( activeItem == item ) {
+//            activeItem = null;
+//            item.getTable().removeTableListener(this);
+//            if ( resetItem ) item.setFixed(wasFixed);
+//        }
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setCursor(Cursor.getDefaultCursor());
+//    } //
     
     /**
      * @see prefuse.controls.Control#itemPressed(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemPressed(VisualItem item, MouseEvent e) {
-        if (!SwingUtilities.isLeftMouseButton(e)) return;
-        if ( !fixOnMouseOver ) {
-            wasFixed = item.isFixed();
-            resetItem = true;
-            item.setFixed(true);
-            item.getTable().addTableListener(this);
-        }
-        dragged = false;
-        PDisplay d = (PDisplay)e.getComponent();
-        d.getAbsoluteCoordinate(e.getPoint(), down);
-    }
+//    public void itemPressed(VisualItem item, MouseEvent e) {
+//        if (!SwingUtilities.isLeftMouseButton(e)) return;
+//        if ( !fixOnMouseOver ) {
+//            wasFixed = item.isFixed();
+//            resetItem = true;
+//            item.setFixed(true);
+//            item.getTable().addTableListener(this);
+//        }
+//        dragged = false;
+//        PDisplay d = (PDisplay)e.getComponent();
+//        d.getAbsoluteCoordinate(e.getPoint(), down);
+//    }
     
     /**
      * @see prefuse.controls.Control#itemReleased(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemReleased(VisualItem item, MouseEvent e) {
-        if (!SwingUtilities.isLeftMouseButton(e)) return;
-        if ( dragged ) {
-            activeItem = null;
-            item.getTable().removeTableListener(this);
-            if ( resetItem ) item.setFixed(wasFixed);
-            dragged = false;
-        }            
-    }
+//    public void itemReleased(VisualItem item, MouseEvent e) {
+//        if (!SwingUtilities.isLeftMouseButton(e)) return;
+//        if ( dragged ) {
+//            activeItem = null;
+//            item.getTable().removeTableListener(this);
+//            if ( resetItem ) item.setFixed(wasFixed);
+//            dragged = false;
+//        }            
+//    }
     
     /**
      * @see prefuse.controls.Control#itemDragged(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemDragged(VisualItem item, MouseEvent e) {
-        if (!SwingUtilities.isLeftMouseButton(e)) return;
-        dragged = true;
-        PDisplay d = (PDisplay)e.getComponent();
-        d.getAbsoluteCoordinate(e.getPoint(), temp);
-        double dx = temp.getX()-down.getX();
-        double dy = temp.getY()-down.getY();
-        double x = item.getX();
-        double y = item.getY();
-
-        item.setStartX(x);  item.setStartY(y);
-        item.setX(x+dx);    item.setY(y+dy);
-        item.setEndX(x+dx); item.setEndY(y+dy);
-        
-        if ( repaint )
-            item.getVisualization().repaint();
-        
-        down.setLocation(temp);
-        if ( action != null )
-            d.getVisualization().run(action);
-    }
+//    public void itemDragged(VisualItem item, MouseEvent e) {
+//        if (!SwingUtilities.isLeftMouseButton(e)) return;
+//        dragged = true;
+//        PDisplay d = (PDisplay)e.getComponent();
+//        d.getAbsoluteCoordinate(e.getPoint(), temp);
+//        double dx = temp.getX()-down.getX();
+//        double dy = temp.getY()-down.getY();
+//        double x = item.getX();
+//        double y = item.getY();
+//
+//        item.setStartX(x);  item.setStartY(y);
+//        item.setX(x+dx);    item.setY(y+dy);
+//        item.setEndX(x+dx); item.setEndY(y+dy);
+//        
+//        if ( repaint )
+//            item.getVisualization().repaint();
+//        
+//        down.setLocation(temp);
+//        if ( action != null )
+//            d.getVisualization().run(action);
+//    }
 
     /**
      * @see prefuse.data.event.TableListener#tableChanged(prefuse.data.Table, int, int, int, int)

@@ -1,11 +1,11 @@
 package prefuse.controls;
 
-import awt.java.awt.Cursor;
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.Cursor;
+//import awt.java.awt.event.MouseEvent;
 import awt.java.awt.geom.Point2D;
 import java.util.Iterator;
 
-import javax.swing.SwingUtilities;
+//import javax.swing.SwingUtilities;
 
 import prefuse.PDisplay;
 import prefuse.visual.NodeItem;
@@ -36,56 +36,56 @@ public class SubtreeDragControl extends ControlAdapter {
     /**
      * @see prefuse.controls.Control#itemEntered(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemEntered(VisualItem item, MouseEvent e) {
-        if ( !(item instanceof NodeItem) ) return;
-        PDisplay d = (PDisplay)e.getSource();
-        d.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    }
+//    public void itemEntered(VisualItem item, MouseEvent e) {
+//        if ( !(item instanceof NodeItem) ) return;
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//    }
     
     /**
      * @see prefuse.controls.Control#itemExited(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemExited(VisualItem item, MouseEvent e) {
-        if ( !(item instanceof NodeItem) ) return;
-        PDisplay d = (PDisplay)e.getSource();
-        d.setCursor(Cursor.getDefaultCursor());
-    }
+//    public void itemExited(VisualItem item, MouseEvent e) {
+//        if ( !(item instanceof NodeItem) ) return;
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setCursor(Cursor.getDefaultCursor());
+//    }
     
     /**
      * @see prefuse.controls.Control#itemPressed(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemPressed(VisualItem item, MouseEvent e) {
-        if (!SwingUtilities.isLeftMouseButton(e)) return;
-        if ( !(item instanceof NodeItem) ) return;
-        PDisplay d = (PDisplay)e.getComponent();
-        down = d.getAbsoluteCoordinate(e.getPoint(), down);
-        wasFixed = item.isFixed();
-        item.setFixed(true);
-    }
+//    public void itemPressed(VisualItem item, MouseEvent e) {
+//        if (!SwingUtilities.isLeftMouseButton(e)) return;
+//        if ( !(item instanceof NodeItem) ) return;
+//        PDisplay d = (PDisplay)e.getComponent();
+//        down = d.getAbsoluteCoordinate(e.getPoint(), down);
+//        wasFixed = item.isFixed();
+//        item.setFixed(true);
+//    }
     
     /**
      * @see prefuse.controls.Control#itemReleased(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemReleased(VisualItem item, MouseEvent e) {
-        if (!SwingUtilities.isLeftMouseButton(e)) return;
-        if ( !(item instanceof NodeItem) ) return;
-        item.setFixed(wasFixed);
-    }
+//    public void itemReleased(VisualItem item, MouseEvent e) {
+//        if (!SwingUtilities.isLeftMouseButton(e)) return;
+//        if ( !(item instanceof NodeItem) ) return;
+//        item.setFixed(wasFixed);
+//    }
     
     /**
      * @see prefuse.controls.Control#itemDragged(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemDragged(VisualItem item, MouseEvent e) {
-        if (!SwingUtilities.isLeftMouseButton(e)) return;
-        if ( !(item instanceof NodeItem) ) return;
-        PDisplay d = (PDisplay)e.getComponent();
-        tmp = d.getAbsoluteCoordinate(e.getPoint(), tmp);
-        double dx = tmp.getX()-down.getX();
-        double dy = tmp.getY()-down.getY();
-        updateLocations((NodeItem)item, dx, dy);
-        down.setLocation(tmp);
-        item.getVisualization().repaint();
-    }
+//    public void itemDragged(VisualItem item, MouseEvent e) {
+//        if (!SwingUtilities.isLeftMouseButton(e)) return;
+//        if ( !(item instanceof NodeItem) ) return;
+//        PDisplay d = (PDisplay)e.getComponent();
+//        tmp = d.getAbsoluteCoordinate(e.getPoint(), tmp);
+//        double dx = tmp.getX()-down.getX();
+//        double dy = tmp.getY()-down.getY();
+//        updateLocations((NodeItem)item, dx, dy);
+//        down.setLocation(tmp);
+//        item.getVisualization().repaint();
+//    }
     
     private void updateLocations(NodeItem n, double dx, double dy) {
         double x = n.getX(), y = n.getY();

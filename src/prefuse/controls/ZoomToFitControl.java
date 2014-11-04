@@ -1,6 +1,6 @@
 package prefuse.controls;
 
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.event.MouseEvent;
 import awt.java.awt.geom.Rectangle2D;
 
 import prefuse.PDisplay;
@@ -22,7 +22,8 @@ public class ZoomToFitControl extends ControlAdapter {
 
     private long m_duration = 2000;
     private int m_margin = 50;
-    private int m_button = RIGHT_MOUSE_BUTTON;
+//    private int m_button = RIGHT_MOUSE_BUTTON;
+    private int m_button ; // TODO for Dritan: fix this
     private boolean m_zoomOverItem = true;
     private String m_group = Visualization.ALL_ITEMS;
     
@@ -84,26 +85,26 @@ public class ZoomToFitControl extends ControlAdapter {
     /**
      * @see prefuse.controls.Control#itemClicked(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemClicked(VisualItem item, MouseEvent e) {
-        if ( m_zoomOverItem )
-            mouseClicked(e);
-    }
-    
+//    public void itemClicked(VisualItem item, MouseEvent e) {
+//        if ( m_zoomOverItem )
+//            mouseClicked(e);
+//    }
+//    
     /**
      * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
      */
-    public void mouseClicked(MouseEvent e) {
-    	PDisplay display = (PDisplay)e.getComponent();
-    	if ( !display.isTranformInProgress() && 
-        	  UILib.isButtonPressed(e, m_button) )
-        {
-            Visualization vis = display.getVisualization();
-            Rectangle2D bounds = vis.getBounds(m_group);
-            GraphicsLib.expand(bounds, m_margin + (int)(1/display.getScale()));
-            DisplayLib.fitViewToBounds(display, bounds, m_duration);
-        }
-    }
-    
+//    public void mouseClicked(MouseEvent e) {
+//    	PDisplay display = (PDisplay)e.getComponent();
+//    	if ( !display.isTranformInProgress() && 
+//        	  UILib.isButtonPressed(e, m_button) )
+//        {
+//            Visualization vis = display.getVisualization();
+//            Rectangle2D bounds = vis.getBounds(m_group);
+//            GraphicsLib.expand(bounds, m_margin + (int)(1/display.getScale()));
+//            DisplayLib.fitViewToBounds(display, bounds, m_duration);
+//        }
+//    }
+//    
     /**
      * Indicates if the zoom control will work while the mouse is
      * over a VisualItem.

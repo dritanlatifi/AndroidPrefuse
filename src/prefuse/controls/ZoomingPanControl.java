@@ -1,10 +1,10 @@
 package prefuse.controls;
 
-import awt.java.awt.Cursor;
+//import awt.java.awt.Cursor;
 import awt.java.awt.Point;
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.event.MouseEvent;
 
-import javax.swing.SwingUtilities;
+//import javax.swing.SwingUtilities;
 
 import prefuse.PDisplay;
 import prefuse.activity.PActivity;
@@ -56,50 +56,50 @@ public class ZoomingPanControl extends ControlAdapter {
     /**
      * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
      */
-    public void mousePressed(MouseEvent e) {
-        if ( SwingUtilities.isLeftMouseButton(e) ) {
-            PDisplay display = (PDisplay)e.getComponent();
-            display.setCursor(
-                    Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-            mouseDown = e.getPoint();
-        }        
-    }
+//    public void mousePressed(MouseEvent e) {
+//        if ( SwingUtilities.isLeftMouseButton(e) ) {
+//            PDisplay display = (PDisplay)e.getComponent();
+//            display.setCursor(
+//                    Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+//            mouseDown = e.getPoint();
+//        }        
+//    }
     
     /**
      * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
      */
-    public void mouseDragged(MouseEvent e) {
-        if ( SwingUtilities.isLeftMouseButton(e) ) {
-            mouseCur = e.getPoint();
-            dx = mouseCur.x - mouseDown.x;
-            dy = mouseCur.y - mouseDown.y;
-            d  = Math.sqrt(dx*dx + dy*dy);
-            
-            if ( !started ) {
-                PDisplay display = (PDisplay)e.getComponent();
-                update.setDisplay(display);
-                update.run();
-            }
-        }
-    }
+//    public void mouseDragged(MouseEvent e) {
+//        if ( SwingUtilities.isLeftMouseButton(e) ) {
+//            mouseCur = e.getPoint();
+//            dx = mouseCur.x - mouseDown.x;
+//            dy = mouseCur.y - mouseDown.y;
+//            d  = Math.sqrt(dx*dx + dy*dy);
+//            
+//            if ( !started ) {
+//                PDisplay display = (PDisplay)e.getComponent();
+//                update.setDisplay(display);
+//                update.run();
+//            }
+//        }
+//    }
     
     /**
      * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
      */
-    public void mouseReleased(MouseEvent e) {
-        if ( SwingUtilities.isLeftMouseButton(e) ) {
-            update.cancel();
-            started = false;
-            
-            PDisplay display = (PDisplay)e.getComponent();
-            mouseUp = e.getPoint();
-            
-            finish.setDisplay(display);
-            finish.run();
-            
-            display.setCursor(Cursor.getDefaultCursor());
-        }
-    }
+//    public void mouseReleased(MouseEvent e) {
+//        if ( SwingUtilities.isLeftMouseButton(e) ) {
+//            update.cancel();
+//            started = false;
+//            
+//            PDisplay display = (PDisplay)e.getComponent();
+//            mouseUp = e.getPoint();
+//            
+//            finish.setDisplay(display);
+//            finish.run();
+//            
+//            display.setCursor(Cursor.getDefaultCursor());
+//        }
+//    }
     
     private class UpdateActivity extends PActivity {
         private PDisplay display;
@@ -133,8 +133,8 @@ public class ZoomingPanControl extends ControlAdapter {
             if (s != 1.0)
                 display.zoom(mouseCur, s);
             
-            if ( repaint )
-                display.repaint();
+//            if ( repaint )
+//                display.repaint();  // TODO for Dritan: fix this
         }
     } // end of class UpdateActivity
     
@@ -156,8 +156,8 @@ public class ZoomingPanControl extends ControlAdapter {
             double s = display.getTransform().getScaleX();
             double z = (f + (1-f)*scale)/s;
             display.zoom(mouseUp,z);
-            if ( repaint )
-                display.repaint();
+//            if ( repaint )
+//                display.repaint(); // TODO for Dritan: fix this
         }
     } // end of class FinishActivity
     

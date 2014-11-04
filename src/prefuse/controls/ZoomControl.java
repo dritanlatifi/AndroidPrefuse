@@ -1,7 +1,7 @@
 package prefuse.controls;
 
-import awt.java.awt.Cursor;
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.Cursor;
+//import awt.java.awt.event.MouseEvent;
 import awt.java.awt.geom.Point2D;
 
 import prefuse.PDisplay;
@@ -23,7 +23,7 @@ public class ZoomControl extends AbstractZoomControl {
     
     private int yLast;
     private Point2D down = new Point2D.Float();
-    private int button = RIGHT_MOUSE_BUTTON; 
+//    private int button = RIGHT_MOUSE_BUTTON; 
     
     /**
      * Create a new zoom control.
@@ -38,84 +38,84 @@ public class ZoomControl extends AbstractZoomControl {
      * {@link Control#LEFT_MOUSE_BUTTON}, {@link Control#MIDDLE_MOUSE_BUTTON},
      * or {@link Control#RIGHT_MOUSE_BUTTON}.
      */
-    public ZoomControl(int mouseButton) {
-        button = mouseButton;
-    }
+//    public ZoomControl(int mouseButton) {
+//        button = mouseButton;
+//    }
     
     /**
      * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
      */
-    public void mousePressed(MouseEvent e) {
-        if ( UILib.isButtonPressed(e, button) ) {
-            PDisplay display = (PDisplay)e.getComponent();
-            if (display.isTranformInProgress()) {
-                yLast = -1;
-                System.err.println("can't move");
-                return;
-            }
-            display.setCursor(
-                Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
-            display.getAbsoluteCoordinate(e.getPoint(), down);
-            yLast = e.getY();
-        }
-    }
+//    public void mousePressed(MouseEvent e) {
+//        if ( UILib.isButtonPressed(e, button) ) {
+//            PDisplay display = (PDisplay)e.getComponent();
+//            if (display.isTranformInProgress()) {
+//                yLast = -1;
+//                System.err.println("can't move");
+//                return;
+//            }
+//            display.setCursor(
+//                Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+//            display.getAbsoluteCoordinate(e.getPoint(), down);
+//            yLast = e.getY();
+//        }
+//    }
     
     /**
      * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
      */
-    public void mouseDragged(MouseEvent e) {
-        if ( UILib.isButtonPressed(e, button) ) {
-            PDisplay display = (PDisplay)e.getComponent();
-            if (display.isTranformInProgress() || yLast == -1) {
-                yLast = -1;
-                return;
-            }
-            
-            int y = e.getY();
-            int dy = y-yLast;
-            double zoom = 1 + ((double)dy) / 100;
-            
-            int status = zoom(display, down, zoom, true);
-            int cursor = Cursor.N_RESIZE_CURSOR;
-            if ( status == NO_ZOOM )
-                cursor = Cursor.WAIT_CURSOR;
-            display.setCursor(Cursor.getPredefinedCursor(cursor));
-            
-            yLast = y;
-        }
-    }
+//    public void mouseDragged(MouseEvent e) {
+//        if ( UILib.isButtonPressed(e, button) ) {
+//            PDisplay display = (PDisplay)e.getComponent();
+//            if (display.isTranformInProgress() || yLast == -1) {
+//                yLast = -1;
+//                return;
+//            }
+//            
+//            int y = e.getY();
+//            int dy = y-yLast;
+//            double zoom = 1 + ((double)dy) / 100;
+//            
+//            int status = zoom(display, down, zoom, true);
+//            int cursor = Cursor.N_RESIZE_CURSOR;
+//            if ( status == NO_ZOOM )
+//                cursor = Cursor.WAIT_CURSOR;
+//            display.setCursor(Cursor.getPredefinedCursor(cursor));
+//            
+//            yLast = y;
+//        }
+//    }
 
     /**
      * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
      */
-    public void mouseReleased(MouseEvent e) {
-        if ( UILib.isButtonPressed(e, button) ) {
-            e.getComponent().setCursor(Cursor.getDefaultCursor());
-        }
-    }
+//    public void mouseReleased(MouseEvent e) {
+//        if ( UILib.isButtonPressed(e, button) ) {
+//            e.getComponent().setCursor(Cursor.getDefaultCursor());
+//        }
+//    }
     
     /**
      * @see prefuse.controls.Control#itemPressed(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemPressed(VisualItem item, MouseEvent e) {
-        if ( m_zoomOverItem )
-            mousePressed(e);
-    }
+//    public void itemPressed(VisualItem item, MouseEvent e) {
+//        if ( m_zoomOverItem )
+//            mousePressed(e);
+//    }
 
     /**
      * @see prefuse.controls.Control#itemDragged(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemDragged(VisualItem item, MouseEvent e) {
-        if ( m_zoomOverItem )
-            mouseDragged(e);
-    }
-    
+//    public void itemDragged(VisualItem item, MouseEvent e) {
+//        if ( m_zoomOverItem )
+//            mouseDragged(e);
+//    }
+//    
     /**
      * @see prefuse.controls.Control#itemReleased(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemReleased(VisualItem item, MouseEvent e) {
-        if ( m_zoomOverItem )
-            mouseReleased(e);
-    }
+//    public void itemReleased(VisualItem item, MouseEvent e) {
+//        if ( m_zoomOverItem )
+//            mouseReleased(e);
+//    }
     
 } // end of class ZoomControl

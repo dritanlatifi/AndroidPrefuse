@@ -1,8 +1,8 @@
 package prefuse.controls;
 
-import awt.java.awt.Cursor;
+//import awt.java.awt.Cursor;
 import awt.java.awt.Point;
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.event.MouseEvent;
 
 import prefuse.PDisplay;
 import prefuse.util.ui.UILib;
@@ -30,7 +30,7 @@ public class RotationControl extends ControlAdapter {
      * the mouse with the left mouse button pressed.
      */
     public RotationControl() {
-        this(Control.LEFT_MOUSE_BUTTON);
+//        this(Control.LEFT_MOUSE_BUTTON);
     }
     
     /**
@@ -47,41 +47,41 @@ public class RotationControl extends ControlAdapter {
     /**
      * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
      */
-    public void mousePressed(MouseEvent e) {
-        if ( UILib.isButtonPressed(e, m_button) ) {
-            PDisplay display = (PDisplay)e.getComponent();
-            display.setCursor(
-                Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
-            down.setLocation(e.getPoint());
-            baseAngle = Double.NaN;
-        }
-    }
-    
+//    public void mousePressed(MouseEvent e) {
+//        if ( UILib.isButtonPressed(e, m_button) ) {
+//            PDisplay display = (PDisplay)e.getComponent();
+//            display.setCursor(
+//                Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+//            down.setLocation(e.getPoint());
+//            baseAngle = Double.NaN;
+//        }
+//    }
+//    
     /**
      * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
      */
-    public void mouseDragged(MouseEvent e) {
-        if ( UILib.isButtonPressed(e, m_button) ) {
-            int dy = e.getY() - down.y;
-            int dx = e.getX() - down.x;
-            double angle = Math.atan2(dy, dx);
-            
-            // only rotate once the base angle has been established
-            if ( !Double.isNaN(baseAngle) ) {
-                PDisplay display = (PDisplay)e.getComponent();
-                display.rotate(down, angle-baseAngle);
-            }
-            baseAngle = angle;
-        }
-    }
-    
+//    public void mouseDragged(MouseEvent e) {
+//        if ( UILib.isButtonPressed(e, m_button) ) {
+//            int dy = e.getY() - down.y;
+//            int dx = e.getX() - down.x;
+//            double angle = Math.atan2(dy, dx);
+//            
+//            // only rotate once the base angle has been established
+//            if ( !Double.isNaN(baseAngle) ) {
+//                PDisplay display = (PDisplay)e.getComponent();
+//                display.rotate(down, angle-baseAngle);
+//            }
+//            baseAngle = angle;
+//        }
+//    }
+//    
     /**
      * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
      */
-    public void mouseReleased(MouseEvent e) {
-        if ( UILib.isButtonPressed(e, m_button) ) {
-            e.getComponent().setCursor(Cursor.getDefaultCursor());
-        }
-    }
+//    public void mouseReleased(MouseEvent e) {
+//        if ( UILib.isButtonPressed(e, m_button) ) {
+//            e.getComponent().setCursor(Cursor.getDefaultCursor());
+//        }
+//    }
     
 } // end of class RotationControl

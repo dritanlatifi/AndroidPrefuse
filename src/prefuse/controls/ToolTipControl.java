@@ -1,6 +1,6 @@
 package prefuse.controls;
 
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.event.MouseEvent;
 
 import prefuse.PDisplay;
 import prefuse.visual.VisualItem;
@@ -38,35 +38,35 @@ public class ToolTipControl extends ControlAdapter {
     /**
      * @see prefuse.controls.Control#itemEntered(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemEntered(VisualItem item, MouseEvent e) {
-        PDisplay d = (PDisplay)e.getSource();
-        if ( label.length == 1 ) {
-            // optimize the simple case
-            if ( item.canGetString(label[0]) ) {
-                d.setToolTipText(item.getString(label[0]));
-            }
-        } else {
-            sbuf.delete(0, sbuf.length());
-            for ( int i=0; i<label.length; ++i ) {
-                if ( item.canGetString(label[i]) ) {
-                    if ( sbuf.length() > 0 )
-                        sbuf.append("; ");
-                    sbuf.append(item.getString(label[i]));
-                }
-            }
-            // show tool tip only, if at least one field is available
-            if (sbuf.length() > 0) {
-            	d.setToolTipText(sbuf.toString());
-            }
-        }
-    }
-    
+//    public void itemEntered(VisualItem item, MouseEvent e) {
+//        PDisplay d = (PDisplay)e.getSource();
+//        if ( label.length == 1 ) {
+//            // optimize the simple case
+//            if ( item.canGetString(label[0]) ) {
+//                d.setToolTipText(item.getString(label[0]));
+//            }
+//        } else {
+//            sbuf.delete(0, sbuf.length());
+//            for ( int i=0; i<label.length; ++i ) {
+//                if ( item.canGetString(label[i]) ) {
+//                    if ( sbuf.length() > 0 )
+//                        sbuf.append("; ");
+//                    sbuf.append(item.getString(label[i]));
+//                }
+//            }
+//            // show tool tip only, if at least one field is available
+//            if (sbuf.length() > 0) {
+//            	d.setToolTipText(sbuf.toString());
+//            }
+//        }
+//    }
+//    
     /**
      * @see prefuse.controls.Control#itemExited(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemExited(VisualItem item, MouseEvent e) {
-        PDisplay d = (PDisplay)e.getSource();
-        d.setToolTipText(null);
-    }
+//    public void itemExited(VisualItem item, MouseEvent e) {
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setToolTipText(null);
+//    }
     
 } // end of class ToolTipControl

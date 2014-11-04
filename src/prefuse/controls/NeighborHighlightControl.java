@@ -1,6 +1,6 @@
 package prefuse.controls;
 
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import prefuse.visual.EdgeItem;
@@ -43,18 +43,18 @@ public class NeighborHighlightControl extends ControlAdapter {
     /**
      * @see prefuse.controls.Control#itemEntered(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemEntered(VisualItem item, MouseEvent e) {
-        if ( item instanceof NodeItem )
-            setNeighborHighlight((NodeItem)item, true);
-    }
+//    public void itemEntered(VisualItem item, MouseEvent e) {
+//        if ( item instanceof NodeItem )
+//            setNeighborHighlight((NodeItem)item, true);
+//    }
     
     /**
      * @see prefuse.controls.Control#itemExited(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemExited(VisualItem item, MouseEvent e) {
-        if ( item instanceof NodeItem )
-            setNeighborHighlight((NodeItem)item, false);
-    }
+//    public void itemExited(VisualItem item, MouseEvent e) {
+//        if ( item instanceof NodeItem )
+//            setNeighborHighlight((NodeItem)item, false);
+//    }
     
     /**
      * Set the highlighted state of the neighbors of a node.

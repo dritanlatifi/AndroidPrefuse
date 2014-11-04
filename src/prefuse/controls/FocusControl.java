@@ -1,7 +1,7 @@
 package prefuse.controls;
 
-import awt.java.awt.Cursor;
-import awt.java.awt.event.MouseEvent;
+//import awt.java.awt.Cursor;
+//import awt.java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 
 import prefuse.PDisplay;
@@ -35,7 +35,7 @@ public class FocusControl extends ControlAdapter {
     protected String activity;
     protected VisualItem curFocus;
     protected int ccount;
-    protected int button = Control.LEFT_MOUSE_BUTTON;
+//    protected int button = Control.LEFT_MOUSE_BUTTON;
     protected Predicate filter = null;
     
     /**
@@ -151,67 +151,67 @@ public class FocusControl extends ControlAdapter {
     /**
      * @see prefuse.controls.Control#itemEntered(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemEntered(VisualItem item, MouseEvent e) {
-        if ( !filterCheck(item) ) return;
-        PDisplay d = (PDisplay)e.getSource();
-        d.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        if ( ccount == 0 ) {
-            Visualization vis = item.getVisualization();
-            TupleSet ts = vis.getFocusGroup(group);
-            ts.setTuple(item);
-            curFocus = item;
-            runActivity(vis);
-        }
-    }
+//    public void itemEntered(VisualItem item, MouseEvent e) {
+//        if ( !filterCheck(item) ) return;
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        if ( ccount == 0 ) {
+//            Visualization vis = item.getVisualization();
+//            TupleSet ts = vis.getFocusGroup(group);
+//            ts.setTuple(item);
+//            curFocus = item;
+//            runActivity(vis);
+//        }
+//    }
     
     /**
      * @see prefuse.controls.Control#itemExited(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemExited(VisualItem item, MouseEvent e) {
-        if ( !filterCheck(item) ) return;
-        PDisplay d = (PDisplay)e.getSource();
-        d.setCursor(Cursor.getDefaultCursor());
-        if ( ccount == 0 ) {
-            curFocus = null;
-            Visualization vis = item.getVisualization();
-            TupleSet ts = vis.getFocusGroup(group);
-            ts.removeTuple(item);
-            runActivity(vis);
-        }
-    }
-    
+//    public void itemExited(VisualItem item, MouseEvent e) {
+//        if ( !filterCheck(item) ) return;
+//        PDisplay d = (PDisplay)e.getSource();
+//        d.setCursor(Cursor.getDefaultCursor());
+//        if ( ccount == 0 ) {
+//            curFocus = null;
+//            Visualization vis = item.getVisualization();
+//            TupleSet ts = vis.getFocusGroup(group);
+//            ts.removeTuple(item);
+//            runActivity(vis);
+//        }
+//    }
+//    
     /**
      * @see prefuse.controls.Control#itemClicked(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
      */
-    public void itemClicked(VisualItem item, MouseEvent e) {
-        if ( !filterCheck(item) ) return;
-        if ( UILib.isButtonPressed(e, button) &&
-             e.getClickCount() == ccount )
-        {
-            if ( item != curFocus ) {
-                Visualization vis = item.getVisualization();
-                TupleSet ts = vis.getFocusGroup(group);
-                    
-                boolean ctrl = e.isControlDown();
-                if ( !ctrl ) {
-                    curFocus = item;
-                    ts.setTuple(item);
-                } else if ( ts.containsTuple(item) ) {
-                    ts.removeTuple(item);
-                } else {
-                    ts.addTuple(item);
-                }
-                runActivity(vis);
-                
-            } else if ( e.isControlDown() ) {
-                Visualization vis = item.getVisualization();
-                TupleSet ts = vis.getFocusGroup(group);
-                ts.removeTuple(item);
-                curFocus = null;
-                runActivity(vis);
-            }
-        }
-    }
+//    public void itemClicked(VisualItem item, MouseEvent e) {
+//        if ( !filterCheck(item) ) return;
+//        if ( UILib.isButtonPressed(e, button) &&
+//             e.getClickCount() == ccount )
+//        {
+//            if ( item != curFocus ) {
+//                Visualization vis = item.getVisualization();
+//                TupleSet ts = vis.getFocusGroup(group);
+//                    
+//                boolean ctrl = e.isControlDown();
+//                if ( !ctrl ) {
+//                    curFocus = item;
+//                    ts.setTuple(item);
+//                } else if ( ts.containsTuple(item) ) {
+//                    ts.removeTuple(item);
+//                } else {
+//                    ts.addTuple(item);
+//                }
+//                runActivity(vis);
+//                
+//            } else if ( e.isControlDown() ) {
+//                Visualization vis = item.getVisualization();
+//                TupleSet ts = vis.getFocusGroup(group);
+//                ts.removeTuple(item);
+//                curFocus = null;
+//                runActivity(vis);
+//            }
+//        }
+//    }
     
     private void runActivity(Visualization vis) {
         if ( activity != null ) {
