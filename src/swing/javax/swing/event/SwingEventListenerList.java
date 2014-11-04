@@ -28,7 +28,7 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing.event;
+package swing.javax.swing.event;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -80,7 +80,7 @@ import java.util.EventListener;
  * @author Andrew Selkirk (aselkirk@sympatico.ca)
  * @author Sascha Brawer (brawer@dandelis.ch)
  */
-public class EventListenerList
+public class SwingEventListenerList
   implements Serializable
 {
   /**
@@ -107,7 +107,7 @@ public class EventListenerList
   /**
    * EventListenerList constructor
    */
-  public EventListenerList()
+  public SwingEventListenerList()
   {
     // Nothing to do here.
   }

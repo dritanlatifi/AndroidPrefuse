@@ -1,5 +1,5 @@
-/* ComboBoxModel.java --
-   Copyright (C) 2002, 2006, Free Software Foundation, Inc.
+/* MutableComboBoxModel.java --
+   Copyright (C) 2002 Free Software Foundation, Inc.
 This file is part of GNU Classpath.
 GNU Classpath is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,32 +28,44 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+package swing.javax.swing;
 /**
- * The data model for a {@link JComboBox}. This model keeps track of elements 
- * contained in the <code>JComboBox</code> as well as the current
- * combo box selection. Whenever the selection in the <code>JComboBox</code> 
- * changes, the <code>ComboBoxModel</code> should fire a {@link ListDataEvent}
- * to the model's {@link ListDataListener}s.
+ * A data model used in {@link JComboBox}es that keeps track of the
+ * components data and provides methods to insert and remove elements from
+ * it. The classes implementing this interface should
+ * fire appropriate events indicating the undergoing change in the data model.
  *
  * @author Andrew Selkirk
+ * @author Olga Rodimina
  */
-public interface ComboBoxModel extends ListModel
+public interface MutableComboBoxModel extends SwingComboBoxModel
 {
   /**
-   * Sets the selected item in the combo box. Classes implementing this 
-   * interface should fire a {@link ListDataEvent} to all registered 
-   * {@link ListDataListener}s to indicate that the selection has changed.
+   * This method adds given object to its data model.
    *
-   * @param item  the selected item (<code>null</code> permitted).
+   * @param object element to add to the data model.
    */
-  void setSelectedItem(Object item);
+  void addElement(Object object);
   /**
-   * Returns the currently selected item in the combo box.
+   * This method removes elements located at the given index in the data
+   * model.
    *
-   * @return The selected item (possibly <code>null</code>).
+   * @param index index specifying location of the element to remove.
    */
-  Object getSelectedItem();
+  void removeElementAt(int index);
+  /**
+   * This method inserts givent element to the data model, at the specified
+   * index.
+   *
+   * @param object element to insert
+   * @param index index specifying the position in the data model where the
+   *        given element should be inserted.
+   */
+  void insertElementAt(Object object, int index);
+  /**
+   * This method removes given element from the data model
+   *
+   * @param object element to remove.
+   */
+  void removeElement(Object object);
 }

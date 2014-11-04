@@ -1,9 +1,9 @@
 package prefuse.data.query;
 
-import javax.swing.DefaultBoundedRangeModel;
 
 import prefuse.util.TypeLib;
 import prefuse.util.ui.ValuedRangeModel;
+import swing.javax.swing.SwingDefaultBoundedRangeModel;
 
 /**
  * Range model for numerical data. Designed to support range-based dynamic
@@ -11,7 +11,7 @@ import prefuse.util.ui.ValuedRangeModel;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class NumberRangeModel extends DefaultBoundedRangeModel
+public class NumberRangeModel extends SwingDefaultBoundedRangeModel
     implements ValuedRangeModel
 {
     protected Class m_type;
@@ -125,7 +125,7 @@ public class NumberRangeModel extends DefaultBoundedRangeModel
     }
     
     /**
-     * @see javax.swing.BoundedRangeModel#setRangeProperties(int, int, int, int, boolean)
+     * @see swing.javax.swing.SwingBoundedRangeModel#setRangeProperties(int, int, int, int, boolean)
      */
     public void setRangeProperties(int val, int extent, int min, int max,
                                    boolean adj)
@@ -274,7 +274,7 @@ public class NumberRangeModel extends DefaultBoundedRangeModel
     /**
      * Not supported, throws an exception.
      * @throws UnsupportedOperationException
-     * @see javax.swing.BoundedRangeModel#setMinimum(int)
+     * @see swing.javax.swing.SwingBoundedRangeModel#setMinimum(int)
      */
     public void setMinimum(int min) {
         throw new UnsupportedOperationException();
@@ -283,14 +283,14 @@ public class NumberRangeModel extends DefaultBoundedRangeModel
     /**
      * Not supported, throws an exception.
      * @throws UnsupportedOperationException
-     * @see javax.swing.BoundedRangeModel#setMaximum(int)
+     * @see swing.javax.swing.SwingBoundedRangeModel#setMaximum(int)
      */
     public void setMaximum(int max) {
         throw new UnsupportedOperationException();
     }
     
     /**
-     * @see javax.swing.BoundedRangeModel#setValue(int)
+     * @see swing.javax.swing.SwingBoundedRangeModel#setValue(int)
      */
     public void setValue(int val) {
         m_lo = null;
@@ -298,7 +298,7 @@ public class NumberRangeModel extends DefaultBoundedRangeModel
     }
     
     /**
-     * @see javax.swing.BoundedRangeModel#setExtent(int)
+     * @see swing.javax.swing.SwingBoundedRangeModel#setExtent(int)
      */
     public void setExtent(int extent) {
         m_hi = null;

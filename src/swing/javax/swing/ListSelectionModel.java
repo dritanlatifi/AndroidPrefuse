@@ -28,9 +28,9 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+package swing.javax.swing;
+import swing.javax.swing.event.SwingListSelectionEvent;
+import swing.javax.swing.event.SwingListSelectionListener;
 /**
  * A model that tracks the selection status of a list of items.  Each item in 
  * the list is identified by a zero-based index only, so the model can be used
@@ -45,7 +45,7 @@ import javax.swing.event.ListSelectionListener;
  *     the list may be selected.</li>
  * </ul>
  * The model uses an event notification mechanism to notify listeners (see 
- * {@link ListSelectionListener}) about updates to the selection model.
+ * {@link SwingListSelectionListener}) about updates to the selection model.
  * <p>
  * This model is used to track row selections in the {@link JList} component,
  * and row and column selections in the {@link JTable} component.
@@ -101,7 +101,7 @@ public interface ListSelectionModel
   /**
    * Clears the current selection from the model.  If the selection state 
    * changes (that is, the existing selection is non-empty) a 
-   * {@link ListSelectionEvent} should be sent to all registered listeners.
+   * {@link SwingListSelectionEvent} should be sent to all registered listeners.
    * <p>
    * FIXME: what happens to the anchor and lead selection indices (the spec
    * is silent about this)?  See:
@@ -151,7 +151,7 @@ public interface ListSelectionModel
    * Sets the selection interval to the specified range (note that 
    * <code>anchor</code> can be less than, equal to, or greater than 
    * <code>lead</code>).  If this results in the selection being changed, 
-   * a {@link ListSelectionEvent} is sent to all registered listeners.
+   * a {@link SwingListSelectionEvent} is sent to all registered listeners.
    * <p>
    * If the selection mode is {@link #SINGLE_SELECTION}, only the 
    * <code>lead</code> item is selected.
@@ -283,9 +283,9 @@ public interface ListSelectionModel
    * 
    * @param listener  the listener (<code>null</code> ignored).
    * 
-   * @see #removeListSelectionListener(ListSelectionListener)
+   * @see #removeListSelectionListener(SwingListSelectionListener)
    */
-  void addListSelectionListener(ListSelectionListener listener);
+  void addListSelectionListener(SwingListSelectionListener listener);
   /**
    * Deregisters a listener so that it no longer receives notification of
    * changes to the model.  If the specified listener is not registered with
@@ -293,7 +293,7 @@ public interface ListSelectionModel
    * 
    * @param listener  the listener (<code>null</code> ignored).
    * 
-   * @see #addListSelectionListener(ListSelectionListener)
+   * @see #addListSelectionListener(SwingListSelectionListener)
    */
-  void removeListSelectionListener(ListSelectionListener listener);
+  void removeListSelectionListener(SwingListSelectionListener listener);
 }

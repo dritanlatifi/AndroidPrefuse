@@ -1,5 +1,5 @@
-/* ListModel.java --
-   Copyright (C) 2002, 2004 Free Software Foundation, Inc.
+/* ListDataListener.java --
+   Copyright (C) 2002, 2005 Free Software Foundation, Inc.
 This file is part of GNU Classpath.
 GNU Classpath is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,41 +28,42 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
-import javax.swing.event.ListDataListener;
+package swing.javax.swing.event;
+import java.util.EventListener;
+
+import swing.javax.swing.ListModel;
 /**
- * The data model that is typically used in {@link JList}.
- *
- * @author Graydon Hoare (graydon@redhat.com)
+ * A <code>ListDataListener</code> can register with a {@link ListModel} and
+ * receive notification of updates to the model.
+ * 
+ * @author Andrew Selkirk
+ * @author Ronald Veldema
  */
-public interface ListModel
+public interface SwingListDataListener extends EventListener 
 {
   /**
-   * Return the number of data elements in the list.
-   *
-   * @return The number of data elements in the list
+   * Notifies the listener that the contents of the list have changed
+   * in some way.  This method will be called if the change cannot be
+   * notified via the {@link #intervalAdded(SwingListDataEvent)} or the
+   * {@link #intervalRemoved(SwingListDataEvent)} methods.
+   * 
+   * @param event  the event.
    */
-  int getSize();
+  void contentsChanged(SwingListDataEvent event);
   /**
-   * Retrieves a data element at a specified index.
-   *
-   * @param index The index of the element to retrieve
-   *
-   * @return The data element at the specified index
+   * Notifies the listener that one or more items have been added to the
+   * list.  The <code>event</code> argument can supply the indices for the
+   * range of items added.
+   * 
+   * @param event  the event.
    */
-  Object getElementAt(int index);
+  void intervalAdded(SwingListDataEvent event);
   /**
-   * Add a listener object to this model. The listener will be called
-   * any time the set of elements in the model is changed.
-   *
-   * @param l The listener to add
+   * Notifies the listener that one or more items have been removed from
+   * the list.  The <code>event</code> argument can supply the indices for 
+   * the range of items removed.
+   * 
+   * @param event  the event.
    */
-  void addListDataListener(ListDataListener l);
-  /**
-   * Add a listener object to this model. The listener will no longer be
-   * called when the set of elements in the model is changed.
-   *
-   * @param l The listener to remove
-   */
-  void removeListDataListener(ListDataListener l);
+  void intervalRemoved(SwingListDataEvent event);
 }

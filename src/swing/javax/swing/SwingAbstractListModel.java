@@ -28,29 +28,30 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
+package swing.javax.swing;
 import java.io.Serializable;
 import java.util.EventListener;
-import javax.swing.event.EventListenerList;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+
+import swing.javax.swing.event.SwingEventListenerList;
+import swing.javax.swing.event.SwingListDataEvent;
+import swing.javax.swing.event.SwingListDataListener;
 /**
  * Provides standard implementations of some methods in {@link ListModel}.
  *
  * @author Ronald Veldema
  * @author Andrew Selkirk
  */
-public abstract class AbstractListModel implements ListModel, Serializable
+public abstract class SwingAbstractListModel implements ListModel, Serializable
 {
   private static final long serialVersionUID = -3285184064379168730L;
   /** List of ListDataListeners called for each change to the list. */
-  protected EventListenerList listenerList;
+  protected SwingEventListenerList listenerList;
   /**
    * Creates a new model instance - initialises the event listener list.
    */
-  public AbstractListModel()
+  public SwingAbstractListModel()
   {
-    listenerList = new EventListenerList();
+    listenerList = new SwingEventListenerList();
   }
   /**
    * Add a listener object to this model. The listener will be called
@@ -58,9 +59,9 @@ public abstract class AbstractListModel implements ListModel, Serializable
    *
    * @param listener The listener to add
    */
-  public void addListDataListener(ListDataListener listener)
+  public void addListDataListener(SwingListDataListener listener)
   {
-    listenerList.add(ListDataListener.class, listener);
+    listenerList.add(SwingListDataListener.class, listener);
   }
   /**
    * Add a listener object to this model. The listener will no longer be
@@ -68,14 +69,14 @@ public abstract class AbstractListModel implements ListModel, Serializable
    *
    * @param listener The listener to remove
    */
-  public void removeListDataListener(ListDataListener listener)
+  public void removeListDataListener(SwingListDataListener listener)
   {
-    listenerList.remove(ListDataListener.class, listener);
+    listenerList.remove(SwingListDataListener.class, listener);
   }
   /**
-   * Call {@link ListDataListener#contentsChanged} on each element of the
-   * {@link #listenerList} which is a {@link ListDataListener}. The event
-   * fired has type {@link ListDataEvent#CONTENTS_CHANGED} and represents a
+   * Call {@link SwingListDataListener#contentsChanged} on each element of the
+   * {@link #listenerList} which is a {@link SwingListDataListener}. The event
+   * fired has type {@link SwingListDataEvent#CONTENTS_CHANGED} and represents a
    * change to the data elements in the range [startIndex, endIndex]
    * inclusive.
    *
@@ -86,16 +87,16 @@ public abstract class AbstractListModel implements ListModel, Serializable
   protected void fireContentsChanged(Object source, int startIndex,
                                      int endIndex)
   {
-    ListDataEvent event = new ListDataEvent(source, ListDataEvent.CONTENTS_CHANGED,
+    SwingListDataEvent event = new SwingListDataEvent(source, SwingListDataEvent.CONTENTS_CHANGED,
                                             startIndex, endIndex);
-    ListDataListener[] listeners = getListDataListeners();
+    SwingListDataListener[] listeners = getListDataListeners();
     for (int index = 0; index < listeners.length; index++)
       listeners[index].contentsChanged(event);
   }
   /**
-   * Call {@link ListDataListener#intervalAdded} on each element of the
-   * {@link #listenerList} which is a {@link ListDataListener}. The event
-   * fired has type {@link ListDataEvent#INTERVAL_ADDED} and represents an
+   * Call {@link SwingListDataListener#intervalAdded} on each element of the
+   * {@link #listenerList} which is a {@link SwingListDataListener}. The event
+   * fired has type {@link SwingListDataEvent#INTERVAL_ADDED} and represents an
    * addition of the data elements in the range [startIndex, endIndex]
    * inclusive.
    *
@@ -105,17 +106,17 @@ public abstract class AbstractListModel implements ListModel, Serializable
    */
   protected void fireIntervalAdded(Object source, int startIndex, int endIndex)
   {
-    ListDataEvent event =
-      new ListDataEvent(source, ListDataEvent.INTERVAL_ADDED,
+    SwingListDataEvent event =
+      new SwingListDataEvent(source, SwingListDataEvent.INTERVAL_ADDED,
 			startIndex, endIndex);
-    ListDataListener[] listeners = getListDataListeners();
+    SwingListDataListener[] listeners = getListDataListeners();
     for (int index = 0; index < listeners.length; index++)
       listeners[index].intervalAdded(event);
   }
   /**
-   * Call {@link ListDataListener#intervalRemoved} on each element of the
-   * {@link #listenerList} which is a {@link ListDataListener}. The event
-   * fired has type {@link ListDataEvent#INTERVAL_REMOVED} and represents a
+   * Call {@link SwingListDataListener#intervalRemoved} on each element of the
+   * {@link #listenerList} which is a {@link SwingListDataListener}. The event
+   * fired has type {@link SwingListDataEvent#INTERVAL_REMOVED} and represents a
    * removal of the data elements in the range [startIndex, endIndex]
    * inclusive.
    *
@@ -126,10 +127,10 @@ public abstract class AbstractListModel implements ListModel, Serializable
   protected void fireIntervalRemoved(Object source, int startIndex,
                                      int endIndex)
   {
-    ListDataEvent event =
-      new ListDataEvent(source, ListDataEvent.INTERVAL_REMOVED,
+    SwingListDataEvent event =
+      new SwingListDataEvent(source, SwingListDataEvent.INTERVAL_REMOVED,
 			startIndex, endIndex);
-    ListDataListener[] listeners = getListDataListeners();
+    SwingListDataListener[] listeners = getListDataListeners();
     for (int index = 0; index < listeners.length; index++)
       listeners[index].intervalRemoved(event);
   }
@@ -151,8 +152,8 @@ public abstract class AbstractListModel implements ListModel, Serializable
    *
    * @return The set of ListDataListeners found in the {@link #listenerList}
    */
-  public ListDataListener[] getListDataListeners()
+  public SwingListDataListener[] getListDataListeners()
   {
-    return (ListDataListener[]) getListeners(ListDataListener.class);
+    return (SwingListDataListener[]) getListeners(SwingListDataListener.class);
   }
 }

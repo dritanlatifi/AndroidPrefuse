@@ -28,22 +28,23 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing.event;
+package swing.javax.swing.event;
 import java.util.EventListener;
-import javax.swing.ListSelectionModel;
+
+import swing.javax.swing.ListSelectionModel;
 /**
- * A listener that receives {@link ListSelectionEvent} notifications, 
+ * A listener that receives {@link SwingListSelectionEvent} notifications, 
  * typically from a {@link ListSelectionModel} when it is modified.
  *
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public interface ListSelectionListener extends EventListener 
+public interface SwingListSelectionListener extends EventListener 
 {
   /**
-   * Receives notification of a {@link ListSelectionEvent}.
+   * Receives notification of a {@link SwingListSelectionEvent}.
    * 
    * @param event  the event.
    */
-  void valueChanged(ListSelectionEvent event);
+  void valueChanged(SwingListSelectionEvent event);
 }

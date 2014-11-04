@@ -1,4 +1,4 @@
-/* ChangeEvent.java --
+/* ComboBoxModel.java --
    Copyright (C) 2002, 2006, Free Software Foundation, Inc.
 This file is part of GNU Classpath.
 GNU Classpath is free software; you can redistribute it and/or modify
@@ -28,28 +28,32 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing.event;
-import java.util.EventObject;
+package swing.javax.swing;
+import swing.javax.swing.event.SwingListDataEvent;
+import swing.javax.swing.event.SwingListDataListener;
 /**
- * An event used to signal a state change for an object.
- * 
- * @see ChangeListener
- * @see CellEditorListener
- * @see TableColumnModelListener
- * 
+ * The data model for a {@link JComboBox}. This model keeps track of elements 
+ * contained in the <code>JComboBox</code> as well as the current
+ * combo box selection. Whenever the selection in the <code>JComboBox</code> 
+ * changes, the <code>ComboBoxModel</code> should fire a {@link SwingListDataEvent}
+ * to the model's {@link SwingListDataListener}s.
+ *
  * @author Andrew Selkirk
- * @author Ronald Veldema
  */
-public class ChangeEvent 
-  extends EventObject 
+public interface SwingComboBoxModel extends ListModel
 {
   /**
-   * Creates a new <code>ChangeEvent</code> instance for the specified source.
-   * 
-   * @param source  the source for the event (<code>null</code> not permitted).
+   * Sets the selected item in the combo box. Classes implementing this 
+   * interface should fire a {@link SwingListDataEvent} to all registered 
+   * {@link SwingListDataListener}s to indicate that the selection has changed.
+   *
+   * @param item  the selected item (<code>null</code> permitted).
    */
-  public ChangeEvent(Object source) 
-  {
-    super(source);
-  }
+  void setSelectedItem(Object item);
+  /**
+   * Returns the currently selected item in the combo box.
+   *
+   * @return The selected item (possibly <code>null</code>).
+   */
+  Object getSelectedItem();
 }

@@ -8,16 +8,17 @@ import awt.java.awt.event.ActionListener;
 
 //import javax.swing.BoxLayout;
 //import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
 //import javax.swing.JCheckBox;
 //import javax.swing.JPanel;
 //import javax.swing.JRadioButton;
 //import javax.swing.JToggleButton;
 //import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+
+import swing.javax.swing.ListSelectionModel;
+import swing.javax.swing.SwingDefaultListModel;
+import swing.javax.swing.SwingDefaultListSelectionModel;
+import swing.javax.swing.event.SwingListSelectionEvent;
+import swing.javax.swing.event.SwingListSelectionListener;
 
 /**
  * Swing component representing a group of toggle buttons -- either checkboxes

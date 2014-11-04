@@ -1,5 +1,5 @@
-/* ChangeListener.java --
-   Copyright (C) 2002, 2006, Free Software Foundation, Inc.
+/* ListModel.java --
+   Copyright (C) 2002, 2004 Free Software Foundation, Inc.
 This file is part of GNU Classpath.
 GNU Classpath is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,25 +28,41 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing.event;
-import java.util.EventListener;
+package swing.javax.swing;
+import swing.javax.swing.event.SwingListDataListener;
 /**
- * A <code>ChangeListener</code> can register with an object to receive 
- * notification of state changes (for objects that support this mechanism).
- * 
- * @author Andrew Selkirk
- * @author Ronald Veldema
+ * The data model that is typically used in {@link JList}.
+ *
+ * @author Graydon Hoare (graydon@redhat.com)
  */
-public interface ChangeListener 
-  extends EventListener 
+public interface ListModel
 {
   /**
-   * Called by an object to notify the listener that the object's state has
-   * changed.  The incoming <code>event</code> identifies the 
-   * <code>source</code> of the event, allowing the listener to differentiate
-   * when it is listening for changes in multiple sources.
-   * 
-   * @param event  the change event.
+   * Return the number of data elements in the list.
+   *
+   * @return The number of data elements in the list
    */
-  void stateChanged(ChangeEvent event);
+  int getSize();
+  /**
+   * Retrieves a data element at a specified index.
+   *
+   * @param index The index of the element to retrieve
+   *
+   * @return The data element at the specified index
+   */
+  Object getElementAt(int index);
+  /**
+   * Add a listener object to this model. The listener will be called
+   * any time the set of elements in the model is changed.
+   *
+   * @param l The listener to add
+   */
+  void addListDataListener(SwingListDataListener l);
+  /**
+   * Add a listener object to this model. The listener will no longer be
+   * called when the set of elements in the model is changed.
+   *
+   * @param l The listener to remove
+   */
+  void removeListDataListener(SwingListDataListener l);
 }

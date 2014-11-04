@@ -15,11 +15,12 @@ import awt.java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
 //import javax.swing.JComponent;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
+import swing.javax.swing.SwingBoundedRangeModel;
+import swing.javax.swing.SwingDefaultBoundedRangeModel;
+import swing.javax.swing.event.SwingChangeEvent;
+import swing.javax.swing.event.SwingChangeListener;
 
 /**
  * <p>Implements a Swing-based Range slider, which allows the user to enter a 

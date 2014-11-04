@@ -5,8 +5,6 @@ package prefuse.data.query;
 //
 //import javax.swing.JComponent;
 //import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.Literal;
@@ -16,6 +14,8 @@ import prefuse.util.DataLib;
 import prefuse.util.TypeLib;
 import prefuse.util.ui.JRangeSlider;
 import prefuse.util.ui.ValuedRangeModel;
+import swing.javax.swing.event.SwingChangeEvent;
+import swing.javax.swing.event.SwingChangeListener;
 
 /**
  * DynamicQueryBinding supporting queries based on a range of included
@@ -201,8 +201,8 @@ public class RangeQueryBinding extends DynamicQueryBinding {
 //        }
 //    } // end of inner class SliderAdjuster
     
-    private class Listener implements ChangeListener {
-        public void stateChanged(ChangeEvent e) {
+    private class Listener implements SwingChangeListener {
+        public void stateChanged(SwingChangeEvent e) {
             ValuedRangeModel model = (ValuedRangeModel)e.getSource();
             Object lo = model.getLowValue();
             Object hi = model.getHighValue();

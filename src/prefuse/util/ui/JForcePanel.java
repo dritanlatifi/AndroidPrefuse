@@ -8,11 +8,11 @@ import awt.java.awt.Dimension;
 //import javax.swing.BoxLayout;
 //import javax.swing.JFrame;
 //import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import prefuse.util.force.Force;
 import prefuse.util.force.ForceSimulator;
+import swing.javax.swing.event.SwingChangeEvent;
+import swing.javax.swing.event.SwingChangeListener;
 
 /**
  * Swing component for configuring the parameters of the

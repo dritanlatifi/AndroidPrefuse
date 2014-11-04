@@ -28,11 +28,11 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
+package swing.javax.swing;
 import java.util.Enumeration;
 import java.util.Vector;
 /**
- * The default implementation of {@link AbstractListModel}, used by
+ * The default implementation of {@link SwingAbstractListModel}, used by
  * {@link javax.swing.JList} and similar objects as the model of a list of
  * values. The implementation is based on an underlying {@link
  * java.util.Vector}.
@@ -40,7 +40,7 @@ import java.util.Vector;
  * @author Andrew Selkirk
  * @author Graydon Hoare (graydon@redhat.com)
  */
-public class DefaultListModel extends AbstractListModel
+public class SwingDefaultListModel extends SwingAbstractListModel
 {
   private static final long serialVersionUID = 2315945659722172272L;
   /**

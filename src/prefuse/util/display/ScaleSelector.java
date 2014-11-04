@@ -10,8 +10,8 @@ import awt.java.awt.Image;
 //import javax.swing.JComponent;
 //import javax.swing.JLabel;
 //import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import swing.javax.swing.event.SwingChangeEvent;
+import swing.javax.swing.event.SwingChangeListener;
 
 /**
  * Swing widget which displays a preview image and helps select the

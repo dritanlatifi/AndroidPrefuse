@@ -28,7 +28,7 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing.event;
+package swing.javax.swing.event;
 import java.util.EventObject;
 /**
  * An event that contains information about a modification to the content of
@@ -37,7 +37,7 @@ import java.util.EventObject;
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public class ListDataEvent extends EventObject
+public class SwingListDataEvent extends EventObject
 {
   private static final long serialVersionUID = 2510353260071004774L;
   
@@ -68,7 +68,7 @@ public class ListDataEvent extends EventObject
    * @param index1  the index for the other end of the modified range of list 
    *     elements.
    */
-  public ListDataEvent(Object source, int type, int index0, int index1)
+  public SwingListDataEvent(Object source, int type, int index0, int index1)
   {
     super(source);
     this.type = type;

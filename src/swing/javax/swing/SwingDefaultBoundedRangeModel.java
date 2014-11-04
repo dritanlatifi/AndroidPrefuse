@@ -29,23 +29,24 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
+package swing.javax.swing;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.EventListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
+
+import swing.javax.swing.event.SwingChangeEvent;
+import swing.javax.swing.event.SwingChangeListener;
+import swing.javax.swing.event.SwingEventListenerList;
 /**
  * The default implementation of <code>BoundedRangeModel</code>.
  *
  * @author Andrew Selkirk (aselkirk@sympatico.ca)
  * @author Sascha Brawer (brawer@dandelis.ch)
  */
-public class DefaultBoundedRangeModel
-  implements BoundedRangeModel, Serializable
+public class SwingDefaultBoundedRangeModel
+  implements SwingBoundedRangeModel, Serializable
 {
   /**
    * The identifier of this class in object serialization. Verified
@@ -53,7 +54,7 @@ public class DefaultBoundedRangeModel
    */
   private static final long serialVersionUID = 5034068491295259790L;
   /**
-   * An event that is sent to all registered {@link ChangeListener}s
+   * An event that is sent to all registered {@link SwingChangeListener}s
    * when the state of this range model has changed.
    *
    * <p>The event object is created on demand, the first time it
@@ -61,22 +62,22 @@ public class DefaultBoundedRangeModel
    *
    * @see #fireStateChanged()
    */
-  protected transient ChangeEvent changeEvent;
+  protected transient SwingChangeEvent changeEvent;
   /**
    * The list of the currently registered EventListeners.
    */
-  protected EventListenerList listenerList = new EventListenerList();
+  protected SwingEventListenerList listenerList = new SwingEventListenerList();
   /**
    * The current value of the range model, which is always between
    * {@link #minimum} and ({@link #maximum} - {@link #extent}). In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
+   * scroll bar visualization of a {@link SwingBoundedRangeModel}, the
    * <code>value</code> is displayed as the position of the thumb.
    */
   private int value;
   /**
    * The current extent of the range model, which is a number greater
    * than or equal to zero. In a scroll bar visualization of a {@link
-   * BoundedRangeModel}, the <code>extent</code> is displayed as the
+   * SwingBoundedRangeModel}, the <code>extent</code> is displayed as the
    * size of the thumb.
    */
   private int extent;
@@ -92,7 +93,7 @@ public class DefaultBoundedRangeModel
   private int maximum;
   /**
    * A property that indicates whether the value of this {@link
-   * BoundedRangeModel} is going to change in the immediate future.
+   * SwingBoundedRangeModel} is going to change in the immediate future.
    */
   private boolean isAdjusting;
   /**
@@ -102,7 +103,7 @@ public class DefaultBoundedRangeModel
    * to zero; <code>maximum</code> will be set to 100; the property
    * <code>valueIsAdjusting</code> will be <code>false</code>.
    */
-  public DefaultBoundedRangeModel()
+  public SwingDefaultBoundedRangeModel()
   {
     // The fields value, extent, minimum have the default value 0, and
     // isAdjusting is already false. These fields no not need to be
@@ -116,11 +117,11 @@ public class DefaultBoundedRangeModel
    * @param value the initial value of the range model, which must be
    *     a number between <code>minimum</code> and <code>(maximum -
    *     extent)</code>. In a scroll bar visualization of a {@link
-   *     BoundedRangeModel}, the <code>value</code> is displayed as the
+   *     SwingBoundedRangeModel}, the <code>value</code> is displayed as the
    *     position of the thumb.
    * @param extent the initial extent of the range model, which is a
    *     number greater than or equal to zero. In a scroll bar
-   *     visualization of a {@link BoundedRangeModel}, the
+   *     visualization of a {@link SwingBoundedRangeModel}, the
    *     <code>extent</code> is displayed as the size of the thumb.
    * @param minimum the initial minimal value of the range model.
    * @param maximum the initial maximal value of the range model.
@@ -129,7 +130,7 @@ public class DefaultBoundedRangeModel
    *     not satisfied: <code>minimum &lt;= value &lt;= value + extent &lt;=
    *     maximum</code>.
    */
-  public DefaultBoundedRangeModel(int value, int extent, int minimum,
+  public SwingDefaultBoundedRangeModel(int value, int extent, int minimum,
                                   int maximum)
   {
     if (!(minimum <= value && extent >= 0 && (value + extent) <= maximum))
@@ -158,7 +159,7 @@ public class DefaultBoundedRangeModel
   }
   /**
    * Returns the current value of this bounded range model.  In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
+   * scroll bar visualization of a {@link SwingBoundedRangeModel}, the
    * <code>value</code> is displayed as the position of the thumb.
    *
    * @return the value
@@ -169,7 +170,7 @@ public class DefaultBoundedRangeModel
   }
   /**
    * Changes the current value of this bounded range model. In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
+   * scroll bar visualization of a {@link SwingBoundedRangeModel}, the
    * <code>value</code> is displayed as the position of the thumb;
    * changing the <code>value</code> of a scroll bar's model
    * thus moves the thumb to a different position.
@@ -190,7 +191,7 @@ public class DefaultBoundedRangeModel
   /**
    * Returns the current extent of this bounded range model, which is
    * a number greater than or equal to zero. In a scroll bar
-   * visualization of a {@link BoundedRangeModel}, the
+   * visualization of a {@link SwingBoundedRangeModel}, the
    * <code>extent</code> is displayed as the size of the thumb.
    *
    * @return the extent
@@ -201,7 +202,7 @@ public class DefaultBoundedRangeModel
   }
   /**
    * Changes the current extent of this bounded range model. In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
+   * scroll bar visualization of a {@link SwingBoundedRangeModel}, the
    * <code>extent</code> is displayed as the size of the thumb.
    *
    * @param extent the new extent of the range model, which is a
@@ -264,7 +265,7 @@ public class DefaultBoundedRangeModel
    * going to change in the immediate future. Scroll bars set this
    * property to <code>true</code> while the thumb is being dragged
    * around; when the mouse is relased, they set the property to
-   * <code>false</code> and post a final {@link ChangeEvent}.
+   * <code>false</code> and post a final {@link SwingChangeEvent}.
    *
    * @return <code>true</code> if the value will change soon again;
    *     <code>false</code> if the value will probably not change soon.
@@ -295,11 +296,11 @@ public class DefaultBoundedRangeModel
    * Sets all properties.
    *
    * @param value the new value of the range model.  In a scroll bar
-   *     visualization of a {@link BoundedRangeModel}, the
+   *     visualization of a {@link SwingBoundedRangeModel}, the
    *     <code>value</code> is displayed as the position of the thumb.
    * @param extent the new extent of the range model, which is a
    *     number greater than or equal to zero. In a scroll bar
-   *     visualization of a {@link BoundedRangeModel}, the
+   *     visualization of a {@link SwingBoundedRangeModel}, the
    *     <code>extent</code> is displayed as the size of the thumb.
    * @param minimum the new minimal value of the range model.
    * @param maximum the new maximal value of the range model.
@@ -336,32 +337,32 @@ public class DefaultBoundedRangeModel
    *
    * @param listener the listener to be subscribed.
    */
-  public void addChangeListener(ChangeListener listener)
+  public void addChangeListener(SwingChangeListener listener)
   {
-    listenerList.add(ChangeListener.class, listener);
+    listenerList.add(SwingChangeListener.class, listener);
   }
   /**
    * Cancels the subscription of a ChangeListener.
    *
    * @param listener the listener to be unsubscribed.
    */
-  public void removeChangeListener(ChangeListener listener)
+  public void removeChangeListener(SwingChangeListener listener)
   {
-    listenerList.remove(ChangeListener.class, listener);
+    listenerList.remove(SwingChangeListener.class, listener);
   }
   /**
-   * Sends a {@link ChangeEvent} to any registered {@link
-   * ChangeListener}s.
+   * Sends a {@link SwingChangeEvent} to any registered {@link
+   * SwingChangeListener}s.
    *
-   * @see #addChangeListener(ChangeListener)
-   * @see #removeChangeListener(ChangeListener)
+   * @see #addChangeListener(SwingChangeListener)
+   * @see #removeChangeListener(SwingChangeListener)
    */
   protected void fireStateChanged()
   {
-    ChangeListener[] listeners = getChangeListeners();
+    SwingChangeListener[] listeners = getChangeListeners();
     
     if (changeEvent == null)
-      changeEvent = new ChangeEvent(this);
+      changeEvent = new SwingChangeEvent(this);
     for (int i = listeners.length - 1; i >= 0; --i)
       listeners[i].stateChanged(changeEvent);
   }
@@ -369,7 +370,7 @@ public class DefaultBoundedRangeModel
    * Retrieves the current listeners of the specified class.
    *
    * @param listenerType the class of listeners; usually {@link
-   *     ChangeListener}<code>.class</code>.
+   *     SwingChangeListener}<code>.class</code>.
    *
    * @return an array with the currently subscribed listeners, or
    *     an empty array if there are currently no listeners.
@@ -390,9 +391,9 @@ public class DefaultBoundedRangeModel
    *
    * @since 1.4
    */
-  public ChangeListener[] getChangeListeners()
+  public SwingChangeListener[] getChangeListeners()
   {
-    return (ChangeListener[]) getListeners(ChangeListener.class);
+    return (SwingChangeListener[]) getListeners(SwingChangeListener.class);
   }
   
   /**
@@ -419,6 +420,6 @@ public class DefaultBoundedRangeModel
     throws ClassNotFoundException, IOException
   {
     stream.defaultReadObject();
-    listenerList = new EventListenerList();
+    listenerList = new SwingEventListenerList();
   }
 }

@@ -28,9 +28,10 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing.event;
+package swing.javax.swing.event;
 import java.util.EventObject;
-import javax.swing.ListSelectionModel;
+
+import swing.javax.swing.ListSelectionModel;
 /**
  * An event that indicates a change to a list selection, including the source
  * of the change (a {@link ListSelectionModel}) and the range of items in the
@@ -39,7 +40,7 @@ import javax.swing.ListSelectionModel;
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public class ListSelectionEvent extends EventObject 
+public class SwingListSelectionEvent extends EventObject 
 {
   /** 
    * The index of the first list item in the range of items that has 
@@ -65,7 +66,7 @@ public class ListSelectionEvent extends EventObject
    * @throws IllegalArgumentException if <code>source</code> is 
    *         <code>null</code>.
    */
-  public ListSelectionEvent(Object source, int firstIndex,
+  public SwingListSelectionEvent(Object source, int firstIndex,
       int lastIndex, boolean isAdjusting) 
   {
     super(source);

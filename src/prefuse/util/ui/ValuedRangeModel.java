@@ -1,6 +1,6 @@
 package prefuse.util.ui;
 
-import javax.swing.BoundedRangeModel;
+import swing.javax.swing.SwingBoundedRangeModel;
 
 /**
  * BoundedRangeModel that additionally supports a mapping between the integer
@@ -8,9 +8,9 @@ import javax.swing.BoundedRangeModel;
  * as numbers or arbitrary objects.
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
- * @see javax.swing.BoundedRangeModel
+ * @see swing.javax.swing.SwingBoundedRangeModel
  */
-public interface ValuedRangeModel extends BoundedRangeModel {
+public interface ValuedRangeModel extends SwingBoundedRangeModel {
 
     /**
      * Get the minimum value backing the range model. This is

@@ -3,9 +3,9 @@ package prefuse.data.query;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.DefaultBoundedRangeModel;
 
 import prefuse.util.ui.ValuedRangeModel;
+import swing.javax.swing.SwingDefaultBoundedRangeModel;
 
 /**
  * Supports an ordered range of arbitrary objects. Designed to support
@@ -13,7 +13,7 @@ import prefuse.util.ui.ValuedRangeModel;
  * data.
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class ObjectRangeModel extends DefaultBoundedRangeModel
+public class ObjectRangeModel extends SwingDefaultBoundedRangeModel
     implements ValuedRangeModel
 {
     private Object[] m_objects;

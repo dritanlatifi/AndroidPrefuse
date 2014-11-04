@@ -1,5 +1,5 @@
-/* MutableComboBoxModel.java --
-   Copyright (C) 2002 Free Software Foundation, Inc.
+/* ChangeEvent.java --
+   Copyright (C) 2002, 2006, Free Software Foundation, Inc.
 This file is part of GNU Classpath.
 GNU Classpath is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,44 +28,27 @@ or based on this library.  If you modify this library, you may extend
 this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
-package javax.swing;
+package swing.javax.swing.event;
+import java.util.EventObject;
 /**
- * A data model used in {@link JComboBox}es that keeps track of the
- * components data and provides methods to insert and remove elements from
- * it. The classes implementing this interface should
- * fire appropriate events indicating the undergoing change in the data model.
- *
+ * An event used to signal a state change for an object.
+ * 
+ * @see SwingChangeListener
+ * @see CellEditorListener
+ * @see TableColumnModelListener
+ * 
  * @author Andrew Selkirk
- * @author Olga Rodimina
+ * @author Ronald Veldema
  */
-public interface MutableComboBoxModel extends ComboBoxModel
+public class SwingChangeEvent extends EventObject 
 {
   /**
-   * This method adds given object to its data model.
-   *
-   * @param object element to add to the data model.
+   * Creates a new <code>ChangeEvent</code> instance for the specified source.
+   * 
+   * @param source  the source for the event (<code>null</code> not permitted).
    */
-  void addElement(Object object);
-  /**
-   * This method removes elements located at the given index in the data
-   * model.
-   *
-   * @param index index specifying location of the element to remove.
-   */
-  void removeElementAt(int index);
-  /**
-   * This method inserts givent element to the data model, at the specified
-   * index.
-   *
-   * @param object element to insert
-   * @param index index specifying the position in the data model where the
-   *        given element should be inserted.
-   */
-  void insertElementAt(Object object, int index);
-  /**
-   * This method removes given element from the data model
-   *
-   * @param object element to remove.
-   */
-  void removeElement(Object object);
+  public SwingChangeEvent(Object source) 
+  {
+    super(source);
+  }
 }
