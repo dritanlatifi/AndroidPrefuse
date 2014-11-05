@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
 	}
 
 	private View createVisualization(Table data) {
-		Visualization vis = new Visualization();
+		final Visualization vis = new Visualization();
 		PDisplay display = new PDisplay(this, vis);
 
 		// --------------------------------------------------------------------
@@ -104,8 +104,15 @@ public class MainActivity extends Activity {
 		// STEP 4: set up a display and controls
 
 		// --------------------------------------------------------------------
-		// STEP 5: launching the visualization
-		vis.run("draw");
+		// STEP 5: launching the visualization. The visualization must run after the Display is ready (Android View)  
+		// TODO for Dritan: using dispay.post seems to be not a good solution. Fix this before releasing the final solution 
+		display.post(new Runnable() {
+            @Override
+            public void run() {
+            	vis.run("draw");
+            }
+        });
+		
 
 		return display;
 	}
