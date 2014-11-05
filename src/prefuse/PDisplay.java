@@ -166,6 +166,9 @@ public class PDisplay extends View {
 	private VisualItem m_editItem;
 	private String m_editAttribute;
 
+	// imitate Insets of JComponent
+	protected Insets      m_insets = new Insets(0,0,0,0);	
+	
 	/**
 	 * Creates a new Display instance. You will need to associate this Display
 	 * with a {@link Visualization} for it to display anything.
@@ -876,6 +879,19 @@ public class PDisplay extends View {
 		
 	}
 
+	/**
+	 * set borders of display
+	 * @author Dritan
+	 * @param top
+	 * @param left
+	 * @param bottom
+	 * @param right
+	 */
+	public void setBorders(int top, int left, int bottom, int right)
+	{
+		this.m_insets.set(top, left, bottom, right);
+	}	
+	
 	/**
 	 * Renders the display within the given graphics context and size bounds.
 	 * 
@@ -2299,8 +2315,9 @@ public class PDisplay extends View {
 		m_editing = false;
 	}
 
-	public Insets getInsets(Insets m_insets) {
-		return m_insets;
+	public Insets getInsets(Insets insets) {
+		insets.set(this.m_insets.top, this.m_insets.left, this.m_insets.bottom, this.m_insets.right);
+		return insets;
 	}
 
 } // end of class Display
