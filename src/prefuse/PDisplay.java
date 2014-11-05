@@ -219,7 +219,7 @@ public class PDisplay extends View {
 			Predicate predicate) {
 		super(context);
 		// setDoubleBuffered(false);
-		setBackgroundColor(android.graphics.Color.GRAY);
+		setBackgroundColor(android.graphics.Color.WHITE); 
 
 		// initialize text editor
 		m_editing = false;
@@ -840,20 +840,6 @@ public class PDisplay extends View {
 	@SuppressLint("DrawAllocation") @Override
 	protected void onDraw(Canvas g) {
 		super.onDraw(g);
-		
-		/*  TEST DRAW CODE */
-		int x = getWidth();
-        int y = getHeight();
-        int radius;
-        radius = 100;
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(android.graphics.Color.WHITE);
-        g.drawPaint(paint);
-        // Use Color.parseColor to define HTML colors
-        paint.setColor(android.graphics.Color.parseColor("#CD5C5C"));
-//        g.drawCircle(x / 2, y / 2, radius, paint);		
-        /*  END TEST DRAW CODE */
         
 		if (m_offscreen == null) {
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
@@ -1050,9 +1036,7 @@ public class PDisplay extends View {
 		ColorDrawable bg = (ColorDrawable) getBackground();
 		int color = bg.getColor();
 
-		g.setColor(new Color(color)); // FIXME for Dritan: the color variable
-										// (Android-Color) is not compatible
-										// with awt.Color.
+		g.setColor(new Color(color)); 
 		g.fill(r);
 		// fire pre-paint events to any painters
 		firePrePaint(g);

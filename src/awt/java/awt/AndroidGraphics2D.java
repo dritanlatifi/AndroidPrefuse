@@ -94,9 +94,16 @@ public class AndroidGraphics2D implements Graphics2D {
 	@Override
 	public void drawRect(int x, int y, int width, int height) {
 		RectF rect = new RectF(x, y, x + width, y + height);
-		canvas.drawRect(rect, getCurrentPaint());
+		this.setStroke();
+		canvas.drawRect(rect, getCurrentPaint());		
 	}
 
+	public void drawRect(float x, float y, float width, float height) {
+		RectF rect = new RectF(x, y, x + width, y + height);
+		this.setStroke();
+		canvas.drawRect(rect, getCurrentPaint());		
+	}	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -215,6 +222,7 @@ public class AndroidGraphics2D implements Graphics2D {
 	@Override
 	public void drawArc(int x, int y, int width, int height, int sa, int ea) {
 		RectF oval = new RectF(x, y, x + width, y + height);
+		this.setStroke();
 		canvas.drawArc(oval, sa, ea, false, getCurrentPaint());
 	}
 
@@ -304,6 +312,7 @@ public class AndroidGraphics2D implements Graphics2D {
 	 */
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2) {
+		this.setStroke();
 		canvas.drawLine((float) x1, (float) y1, (float) x2, (float) y2,
 				getCurrentPaint());
 	}
@@ -316,6 +325,7 @@ public class AndroidGraphics2D implements Graphics2D {
 	@Override
 	public void drawOval(int x, int y, int width, int height) {
 		RectF oval = new RectF(x, y, x + width, y + height);
+		setStroke();
 		canvas.drawOval(oval, getCurrentPaint());
 	}
 
@@ -358,6 +368,7 @@ public class AndroidGraphics2D implements Graphics2D {
 				* (y + height) / 2;
 		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
 				* (x + width) / 2;
+		this.setStroke();
 		canvas.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
 
 	}
@@ -381,6 +392,7 @@ public class AndroidGraphics2D implements Graphics2D {
 	@Override
 	public void fillOval(int x, int y, int width, int height) {
 		RectF oval = new RectF(x, y, x + width, y + height);
+		this.setFill();
 		canvas.drawOval(oval, getCurrentPaint());
 	}
 
@@ -403,7 +415,14 @@ public class AndroidGraphics2D implements Graphics2D {
 	@Override
 	public void fillRect(int x, int y, int width, int height) {
 		RectF rect = new RectF(x, y, x + width, y + height);
-		canvas.drawRect(rect, getCurrentPaint());
+		this.setFill();
+		canvas.drawRect(rect, getCurrentPaint());		
+	}
+	
+	public void fillRect(float x, float y, float width, float height) {
+		RectF rect = new RectF(x, y, x + width, y + height);
+		this.setFill();
+		canvas.drawRect(rect, getCurrentPaint());		
 	}
 
 	/*
@@ -423,6 +442,7 @@ public class AndroidGraphics2D implements Graphics2D {
 				* (y + height) / 2;
 		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
 				* (x + width) / 2;
+		this.setFill();
 		canvas.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
 	}
 
@@ -576,9 +596,35 @@ public class AndroidGraphics2D implements Graphics2D {
 	 */
 	@Override
 	public void draw(Shape s) {
-		GeneralPath path = (GeneralPath) s;
-		Path aPath = transformPath(path);
-		canvas.drawPath(aPath, getCurrentPaint());
+		paintShape(s, true);
+	}
+	
+	/**
+	 * paint a shape. currently only rectangle or general path is supported as a shape.
+	 * @param s				shape to be painted
+	 * @param setStroke		if true, than paint in stroke mode, else paint in fill mode.
+	 */
+	public void paintShape( Shape s, boolean setStroke )
+	{
+		if(s instanceof Rectangle2D.Double)
+		{
+			Rectangle2D.Double r = (Rectangle2D.Double) s;
+			if( setStroke )
+				drawRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float)r.getHeight());
+			else
+				fillRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float) r.getHeight());
+		}
+		else
+		{
+			GeneralPath path = (GeneralPath) s;
+			Path aPath = transformPath(path);
+			if( setStroke )
+				this.setStroke();
+			else
+				setFill();
+			
+			canvas.drawPath(aPath, getCurrentPaint());
+		}
 	}
 
 	public Path transformPath(GeneralPath path) {
@@ -739,8 +785,7 @@ public class AndroidGraphics2D implements Graphics2D {
 	 */
 	@Override
 	public void fill(Shape s) {
-		// TODO Auto-generated method stub
-
+		paintShape(s, false);
 	}
 
 	/*
@@ -802,6 +847,23 @@ public class AndroidGraphics2D implements Graphics2D {
 		return this.currentPaint;
 	}
 
+	/**
+	 * set the current paint only at stroke mode. i.e not fill
+	 */
+	public void setStroke()
+	{
+		this.currentPaint.setStyle(Paint.Style.STROKE);
+	}
+
+	/**
+	 * set the current paint in fill mode
+	 */
+	public void setFill()
+	{
+		this.currentPaint.setStyle(Paint.Style.FILL);
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
