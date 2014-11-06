@@ -53,7 +53,6 @@ import prefuse.util.StringLib;
  * {@link prefuse.render.DefaultRendererFactory},
  * {@link prefuse.action.assignment.ColorAction},
  * {@link prefuse.action.assignment.ShapeAction},
- * {@link prefuse.action.assignment.FontAction}, and
  * {@link prefuse.action.assignment.SizeAction} classes.
  * </p>
  * <p>
