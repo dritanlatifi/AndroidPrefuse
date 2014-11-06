@@ -87,10 +87,9 @@ public class AxisRenderer extends AbstractShapeRenderer {
         if ( label == null ) return m_line;
         
         AwtFontMetrics fm = new AwtFontMetrics( item.getFont()) ;
-        m_ascent = fm.getAscent();
+        m_ascent = fm.getAscent() + 1; // TODO for Dritan: check why is it necesary to add 1 pixel to the ascent?
         int h = fm.getHeight();
         int w = fm.stringWidth(label);
-        
         double tx, ty;
         
         // get text x-coord

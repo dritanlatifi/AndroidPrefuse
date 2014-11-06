@@ -23,6 +23,8 @@ package awt.java.awt;
 import java.io.Serializable;
 import org.apache.harmony.awt.internal.nls.Messages;
 
+import android.graphics.Paint.FontMetrics;
+
 
 /**
  * The FontMetrics class contains information about the rendering of a
@@ -96,7 +98,8 @@ public class AwtFontMetrics implements Serializable {
      * @return the height of the text line in this Font.
      */
     public int getHeight() {
-        return this.getAscent() + this.getDescent() + this.getLeading();
+    	FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	return (int)(fm.bottom - fm.top + .5f);
     }
 
     /**
@@ -107,8 +110,8 @@ public class AwtFontMetrics implements Serializable {
      * @return the ascent of the Font associated with this FontMetrics.
      */
     public int getAscent() {
-    	android.graphics.Paint.FontMetrics fm = this.font.getPaint().getFontMetrics();
-    	return (int) fm.ascent;
+    	FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	return (int) ( ( fm.ascent * -1 ) + .5f ) ; // FIXME for Dritan: I don't realy know why I must multiply it with -1
     }
 
     /**
@@ -119,7 +122,7 @@ public class AwtFontMetrics implements Serializable {
      * @return the descent of the Font associated with this FontMetrics.
      */
     public int getDescent() {
-    	android.graphics.Paint.FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	FontMetrics fm = this.font.getPaint().getFontMetrics();
     	return (int) fm.descent;
     }
 
@@ -129,7 +132,7 @@ public class AwtFontMetrics implements Serializable {
      * @return the leading of the Font associated with this FontMetrics.
      */
     public int getLeading() {
-    	android.graphics.Paint.FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	FontMetrics fm = this.font.getPaint().getFontMetrics();
     	return (int) fm.leading;
     }
 
@@ -277,7 +280,8 @@ public class AwtFontMetrics implements Serializable {
      * @return the the advance width for the specified String in this Font.
      */
     public int stringWidth(String str) {
-        return (int) this.font.getPaint().getTextSize(); // TODO for Dritan: Check if this is correct
+//        return (int) this.font.getPaint().getTextSize(); // TODO for Dritan: Check if this is correct
+        return (int) this.font.getPaint().measureText(str); // TODO for Dritan: Check if this is correct
     }
 
 }

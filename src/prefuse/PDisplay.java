@@ -262,7 +262,8 @@ public class PDisplay extends View {
 	/**
 	 * Set the size of the Display. TODO for Dritan: on android size of View
 	 * cannot be set
-	 * 
+	 * TODO for Dritan: implement this
+	 * @incomplete
 	 * @param width
 	 *            the width of the Display in pixels
 	 * @param height

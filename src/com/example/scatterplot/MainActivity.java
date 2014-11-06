@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,7 +44,13 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(createVisualizationV3(generateTable()));
+		//Remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		//Remove notification bar
+	    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+	    setContentView(createVisualizationV3(generateTable()));
 	}
 
 	private Table generateTable() {
@@ -96,7 +104,7 @@ public class MainActivity extends Activity {
 
 		/* STEP 2: set up renderers for the visual data */
 		vis.setRendererFactory(new RendererFactory() {
-			AbstractShapeRenderer sr = new ShapeRenderer(7);
+			AbstractShapeRenderer sr = new ShapeRenderer(11);
 			Renderer arY = new AxisRenderer(Constants.FAR_LEFT,
 					Constants.CENTER);
 			Renderer arX = new AxisRenderer(Constants.CENTER,
