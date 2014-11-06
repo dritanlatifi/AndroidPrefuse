@@ -1,6 +1,6 @@
 package prefuse.util;
 
-import awt.java.awt.FontMetrics;
+import awt.java.awt.AwtFontMetrics;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StreamTokenizer;
@@ -141,7 +141,7 @@ public class StringLib {
      * @param width the maximum string width, in pixels
      * @return an abbreviated String
      */
-    public static String abbreviate(String str, FontMetrics fm, int width) {
+    public static String abbreviate(String str, AwtFontMetrics fm, int width) {
         int lastblank = 0, nchars = 0, cumx = 0;
         while ( cumx < width &&  nchars < str.length() ) {
         if ( Character.isWhitespace(str.charAt(nchars)) ) {
@@ -161,7 +161,7 @@ public class StringLib {
      * @param width the maximum string width, in pixels
      * @return an abbreviated String
      */
-    public static String abbreviateName(String str, FontMetrics fm, int width)
+    public static String abbreviateName(String str, AwtFontMetrics fm, int width)
     {
         if (fm.stringWidth(str) > width) str = abbreviateName(str, false);
         if (fm.stringWidth(str) > width) str = abbreviateName(str, true);

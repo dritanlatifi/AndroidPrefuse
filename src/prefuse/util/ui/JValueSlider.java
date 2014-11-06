@@ -3,7 +3,7 @@ package prefuse.util.ui;
 import awt.java.awt.Color;
 import awt.java.awt.Dimension;
 import awt.java.awt.Font;
-import awt.java.awt.FontMetrics;
+import awt.java.awt.AwtFontMetrics;
 import awt.java.awt.Graphics;
 import awt.java.awt.event.ActionEvent;
 //import awt.java.awt.event.MouseAdapter;

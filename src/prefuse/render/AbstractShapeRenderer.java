@@ -45,6 +45,7 @@ public abstract class AbstractShapeRenderer implements Renderer {
         m_manageBounds = b;
     }
     
+ 
     /**
      * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
      */

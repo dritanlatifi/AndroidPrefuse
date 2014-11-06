@@ -2,7 +2,7 @@ package prefuse.render;
 
 import awt.java.awt.Dimension;
 import awt.java.awt.Font;
-import awt.java.awt.FontMetrics;
+import awt.java.awt.AwtFontMetrics;
 import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Image;
 import awt.java.awt.Shape;
@@ -100,7 +100,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
      * @param textField the data field for the text label.
      */
     public LabelRenderer(String textField) {
-        this.setTextField(textField);
+    	this.setTextField(textField);
     }
     
     /**
@@ -115,7 +115,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
      * drawn.
      */
     public LabelRenderer(String textField, String imageField) {
-        setTextField(textField);
+    	setTextField(textField);
         setImageField(imageField);
     }
     
@@ -257,7 +257,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
                                      size*m_font.getSize());
         }
         
-        FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics(m_font);
+        AwtFontMetrics fm = new AwtFontMetrics(m_font);
         StringBuffer str = null;
         
         // compute the number of lines and the maximum width
@@ -479,7 +479,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
         if ( text != null && ColorLib.alpha(textColor) > 0 ) {
             g.setPaint(ColorLib.getColor(textColor));
             g.setFont(m_font);
-            FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics(m_font);
+            AwtFontMetrics fm = g.getFontMetrics(m_font);
 
             // compute available width
             double tw;
@@ -532,7 +532,7 @@ public class LabelRenderer extends AbstractShapeRenderer {
         }
     }
     
-    private final void drawString(AndroidGraphics2D g, FontMetrics fm, String text,
+    private final void drawString(AndroidGraphics2D g, AwtFontMetrics fm, String text,
             boolean useInt, double x, double y, double w)
     {
         // compute the x-coordinate

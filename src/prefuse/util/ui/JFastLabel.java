@@ -1,7 +1,7 @@
 package prefuse.util.ui;
 
 import awt.java.awt.Font;
-import awt.java.awt.FontMetrics;
+import awt.java.awt.AwtFontMetrics;
 import awt.java.awt.Graphics;
 import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Insets;

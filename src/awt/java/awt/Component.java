@@ -746,7 +746,7 @@ public abstract class Component implements ImageObserver, Serializable {
          * @return the font metrics.
          */
         @SuppressWarnings("deprecation")
-        public FontMetrics getFontMetrics() {
+        public AwtFontMetrics getFontMetrics() {
 //            return toolkit.getFontMetrics(Component.this.getFont());
         	return null;
         }

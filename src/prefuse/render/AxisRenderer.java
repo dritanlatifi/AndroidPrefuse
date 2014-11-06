@@ -1,6 +1,6 @@
 package prefuse.render;
 
-import awt.java.awt.FontMetrics;
+import awt.java.awt.AwtFontMetrics;
 import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Shape;
 import awt.java.awt.geom.AffineTransform;
@@ -86,7 +86,7 @@ public class AxisRenderer extends AbstractShapeRenderer {
         String label = item.getString(VisualItem.LABEL);
         if ( label == null ) return m_line;
         
-        FontMetrics fm = DEFAULT_GRAPHICS.getFontMetrics(item.getFont());
+        AwtFontMetrics fm = new AwtFontMetrics( item.getFont()) ;
         m_ascent = fm.getAscent();
         int h = fm.getHeight();
         int w = fm.stringWidth(label);

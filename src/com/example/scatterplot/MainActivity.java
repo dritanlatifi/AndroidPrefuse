@@ -154,10 +154,6 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		
-		
-		
-
 		// STEP 5: launching the visualization. The visualization must run after the Display is ready (Android View)  
 		// TODO for Dritan: using dispay.post seems to be not a good solution. Fix this before releasing the final solution 
 		display.post(new Runnable() {

@@ -1,5 +1,6 @@
 package prefuse.render;
 
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Shape;
 import awt.java.awt.geom.Ellipse2D;
 import awt.java.awt.geom.GeneralPath;
@@ -25,15 +26,15 @@ public class ShapeRenderer extends AbstractShapeRenderer {
     /**
      * Creates a new ShapeRenderer with default base size of 10 pixels.
      */
-    public ShapeRenderer() {
+    public ShapeRenderer(  ) {
     }
     
     /**
      * Creates a new ShapeRenderer with given base size.
      * @param size the base size in pixels
      */
-    public ShapeRenderer(int size) {
-       setBaseSize(size);
+    public ShapeRenderer(int size ) {
+    	setBaseSize(size);
     }
     
     /**

@@ -20,13 +20,7 @@
  */
 
 package awt.java.awt;
-
-import awt.java.awt.font.FontRenderContext;
-import awt.java.awt.font.LineMetrics;
-import awt.java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.text.CharacterIterator;
-
 import org.apache.harmony.awt.internal.nls.Messages;
 
 
@@ -48,7 +42,7 @@ import org.apache.harmony.awt.internal.nls.Messages;
  * 
  * @since Android 1.0
  */
-public abstract class FontMetrics implements Serializable {
+public class AwtFontMetrics implements Serializable {
 
     /**
      * The Constant serialVersionUID.
@@ -60,13 +54,17 @@ public abstract class FontMetrics implements Serializable {
      */
     protected Font font;
 
-    /**
+    public void setFont(Font font) {
+		this.font = font;
+	}
+
+	/**
      * Instantiates a new font metrics from the specified Font.
      * 
      * @param fnt
      *            the Font.
      */
-    protected FontMetrics(Font fnt) {
+    public AwtFontMetrics(Font fnt) {
         this.font = fnt;
     }
 
@@ -109,7 +107,8 @@ public abstract class FontMetrics implements Serializable {
      * @return the ascent of the Font associated with this FontMetrics.
      */
     public int getAscent() {
-        return 0;
+    	android.graphics.Paint.FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	return (int) fm.ascent;
     }
 
     /**
@@ -120,7 +119,8 @@ public abstract class FontMetrics implements Serializable {
      * @return the descent of the Font associated with this FontMetrics.
      */
     public int getDescent() {
-        return 0;
+    	android.graphics.Paint.FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	return (int) fm.descent;
     }
 
     /**
@@ -129,175 +129,8 @@ public abstract class FontMetrics implements Serializable {
      * @return the leading of the Font associated with this FontMetrics.
      */
     public int getLeading() {
-        return 0;
-    }
-
-    /**
-     * Gets the LineMetrics object for the specified CharacterIterator in the
-     * specified Graphics.
-     * 
-     * @param ci
-     *            the CharacterIterator.
-     * @param beginIndex
-     *            the offset.
-     * @param limit
-     *            the number of characters to be used.
-     * @param context
-     *            the Graphics.
-     * @return the LineMetrics object for the specified CharacterIterator in the
-     *         specified Graphics.
-     */
-    public LineMetrics getLineMetrics(CharacterIterator ci, int beginIndex, int limit,
-            Graphics context) {
-        return font.getLineMetrics(ci, beginIndex, limit, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the LineMetrics object for the specified String in the specified
-     * Graphics.
-     * 
-     * @param str
-     *            the String.
-     * @param context
-     *            the Graphics.
-     * @return the LineMetrics object for the specified String in the specified
-     *         Graphics.
-     */
-    public LineMetrics getLineMetrics(String str, Graphics context) {
-        return font.getLineMetrics(str, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the LineMetrics object for the specified character array in the
-     * specified Graphics.
-     * 
-     * @param chars
-     *            the character array.
-     * @param beginIndex
-     *            the offset of array.
-     * @param limit
-     *            the number of characters to be used.
-     * @param context
-     *            the Graphics.
-     * @return the LineMetrics object for the specified character array in the
-     *         specified Graphics.
-     */
-    public LineMetrics getLineMetrics(char[] chars, int beginIndex, int limit, Graphics context) {
-        return font.getLineMetrics(chars, beginIndex, limit, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the LineMetrics object for the specified String in the specified
-     * Graphics.
-     * 
-     * @param str
-     *            the String.
-     * @param beginIndex
-     *            the offset.
-     * @param limit
-     *            the number of characters to be used.
-     * @param context
-     *            the Graphics.
-     * @return the LineMetrics object for the specified String in the specified
-     *         Graphics.
-     */
-    public LineMetrics getLineMetrics(String str, int beginIndex, int limit, Graphics context) {
-        return font.getLineMetrics(str, beginIndex, limit, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Returns the character's maximum bounds in the specified Graphics context.
-     * 
-     * @param context
-     *            the Graphics context.
-     * @return the character's maximum bounds in the specified Graphics context.
-     */
-    public Rectangle2D getMaxCharBounds(Graphics context) {
-        return this.font.getMaxCharBounds(this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the bounds of the specified CharacterIterator in the specified
-     * Graphics context.
-     * 
-     * @param ci
-     *            the CharacterIterator.
-     * @param beginIndex
-     *            the begin offset of the array.
-     * @param limit
-     *            the number of characters.
-     * @param context
-     *            the Graphics.
-     * @return the bounds of the specified CharacterIterator in the specified
-     *         Graphics context.
-     */
-    public Rectangle2D getStringBounds(CharacterIterator ci, int beginIndex, int limit,
-            Graphics context) {
-        return font.getStringBounds(ci, beginIndex, limit, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the bounds of the specified String in the specified Graphics
-     * context.
-     * 
-     * @param str
-     *            the String.
-     * @param beginIndex
-     *            the begin offset of the array.
-     * @param limit
-     *            the number of characters.
-     * @param context
-     *            the Graphics.
-     * @return the bounds of the specified String in the specified Graphics
-     *         context.
-     */
-    public Rectangle2D getStringBounds(String str, int beginIndex, int limit, Graphics context) {
-        return font.getStringBounds(str, beginIndex, limit, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the bounds of the specified characters array in the specified
-     * Graphics context.
-     * 
-     * @param chars
-     *            the characters array.
-     * @param beginIndex
-     *            the begin offset of the array.
-     * @param limit
-     *            the number of characters.
-     * @param context
-     *            the Graphics.
-     * @return the bounds of the specified characters array in the specified
-     *         Graphics context.
-     */
-    public Rectangle2D getStringBounds(char[] chars, int beginIndex, int limit, Graphics context) {
-        return font.getStringBounds(chars, beginIndex, limit, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Gets the bounds of the specified String in the specified Graphics
-     * context.
-     * 
-     * @param str
-     *            the String.
-     * @param context
-     *            the Graphics.
-     * @return the bounds of the specified String in the specified Graphics
-     *         context.
-     */
-    public Rectangle2D getStringBounds(String str, Graphics context) {
-        return font.getStringBounds(str, this.getFRCFromGraphics(context));
-    }
-
-    /**
-     * Checks if the Font has uniform line metrics or not. The Font can contain
-     * characters of other fonts for covering character set. In this case the
-     * Font isn't uniform.
-     * 
-     * @return true, if the Font has uniform line metrics, false otherwise.
-     */
-    public boolean hasUniformLineMetrics() {
-        return this.font.hasUniformLineMetrics();
+    	android.graphics.Paint.FontMetrics fm = this.font.getPaint().getFontMetrics();
+    	return (int) fm.leading;
     }
 
     /**
@@ -372,7 +205,7 @@ public abstract class FontMetrics implements Serializable {
      * @return the advance width of the character.
      */
     public int charWidth(int ch) {
-        return 0;
+        return charWidth((char) ch);
     }
 
     /**
@@ -384,7 +217,7 @@ public abstract class FontMetrics implements Serializable {
      * @return the advance width of the character.
      */
     public int charWidth(char ch) {
-        return 0;
+        return stringWidth(Character.toString(ch));
     }
 
     /**
@@ -392,9 +225,9 @@ public abstract class FontMetrics implements Serializable {
      * 
      * @return the maximum advance width of character in this Font.
      */
-    public int getMaxAdvance() {
-        return 0;
-    }
+//    public int getMaxAdvance() {
+//        return 0;
+//    }
 
     /**
      * Gets the maximum font ascent of the Font associated with this
@@ -403,9 +236,9 @@ public abstract class FontMetrics implements Serializable {
      * @return the maximum font ascent of the Font associated with this
      *         FontMetrics.
      */
-    public int getMaxAscent() {
-        return 0;
-    }
+//    public int getMaxAscent() {
+//        return 0;
+//    }
 
     /**
      * Gets the maximum font descent of character in this Font.
@@ -413,28 +246,28 @@ public abstract class FontMetrics implements Serializable {
      * @return the maximum font descent of character in this Font.
      * @deprecated Replaced by getMaxDescent() method.
      */
-    @Deprecated
-    public int getMaxDecent() {
-        return 0;
-    }
+//    @Deprecated
+//    public int getMaxDecent() {
+//        return 0;
+//    }
 
     /**
      * Gets the maximum font descent of character in this Font.
      * 
      * @return the maximum font descent of character in this Font.
      */
-    public int getMaxDescent() {
-        return 0;
-    }
+//    public int getMaxDescent() {
+//        return 0;
+//    }
 
     /**
      * Gets the advance widths of the characters in the Font.
      * 
      * @return the advance widths of the characters in the Font.
      */
-    public int[] getWidths() {
-        return null;
-    }
+//    public int[] getWidths() {
+//        return null;
+//    }
 
     /**
      * Returns the advance width for the specified String in this Font.
@@ -444,24 +277,7 @@ public abstract class FontMetrics implements Serializable {
      * @return the the advance width for the specified String in this Font.
      */
     public int stringWidth(String str) {
-        return 0;
+        return (int) this.font.getPaint().getTextSize(); // TODO for Dritan: Check if this is correct
     }
 
-    /**
-     * Returns a FontRenderContext instance of the Graphics context specified.
-     * 
-     * @param context
-     *            the specified Graphics context.
-     * @return a FontRenderContext of the specified Graphics context.
-     */
-    private FontRenderContext getFRCFromGraphics(Graphics context) {
-        FontRenderContext frc;
-        if (context instanceof AndroidGraphics2D) {
-            frc = ((AndroidGraphics2D)context).getFontRenderContext();
-        } else {
-            frc = new FontRenderContext(null, false, false);
-        }
-
-        return frc;
-    }
 }

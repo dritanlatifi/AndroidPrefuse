@@ -200,7 +200,7 @@ public interface Graphics {
 	 * 
 	 * @return the font metrics of current font.
 	 */
-	public FontMetrics getFontMetrics();
+	public AwtFontMetrics getFontMetrics();
 
 	/**
 	 * Determines whether or not the specified rectangle intersects the current
@@ -757,7 +757,7 @@ public interface Graphics {
 	 *            the specified font.
 	 * @return the font metrics for the specified font.
 	 */
-	public FontMetrics getFontMetrics(Font font);
+	public AwtFontMetrics getFontMetrics(Font font);
 
 	/**
 	 * Sets the new clipping area specified by rectangle. The new clipping area

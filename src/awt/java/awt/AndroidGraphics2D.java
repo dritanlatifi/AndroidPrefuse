@@ -10,7 +10,6 @@ import java.util.Map;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import awt.java.awt.RenderingHints.Key;
 import awt.java.awt.font.FontRenderContext;
@@ -21,7 +20,6 @@ import awt.java.awt.geom.PathIterator;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import awt.java.awt.image.BufferedImageOp;
-import awt.java.awt.image.ColorModel;
 import awt.java.awt.image.ImageObserver;
 import awt.java.awt.image.RenderedImage;
 import awt.java.awt.image.renderable.RenderableImage;
@@ -32,9 +30,11 @@ import awt.java.awt.image.renderable.RenderableImage;
  */
 public class AndroidGraphics2D implements Graphics2D {
 
-	Paint currentPaint = new Paint();
-	Canvas canvas = null;
-	AffineTransform afineTransform = new AffineTransform();
+	protected Paint currentPaint = new Paint();
+	protected Canvas canvas = null;
+	protected AffineTransform afineTransform = new AffineTransform();
+	protected Font font = Font.DEFAULT_FONT;
+	protected AwtFontMetrics fm = new AwtFontMetrics( this.font );
 	
 	public AndroidGraphics2D(Canvas canvas)
 	{
@@ -144,9 +144,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getFontMetrics()
 	 */
 	@Override
-	public FontMetrics getFontMetrics() {
-		// TODO Auto-generated method stub
-		return null;
+	public AwtFontMetrics getFontMetrics() {
+
+		return this.fm;
 	}
 
 	/*
@@ -486,8 +486,7 @@ public class AndroidGraphics2D implements Graphics2D {
 	 */
 	@Override
 	public Font getFont() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.font;
 	}
 
 	/*
@@ -496,9 +495,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getFontMetrics(awt.java.awt.Font)
 	 */
 	@Override
-	public FontMetrics getFontMetrics(Font font) {
-		// TODO Auto-generated method stub
-		return null;
+	public AwtFontMetrics getFontMetrics(Font font) {
+		 
+		return new AwtFontMetrics(font);
 	}
 
 	/*
@@ -541,7 +540,8 @@ public class AndroidGraphics2D implements Graphics2D {
 	 */
 	@Override
 	public void setFont(Font font) {
-		// TODO Auto-generated method stub
+		this.font = font;
+		this.fm.setFont(font);
 
 	}
 

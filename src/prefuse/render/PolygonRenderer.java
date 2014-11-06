@@ -1,5 +1,6 @@
 package prefuse.render;
 
+import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Shape;
 import awt.java.awt.geom.GeneralPath;
 
@@ -58,7 +59,7 @@ public class PolygonRenderer extends AbstractShapeRenderer {
     /**
      * Create a new PolygonRenderer supporting straight lines.
      */
-    public PolygonRenderer() {
+    public PolygonRenderer( ) {
         this(Constants.EDGE_TYPE_LINE);
     }
     

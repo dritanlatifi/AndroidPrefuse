@@ -21,8 +21,8 @@ public interface Renderer {
      * things like compute string widths when an external graphics context
      * has not yet been provided.
      */
-    public static final AndroidGraphics2D DEFAULT_GRAPHICS = (AndroidGraphics2D)
-        new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).getGraphics();
+//    public static final AndroidGraphics2D DEFAULT_GRAPHICS = (AndroidGraphics2D)
+//        new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).getGraphics();
 
     /**
      * Render item into a AndroidGraphics2D context.

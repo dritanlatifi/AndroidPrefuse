@@ -94,7 +94,6 @@ public class EdgeRenderer extends AbstractShapeRenderer {
      * @see #setArrowType(int)
      */
     public EdgeRenderer(int edgeType, int arrowType) {
-        this();
         setEdgeType(edgeType);
         setArrowType(arrowType);
     }

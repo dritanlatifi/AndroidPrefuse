@@ -298,7 +298,7 @@ public abstract class CopyOfGraphics {
      * 
      * @return the font metrics of current font.
      */
-    public FontMetrics getFontMetrics() {
+    public AwtFontMetrics getFontMetrics() {
         return getFontMetrics(getFont());
     }
 
@@ -850,7 +850,7 @@ public abstract class CopyOfGraphics {
      *            the specified font.
      * @return the font metrics for the specified font.
      */
-    public abstract FontMetrics getFontMetrics(Font font);
+    public abstract AwtFontMetrics getFontMetrics(Font font);
 
     /**
      * Sets the new clipping area specified by rectangle. The new clipping area
