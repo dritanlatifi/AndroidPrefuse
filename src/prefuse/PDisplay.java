@@ -2320,6 +2320,10 @@ public class PDisplay extends View {
 		insets.set(this.m_insets.top, this.m_insets.left, this.m_insets.bottom, this.m_insets.right);
 		return insets;
 	}
+	
+	public Insets getInsets() {
+		return m_insets;
+	}	
 
 } // end of class Display
 
