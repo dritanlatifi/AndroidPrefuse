@@ -55,7 +55,6 @@ public class ZoomControl extends AbstractZoomControl
 
 		// don't let the object get too small or too large.
 		scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f));
-
 		// if (UILib.isButtonPressed(e, button)) {
 		if (display.isTranformInProgress() || yLast == -1)
 		{

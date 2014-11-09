@@ -4,15 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.ViewCompat;
 import android.text.Editable;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -29,8 +25,6 @@ import awt.java.awt.Image;
 import awt.java.awt.Point;
 import awt.java.awt.Rectangle;
 import awt.java.awt.RenderingHints;
-import awt.java.awt.event.ActionEvent;
-import awt.java.awt.event.ActionListener;
 
 import awt.java.awt.geom.AffineTransform;
 import awt.java.awt.geom.NoninvertibleTransformException;
@@ -38,7 +32,6 @@ import awt.java.awt.geom.Point2D;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import java.io.OutputStream;
-import java.util.EventListener;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -56,8 +49,6 @@ import prefuse.util.UpdateListener;
 import prefuse.util.collections.CopyOnWriteArrayList;
 import prefuse.util.display.BackgroundPainter;
 import prefuse.util.display.Clip;
-import prefuse.util.display.DebugStatsPainter;
-import prefuse.util.display.ExportDisplayAction;
 import prefuse.util.display.ItemBoundsListener;
 import prefuse.util.display.PaintListener;
 import prefuse.util.display.RenderingQueue;
@@ -99,7 +90,6 @@ import prefuse.visual.sort.ItemSorter;
  */
 public class PDisplay extends View
 {
-	private AndroidGraphics2D currentGraphic;
 	private VisualItem activeItem = null;
 
 	private InputEventCapturer inputEC = new InputEventCapturer();
@@ -826,8 +816,6 @@ public class PDisplay extends View
 		AndroidGraphics2D g2D = new AndroidGraphics2D(g);
 		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g); // TODO for Dritan: Analyze why this is necessary
 
-		this.currentGraphic = g2D;
-
 		int width = getWidth();
 		int height = getHeight(); // TODO for Dritan: get screen height
 		// Why not fire a pre-paint event here?
@@ -1019,11 +1007,6 @@ public class PDisplay extends View
 		// // Reset the quality to the state it was in before printing.
 		// m_highQuality = wasHighQuality;
 		// }
-	}
-
-	public AndroidGraphics2D getGraphic()
-	{
-		return currentGraphic;
 	}
 
 	/**
