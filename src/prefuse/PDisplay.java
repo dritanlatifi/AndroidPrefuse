@@ -1502,7 +1502,7 @@ public class PDisplay extends View
 			{ /* won't happen */
 			}
 			// repaint();
-			invalidate(); // TODO for Dritan: see if this is a correct
+			postInvalidate(); // TODO for Dritan: see if this is a correct
 							// replacement for the repaint method
 		}
 	} // end of inner class TransformActivity
@@ -2091,8 +2091,26 @@ public class PDisplay extends View
 				Control ctrl = (Control) lstnrs[i];
 				if (ctrl.isEnabled())
 					try
-					{
+				{
 						ctrl.itemEntered(item, event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+			}
+		}
+		
+		public void fireItemDoubleTaped(VisualItem item, MotionEvent event)
+		{
+			item.setHover(true);
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.itemDoubleTaped(item, event);
 					} catch (Exception ex)
 					{
 						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
@@ -2179,8 +2197,25 @@ public class PDisplay extends View
 				Control ctrl = (Control) lstnrs[i];
 				if (ctrl.isEnabled())
 					try
-					{
+				{
 						ctrl.onSingleTapUp(event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+			}
+		}
+		
+		public void fireDoubleTap(MotionEvent event)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.onDoubleTap(event);
 					} catch (Exception ex)
 					{
 						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
@@ -2253,8 +2288,20 @@ public class PDisplay extends View
 		@Override
 		public boolean onDoubleTap(MotionEvent event)
 		{
-			// TODO for Dritan: Implement this
-			return true;
+			synchronized (m_vis)
+			{
+				// check if we've gone over any item
+				Point p = new Point((int) event.getX(), (int) event.getY());
+				activeItem = findItem(p);
+				if (activeItem != null)
+				{
+					inputEC.fireItemDoubleTaped(activeItem, event);
+				} else
+				{
+					inputEC.fireDoubleTap(event);
+				}
+				return true;
+			}
 		}
 
 		@Override

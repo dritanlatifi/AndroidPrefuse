@@ -94,10 +94,18 @@ public interface Control extends EventListener, ScaleGestureDetector.OnScaleGest
 	 * Invoked when the mouse enters a VisualItem.
 	 */
 	public void itemEntered(VisualItem item, MotionEvent e);
+	
 	/**
-	 * Invoked when the mouse enters a VisualItem.
+	 * Invoked when the pressing on a item for a "long" time (approximately 2 sec.)
 	 */
 	public void itemLongPress(VisualItem item, MotionEvent e);
+
+	/**
+	 * Invoked when the taping on a item twice
+	 */	
+	public void itemDoubleTaped(VisualItem item, MotionEvent e);
+	
+	
 
 	/**
 	 * Invoked when the mouse exits a VisualItem.

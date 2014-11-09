@@ -268,4 +268,10 @@ public class ControlAdapter implements Control
 		return display;
 	}
 
+	@Override
+	public void itemDoubleTaped(VisualItem item, MotionEvent e)
+	{
+		
+	}
+
 } // end of class ControlAdapter

@@ -22,6 +22,7 @@ import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ToolTipControl;
 import prefuse.controls.ZoomControl;
+import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Table;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.render.AbstractShapeRenderer;
@@ -153,7 +154,7 @@ public class MainActivity extends Activity
 		
 //		display.addControlListener(new PanControl());
 		display.addControlListener(new ZoomControl());
-//		display.addControlListener(new ZoomToFitControl());
+		display.addControlListener(new ZoomToFitControl());
 		
 
 		// STEP 5: launching the visualization. The visualization must run after
