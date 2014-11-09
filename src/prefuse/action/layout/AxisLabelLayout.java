@@ -1,5 +1,6 @@
 package prefuse.action.layout;
 
+import awt.java.awt.Font;
 import awt.java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
 import java.util.Iterator;
@@ -248,7 +249,7 @@ public class AxisLabelLayout extends Layout {
             // compute the layout
             switch ( m_scale ) {
             case Constants.LOG_SCALE:
-                logLayout(labels);
+                logLayout(labels); 
                 break;
             case Constants.SQRT_SCALE:
                 sqrtLayout(labels);
@@ -307,7 +308,8 @@ public class AxisLabelLayout extends Layout {
                 item.setVisible(true);
                 item.setEndVisible(true);
             } else {
-                VisualItem item = labels.addItem();
+                VisualItem item = labels.addItem(); 
+//                item.setFont(new Font("default", Font.PLAIN, 20)); // TODO for Dritan: see where the fontsize of the axislabels can be changed
                 item.set(LABEL, m_nf.format(v));
                 item.setDouble(VALUE, v);
                 double f = pspan==0 ? 0 : ((v-m_prevlo)/pspan);

@@ -1311,7 +1311,9 @@ public class Visualization {
             ((VisualItem)items.next()).validateBounds();
         }
         for ( int i=0; i<m_displays.size(); ++i ) {
-            getDisplay(i).invalidate(); // TODO for Dritan: see if invalidate replaces the repaint method
+        	getDisplay(i).postInvalidate();
+//          getDisplay(i).invalidate(); // TODO for Dritan: see if invalidate replaces the repaint method
+
         }
     }
     

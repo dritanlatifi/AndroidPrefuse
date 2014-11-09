@@ -84,7 +84,7 @@ public class ZoomingPanControl extends ControlAdapter {
 //    }
     
     /**
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+     * @see java.awt.event.MouseListener#touchReleased(java.awt.event.MouseEvent)
      */
 //    public void mouseReleased(MouseEvent e) {
 //        if ( SwingUtilities.isLeftMouseButton(e) ) {

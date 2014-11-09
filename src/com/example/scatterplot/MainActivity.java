@@ -20,6 +20,8 @@ import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataShapeAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
+import prefuse.controls.ToolTipControl;
+import prefuse.controls.ZoomControl;
 import prefuse.data.Table;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.render.AbstractShapeRenderer;
@@ -45,7 +47,7 @@ public class MainActivity extends Activity
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		// Remove notification bar
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		// this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setContentView(createVisualizationV6(generateTable()));
 	}
@@ -76,7 +78,7 @@ public class MainActivity extends Activity
 		/* STEP 2: set up renderers for the visual data */
 		vis.setRendererFactory(new RendererFactory()
 		{
-			AbstractShapeRenderer sr = new ShapeRenderer(11);
+			AbstractShapeRenderer sr = new ShapeRenderer(90);
 			Renderer arY = new AxisRenderer(Constants.FAR_LEFT, Constants.CENTER);
 			Renderer arX = new AxisRenderer(Constants.CENTER, Constants.FAR_BOTTOM);
 
@@ -100,7 +102,7 @@ public class MainActivity extends Activity
 		AxisLabelLayout y_labels = new AxisLabelLayout("ylab", y_axis, boundsLabelsY);
 
 		// define the visible range for the y axis
-		y_axis.setRangeModel(new NumberRangeModel(1, 40, 1, 40));
+		y_axis.setRangeModel(new NumberRangeModel(19, 40, 19, 40));
 
 		// use square root scale for y axis
 		y_axis.setScale(Constants.SQRT_SCALE);
@@ -111,7 +113,7 @@ public class MainActivity extends Activity
 		nf.setMaximumFractionDigits(1);
 		nf.setMinimumFractionDigits(1);
 		y_labels.setNumberFormat(nf);
-
+		
 		ColorAction color = new ColorAction("data", VisualItem.STROKECOLOR, ColorLib.rgb(100, 100, 255));
 
 		int[] palette =
@@ -145,6 +147,14 @@ public class MainActivity extends Activity
 				return score;
 			}
 		});
+
+		ToolTipControl ttc = new ToolTipControl("label");
+		display.addControlListener(ttc);
+		
+//		display.addControlListener(new PanControl());
+		display.addControlListener(new ZoomControl());
+//		display.addControlListener(new ZoomToFitControl());
+		
 
 		// STEP 5: launching the visualization. The visualization must run after
 		// the Display is ready (Android View)

@@ -5,10 +5,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.ViewCompat;
 import android.text.Editable;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.EditText;
 import awt.java.awt.Color;
@@ -17,35 +24,23 @@ import awt.java.awt.Font;
 import awt.java.awt.Graphics;
 import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Insets;
-//import awt.java.awt.GraphicsEnvironment;
+
 import awt.java.awt.Image;
 import awt.java.awt.Point;
 import awt.java.awt.Rectangle;
 import awt.java.awt.RenderingHints;
 import awt.java.awt.event.ActionEvent;
 import awt.java.awt.event.ActionListener;
-//import awt.java.awt.event.KeyEvent;
-//import awt.java.awt.event.KeyListener;
-//import awt.java.awt.event.MouseEvent;
-//import awt.java.awt.event.MouseListener;
-//import awt.java.awt.event.MouseMotionListener;
-//import awt.java.awt.event.MouseWheelEvent;
-//import awt.java.awt.event.MouseWheelListener;
+
 import awt.java.awt.geom.AffineTransform;
 import awt.java.awt.geom.NoninvertibleTransformException;
 import awt.java.awt.geom.Point2D;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import java.io.OutputStream;
+import java.util.EventListener;
 import java.util.Iterator;
 import java.util.logging.Logger;
-
-//import javax.imageio.ImageIO;
-//import javax.swing.JComponent;
-//import javax.swing.JTextArea;
-//import javax.swing.JTextField;
-//import javax.swing.KeyStroke;
-//import javax.swing.text.JTextComponent;
 
 import prefuse.activity.PActivity;
 import prefuse.activity.SlowInSlowOutPacer;
@@ -72,44 +67,28 @@ import prefuse.visual.sort.ItemSorter;
 
 /**
  * <p>
- * User interface component that provides an interactive view onto a
- * visualization. The Display is responsible for drawing items to the screen and
- * providing callbacks for user interface actions such as mouse and keyboard
- * events. A Display must be associated with an {@link prefuse.Visualization}
- * from which it pulls the items to visualize.
+ * User interface component that provides an interactive view onto a visualization. The Display is responsible for drawing items to the screen and providing callbacks for user interface actions such
+ * as mouse and keyboard events. A Display must be associated with an {@link prefuse.Visualization} from which it pulls the items to visualize.
  * </p>
  * 
  * <p>
- * To control which {@link prefuse.visual.VisualItem} instances are drawn, the
- * Display also maintains an optional {@link prefuse.data.expression.Predicate}
- * for filtering items. The drawing order of items is controlled by an
- * {@link prefuse.visual.sort.ItemSorter} instance, which calculates a score for
- * each item. Items with higher scores are drawn later, and hence on top of
- * lower scoring items.
+ * To control which {@link prefuse.visual.VisualItem} instances are drawn, the Display also maintains an optional {@link prefuse.data.expression.Predicate} for filtering items. The drawing order of
+ * items is controlled by an {@link prefuse.visual.sort.ItemSorter} instance, which calculates a score for each item. Items with higher scores are drawn later, and hence on top of lower scoring items.
  * </p>
  * 
  * <p>
- * The {@link prefuse.controls.Control Control} interface provides the user
- * interface callbacks for supporting interaction. The {@link prefuse.controls}
- * package contains a number of pre-built <code>Control</code> implementations
- * for common interactions.
+ * The {@link prefuse.controls.Control Control} interface provides the user interface callbacks for supporting interaction. The {@link prefuse.controls} package contains a number of pre-built
+ * <code>Control</code> implementations for common interactions.
  * </p>
  * 
  * <p>
- * The Display class also supports arbitrary graphics transforms through the
- * <code>java.awt.geom.AffineTransform</code> class. The
- * {@link #setTransform(java.awt.geom.AffineTransform) setTransform} method
- * allows arbitrary transforms to be applied, while the
- * {@link #pan(double,double) pan} and
- * {@link #zoom(java.awt.geom.Point2D,double) zoom} methods provide convenience
- * methods that appropriately update the current transform to achieve panning
- * and zooming of the presentation space.
+ * The Display class also supports arbitrary graphics transforms through the <code>java.awt.geom.AffineTransform</code> class. The {@link #setTransform(java.awt.geom.AffineTransform) setTransform}
+ * method allows arbitrary transforms to be applied, while the {@link #pan(double,double) pan} and {@link #zoom(java.awt.geom.Point2D,double) zoom} methods provide convenience methods that
+ * appropriately update the current transform to achieve panning and zooming of the presentation space.
  * </p>
  * 
  * <p>
- * Additionally, each Display instance also supports use of a text editor to
- * facilitate direct editing of text. See the various
- * {@link #editText(prefuse.visual.VisualItem, String)} methods.
+ * Additionally, each Display instance also supports use of a text editor to facilitate direct editing of text. See the various {@link #editText(prefuse.visual.VisualItem, String)} methods.
  * </p>
  * 
  * @version 1.0
@@ -118,10 +97,34 @@ import prefuse.visual.sort.ItemSorter;
  * @see prefuse.controls.Control
  * @see prefuse.controls
  */
-public class PDisplay extends View {
+public class PDisplay extends View
+{
+	private AndroidGraphics2D currentGraphic;
+	private VisualItem activeItem = null;
 
-	private static final Logger s_logger = Logger.getLogger(PDisplay.class
-			.getName());
+	private InputEventCapturer inputEC = new InputEventCapturer();
+
+	// State objects and values related to gesture tracking.
+	private ScaleGestureDetector mScaleGestureDetector;
+	private GestureDetectorCompat mGestureDetector;
+
+	enum TouchActions
+	{
+		// user not touching the screen
+		NONE
+		// Pinch or Zoom action in progress , 2 fingers in play
+		, ZOOM
+		// single finger drag in progress
+		, DRAG
+	}
+
+	private boolean touchDown = false;
+
+	TouchActions touchMode = TouchActions.NONE;
+	float oldDist = 0.0f;
+	float newDist = 0.0f;
+
+	private static final Logger s_logger = Logger.getLogger(PDisplay.class.getName());
 
 	// visual item source
 	protected Visualization m_vis;
@@ -167,62 +170,54 @@ public class PDisplay extends View {
 	private String m_editAttribute;
 
 	// imitate Insets of JComponent
-	protected Insets      m_insets = new Insets(0,0,0,0);	
-	
+	protected Insets m_insets = new Insets(0, 0, 0, 0);
+
 	/**
-	 * Creates a new Display instance. You will need to associate this Display
-	 * with a {@link Visualization} for it to display anything.
+	 * Creates a new Display instance. You will need to associate this Display with a {@link Visualization} for it to display anything.
 	 */
-	public PDisplay(Context context) {
+	public PDisplay(Context context)
+	{
 		this(context, null);
 	}
 
 	/**
-	 * Creates a new Display associated with the given Visualization. By
-	 * default, all {@link prefuse.visual.VisualItem} instances in the
-	 * {@link Visualization} will be drawn by the Display.
+	 * Creates a new Display associated with the given Visualization. By default, all {@link prefuse.visual.VisualItem} instances in the {@link Visualization} will be drawn by the Display.
 	 * 
 	 * @param visualization
 	 *            the {@link Visualization} backing this Display
 	 */
-	public PDisplay(Context context, Visualization visualization) {
+	public PDisplay(Context context, Visualization visualization)
+	{
 		this(context, visualization, (Predicate) null);
 	}
 
 	/**
-	 * Creates a new Display associated with the given Visualization that draws
-	 * all VisualItems in the visualization that pass the given Predicate. The
-	 * predicate string will be parsed by the
-	 * {@link prefuse.data.expression.parser.ExpressionParser} to get a
-	 * {@link prefuse.data.expression.Predicate} instance.
+	 * Creates a new Display associated with the given Visualization that draws all VisualItems in the visualization that pass the given Predicate. The predicate string will be parsed by the
+	 * {@link prefuse.data.expression.parser.ExpressionParser} to get a {@link prefuse.data.expression.Predicate} instance.
 	 * 
 	 * @param visualization
 	 *            the {@link Visualization} backing this Display
 	 * @param predicate
-	 *            a predicate expression in the prefuse expression language.
-	 *            This expression will be parsed; if the parsing fails or does
-	 *            not result in a Predicate instance, an exception will result.
+	 *            a predicate expression in the prefuse expression language. This expression will be parsed; if the parsing fails or does not result in a Predicate instance, an exception will result.
 	 */
-	public PDisplay(Context context, Visualization visualization,
-			String predicate) {
-		this(context, visualization, (Predicate) ExpressionParser.parse(
-				predicate, true));
+	public PDisplay(Context context, Visualization visualization, String predicate)
+	{
+		this(context, visualization, (Predicate) ExpressionParser.parse(predicate, true));
 	}
 
 	/**
-	 * Creates a new Display associated with the given Visualization that draws
-	 * all VisualItems in the visualization that pass the given Predicate.
+	 * Creates a new Display associated with the given Visualization that draws all VisualItems in the visualization that pass the given Predicate.
 	 * 
 	 * @param visualization
 	 *            the {@link Visualization} backing this Display
 	 * @param predicate
 	 *            the filtering {@link prefuse.data.expression.Predicate}
 	 */
-	public PDisplay(Context context, Visualization visualization,
-			Predicate predicate) {
+	public PDisplay(Context context, Visualization visualization, Predicate predicate)
+	{
 		super(context);
 		// setDoubleBuffered(false);
-		setBackgroundColor(android.graphics.Color.WHITE); 
+		setBackgroundColor(android.graphics.Color.WHITE);
 
 		// initialize text editor
 		m_editing = false;
@@ -230,6 +225,11 @@ public class PDisplay extends View {
 		m_editor.setVisibility(View.GONE);
 
 		// register input event capturer TODO for Dritan: implement Event
+
+		// Sets up interactions
+		mScaleGestureDetector = new ScaleGestureDetector(context, mScaleGestureListener);
+		mGestureDetector = new GestureDetectorCompat(context, mGestureListener);
+
 		// handlers
 		// InputEventCapturer iec = new InputEventCapturer();
 		// addMouseListener(iec);
@@ -238,8 +238,10 @@ public class PDisplay extends View {
 		// addKeyListener(iec);
 
 		// invalidate the display when the filter changes
-		m_predicate.addExpressionListener(new UpdateListener() {
-			public void update(Object src) {
+		m_predicate.addExpressionListener(new UpdateListener()
+		{
+			public void update(Object src)
+			{
 				damageReport();
 			}
 		});
@@ -250,19 +252,17 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Resets the display by clearing the offscreen buffer and flushing the
-	 * internal rendering queue. This method can help reclaim memory when a
-	 * Display is not visible.
+	 * Resets the display by clearing the offscreen buffer and flushing the internal rendering queue. This method can help reclaim memory when a Display is not visible.
 	 */
-	public void reset() {
+	public void reset()
+	{
 		m_offscreen = null;
 		m_queue.clean();
 	}
 
 	/**
-	 * Set the size of the Display. TODO for Dritan: on android size of View
-	 * cannot be set
-	 * TODO for Dritan: implement this
+	 * Set the size of the Display. TODO for Dritan: on android size of View cannot be set TODO for Dritan: implement this
+	 * 
 	 * @incomplete
 	 * @param width
 	 *            the width of the Display in pixels
@@ -270,56 +270,55 @@ public class PDisplay extends View {
 	 *            the height of the Display in pixels
 	 * 
 	 */
-	public void setSize(int width, int height) {
+	public void setSize(int width, int height)
+	{
 		// m_offscreen = null;
 		// setPreferredSize(new Dimension(width, height));
 		// super.setSize(width, height);
 	}
 
 	/**
-	 * Set the size of the Display. TODO for Dritan: on android size of View
-	 * cannot be set
+	 * Set the size of the Display. TODO for Dritan: on android size of View cannot be set
 	 * 
 	 * @param d
 	 *            the dimensions of the Display in pixels
 	 */
-	public void setSize(Dimension d) {
+	public void setSize(Dimension d)
+	{
 		// m_offscreen = null;
 		// setPreferredSize(d);
 		// super.setSize(d);
 	}
 
 	/**
-	 * Invalidates this component. Overridden to ensure that an internal damage
-	 * report is generated. TODO for Dritan: see if the invalidate method from
-	 * android.View is the same as java.awt.Component#invalidate => i.e. see if
-	 * call of damageReport is necessary
+	 * Invalidates this component. Overridden to ensure that an internal damage report is generated. TODO for Dritan: see if the invalidate method from android.View is the same as
+	 * java.awt.Component#invalidate => i.e. see if call of damageReport is necessary
 	 * 
 	 * @see java.awt.Component#invalidate()
 	 */
-	public void invalidate() {
+	public void invalidate()
+	{
 		damageReport();
 		super.invalidate();
 	}
 
 	/**
-	 * @see java.awt.Component#setBounds(int, int, int, int) TODO for Dritan: on
-	 *      android size of View cannot be set
+	 * @see java.awt.Component#setBounds(int, int, int, int) TODO for Dritan: on android size of View cannot be set
 	 */
-	public void setBounds(int x, int y, int w, int h) {
+	public void setBounds(int x, int y, int w, int h)
+	{
 		m_offscreen = null;
 		// super.setBounds(x, y, w, h);
 	}
 
 	/**
-	 * Sets the font used by this Display. This determines the font used by this
-	 * Display's text editor and in any debugging text. TODO for Dritan: no
-	 * support for changing font at androidPrefuse 1.0
+	 * Sets the font used by this Display. This determines the font used by this Display's text editor and in any debugging text. TODO for Dritan: no support for changing font at androidPrefuse 1.0
 	 * 
 	 * @param f
 	 *            the Font to use
 	 */
-	public void setFont(Font f) {
+	public void setFont(Font f)
+	{
 	}
 
 	/**
@@ -327,31 +326,31 @@ public class PDisplay extends View {
 	 * 
 	 * @return the frame rate
 	 */
-	public double getFrameRate() {
+	public double getFrameRate()
+	{
 		return frameRate;
 	}
 
 	/**
-	 * Determines if the Display uses a higher quality rendering, using
-	 * anti-aliasing. This causes drawing to be much slower, however, and so is
-	 * disabled by default.
+	 * Determines if the Display uses a higher quality rendering, using anti-aliasing. This causes drawing to be much slower, however, and so is disabled by default.
 	 * 
 	 * @param on
 	 *            true to enable anti-aliased rendering, false to disable it
 	 */
-	public void setHighQuality(boolean on) {
+	public void setHighQuality(boolean on)
+	{
 		if (m_highQuality != on)
 			damageReport();
 		m_highQuality = on;
 	}
 
 	/**
-	 * Indicates if the Display is using high quality (return value true) or
-	 * regular quality (return value false) rendering.
+	 * Indicates if the Display is using high quality (return value true) or regular quality (return value false) rendering.
 	 * 
 	 * @return true if high quality rendering is enabled, false otherwise
 	 */
-	public boolean isHighQuality() {
+	public boolean isHighQuality()
+	{
 		return m_highQuality;
 	}
 
@@ -360,25 +359,27 @@ public class PDisplay extends View {
 	 * 
 	 * @return this Display's {@link Visualization}
 	 */
-	public Visualization getVisualization() {
+	public Visualization getVisualization()
+	{
 		return m_vis;
 	}
 
 	/**
-	 * Set the Visualiztion associated with this Display. This Display will
-	 * render the items contained in the provided visualization. If this Display
-	 * is already associated with a different Visualization, the Display
-	 * unregisters itself with the previous one.
+	 * Set the Visualiztion associated with this Display. This Display will render the items contained in the provided visualization. If this Display is already associated with a different
+	 * Visualization, the Display unregisters itself with the previous one.
 	 * 
 	 * @param vis
 	 *            the backing {@link Visualization} to use.
 	 */
-	public void setVisualization(Visualization vis) {
+	public void setVisualization(Visualization vis)
+	{
 		// TODO: synchronization?
-		if (m_vis == vis) {
+		if (m_vis == vis)
+		{
 			// nothing need be done
 			return;
-		} else if (m_vis != null) {
+		} else if (m_vis != null)
+		{
 			// remove this display from it's previous registry
 			m_vis.removeDisplay(this);
 		}
@@ -388,81 +389,79 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Returns the filtering Predicate used to control what items are drawn by
-	 * this display.
+	 * Returns the filtering Predicate used to control what items are drawn by this display.
 	 * 
 	 * @return the filtering {@link prefuse.data.expression.Predicate}
 	 */
-	public Predicate getPredicate() {
-		if (m_predicate.size() == 1) {
+	public Predicate getPredicate()
+	{
+		if (m_predicate.size() == 1)
+		{
 			return BooleanLiteral.TRUE;
-		} else {
+		} else
+		{
 			return m_predicate.get(0);
 		}
 	}
 
 	/**
-	 * Sets the filtering Predicate used to control what items are drawn by this
-	 * Display.
+	 * Sets the filtering Predicate used to control what items are drawn by this Display.
 	 * 
 	 * @param expr
-	 *            the filtering predicate to use. The predicate string will be
-	 *            parsed by the
-	 *            {@link prefuse.data.expression.parser.ExpressionParser}. If
-	 *            the parse fails or does not result in a
-	 *            {@link prefuse.data.expression.Predicate} instance, an
-	 *            exception will be thrown.
+	 *            the filtering predicate to use. The predicate string will be parsed by the {@link prefuse.data.expression.parser.ExpressionParser}. If the parse fails or does not result in a
+	 *            {@link prefuse.data.expression.Predicate} instance, an exception will be thrown.
 	 */
-	public void setPredicate(String expr) {
+	public void setPredicate(String expr)
+	{
 		Predicate p = (Predicate) ExpressionParser.parse(expr, true);
 		setPredicate(p);
 	}
 
 	/**
-	 * Sets the filtering Predicate used to control what items are drawn by this
-	 * Display.
+	 * Sets the filtering Predicate used to control what items are drawn by this Display.
 	 * 
 	 * @param p
 	 *            the filtering {@link prefuse.data.expression.Predicate} to use
 	 */
-	public synchronized void setPredicate(Predicate p) {
-		if (p == null) {
+	public synchronized void setPredicate(Predicate p)
+	{
+		if (p == null)
+		{
 			m_predicate.set(VisiblePredicate.TRUE);
-		} else {
-			m_predicate.set(new Predicate[] { p, VisiblePredicate.TRUE });
+		} else
+		{
+			m_predicate.set(new Predicate[]
+			{ p, VisiblePredicate.TRUE });
 		}
 	}
 
 	/**
-	 * Returns the number of visible items processed by this Display. This
-	 * includes items not currently visible on screen due to the current panning
-	 * or zooming state.
+	 * Returns the number of visible items processed by this Display. This includes items not currently visible on screen due to the current panning or zooming state.
 	 * 
 	 * @return the count of visible items
 	 */
-	public int getVisibleItemCount() {
+	public int getVisibleItemCount()
+	{
 		return m_visibleCount;
 	}
 
 	/**
-	 * Get the ItemSorter that determines the rendering order of the
-	 * VisualItems. Items are drawn in ascending order of the scores provided by
-	 * the ItemSorter.
+	 * Get the ItemSorter that determines the rendering order of the VisualItems. Items are drawn in ascending order of the scores provided by the ItemSorter.
 	 * 
 	 * @return this Display's {@link prefuse.visual.sort.ItemSorter}
 	 */
-	public ItemSorter getItemSorter() {
+	public ItemSorter getItemSorter()
+	{
 		return m_queue.sort;
 	}
 
 	/**
-	 * Set the ItemSorter that determines the rendering order of the
-	 * VisualItems. Items are drawn in ascending order of the scores provided by
-	 * the ItemSorter.
+	 * Set the ItemSorter that determines the rendering order of the VisualItems. Items are drawn in ascending order of the scores provided by the ItemSorter.
 	 * 
 	 * @return the {@link prefuse.visual.sort.ItemSorter} to use
 	 */
-	public synchronized void setItemSorter(ItemSorter cmp) {
+	public synchronized void setItemSorter(ItemSorter cmp)
+	{
 		damageReport();
 		m_queue.sort = cmp;
 	}
@@ -471,18 +470,14 @@ public class PDisplay extends View {
 	 * Set a background image for this display.
 	 * 
 	 * @param image
-	 *            the background Image. If a null value is provided, than no
-	 *            background image will be shown.
+	 *            the background Image. If a null value is provided, than no background image will be shown.
 	 * @param fixed
-	 *            true if the background image should stay in a fixed position,
-	 *            invariant to panning, zooming, or rotation; false if the image
-	 *            should be subject to view transforms
+	 *            true if the background image should stay in a fixed position, invariant to panning, zooming, or rotation; false if the image should be subject to view transforms
 	 * @param tileImage
-	 *            true to tile the image across the visible background, false to
-	 *            only include the image once
+	 *            true to tile the image across the visible background, false to only include the image once
 	 */
-	public synchronized void setBackgroundImage(Image image, boolean fixed,
-			boolean tileImage) {
+	public synchronized void setBackgroundImage(Image image, boolean fixed, boolean tileImage)
+	{
 		BackgroundPainter bg = null;
 		if (image != null)
 			bg = new BackgroundPainter(image, fixed, tileImage);
@@ -493,27 +488,23 @@ public class PDisplay extends View {
 	 * Set a background image for this display.
 	 * 
 	 * @param location
-	 *            a location String of where to retrieve the image file from.
-	 *            Uses {@link prefuse.util.io.IOLib#urlFromString(String)} to
-	 *            resolve the String. If a null value is provided, than no
+	 *            a location String of where to retrieve the image file from. Uses {@link prefuse.util.io.IOLib#urlFromString(String)} to resolve the String. If a null value is provided, than no
 	 *            background image will be shown.
 	 * @param fixed
-	 *            true if the background image should stay in a fixed position,
-	 *            invariant to panning, zooming, or rotation; false if the image
-	 *            should be subject to view transforms
+	 *            true if the background image should stay in a fixed position, invariant to panning, zooming, or rotation; false if the image should be subject to view transforms
 	 * @param tileImage
-	 *            true to tile the image across the visible background, false to
-	 *            only include the image once
+	 *            true to tile the image across the visible background, false to only include the image once
 	 */
-	public synchronized void setBackgroundImage(String location, boolean fixed,
-			boolean tileImage) {
+	public synchronized void setBackgroundImage(String location, boolean fixed, boolean tileImage)
+	{
 		BackgroundPainter bg = null;
 		if (location != null)
 			bg = new BackgroundPainter(location, fixed, tileImage);
 		setBackgroundPainter(bg);
 	}
 
-	private void setBackgroundPainter(BackgroundPainter bg) {
+	private void setBackgroundPainter(BackgroundPainter bg)
+	{
 		if (m_bgpainter != null)
 			removePaintListener(m_bgpainter);
 		m_bgpainter = bg;
@@ -525,52 +516,33 @@ public class PDisplay extends View {
 	// Clip / Bounds Management
 
 	/**
-	 * Indicates if damage/redraw rendering is enabled. If enabled, the display
-	 * will only redraw within the bounding box of all areas that have changed
-	 * since the last rendering operation. For small changes, such as a single
-	 * item being dragged, this can result in a significant performance
-	 * increase. By default, the damage/redraw optimization is enabled. It can
-	 * be disabled, however, if rendering artifacts are appearing in your
-	 * visualization. Be careful though, as this may not be the best solution.
-	 * Rendering artifacts may result because the item bounds returned by
-	 * {@link prefuse.visual.VisualItem#getBounds()} are not accurate and the
-	 * item's {@link prefuse.render.Renderer} is drawing outside of the reported
-	 * bounds. In this case, there is usually a bug in the Renderer. One
-	 * reported problem arises from Java itself, however, which inaccurately
-	 * redraws images outside of their reported bounds. If you have a
-	 * visulization with a number of images and are seeing rendering artifacts,
-	 * try disabling damage/redraw.
+	 * Indicates if damage/redraw rendering is enabled. If enabled, the display will only redraw within the bounding box of all areas that have changed since the last rendering operation. For small
+	 * changes, such as a single item being dragged, this can result in a significant performance increase. By default, the damage/redraw optimization is enabled. It can be disabled, however, if
+	 * rendering artifacts are appearing in your visualization. Be careful though, as this may not be the best solution. Rendering artifacts may result because the item bounds returned by
+	 * {@link prefuse.visual.VisualItem#getBounds()} are not accurate and the item's {@link prefuse.render.Renderer} is drawing outside of the reported bounds. In this case, there is usually a bug in
+	 * the Renderer. One reported problem arises from Java itself, however, which inaccurately redraws images outside of their reported bounds. If you have a visulization with a number of images and
+	 * are seeing rendering artifacts, try disabling damage/redraw.
 	 * 
-	 * @return true if damage/redraw optimizations are enabled, false otherwise
-	 *         (in which case the entire Display is redrawn upon a repaint)
+	 * @return true if damage/redraw optimizations are enabled, false otherwise (in which case the entire Display is redrawn upon a repaint)
 	 */
-	public synchronized boolean isDamageRedraw() {
+	public synchronized boolean isDamageRedraw()
+	{
 		return m_damageRedraw;
 	}
 
 	/**
-	 * Sets if damage/redraw rendering is enabled. If enabled, the display will
-	 * only redraw within the bounding box of all areas that have changed since
-	 * the last rendering operation. For small changes, such as a single item
-	 * being dragged, this can result in a significant performance increase. By
-	 * default, the damage/redraw optimization is enabled. It can be disabled,
-	 * however, if rendering artifacts are appearing in your visualization. Be
-	 * careful though, as this may not be the best solution. Rendering artifacts
-	 * may result because the item bounds returned by
-	 * {@link prefuse.visual.VisualItem#getBounds()} are not accurate and the
-	 * item's {@link prefuse.render.Renderer} is drawing outside of the reported
-	 * bounds. In this case, there is usually a bug in the Renderer. One
-	 * reported problem arises from Java itself, however, which inaccurately
-	 * redraws images outside of their reported bounds. If you have a
-	 * visulization with a number of images and are seeing rendering artifacts,
-	 * try disabling damage/redraw.
+	 * Sets if damage/redraw rendering is enabled. If enabled, the display will only redraw within the bounding box of all areas that have changed since the last rendering operation. For small
+	 * changes, such as a single item being dragged, this can result in a significant performance increase. By default, the damage/redraw optimization is enabled. It can be disabled, however, if
+	 * rendering artifacts are appearing in your visualization. Be careful though, as this may not be the best solution. Rendering artifacts may result because the item bounds returned by
+	 * {@link prefuse.visual.VisualItem#getBounds()} are not accurate and the item's {@link prefuse.render.Renderer} is drawing outside of the reported bounds. In this case, there is usually a bug in
+	 * the Renderer. One reported problem arises from Java itself, however, which inaccurately redraws images outside of their reported bounds. If you have a visulization with a number of images and
+	 * are seeing rendering artifacts, try disabling damage/redraw.
 	 * 
 	 * @param b
-	 *            true to enable damage/redraw optimizations, false otherwise
-	 *            (in which case the entire Display will be redrawn upon a
-	 *            repaint)
+	 *            true to enable damage/redraw optimizations, false otherwise (in which case the entire Display will be redrawn upon a repaint)
 	 */
-	public synchronized void setDamageRedraw(boolean b) {
+	public synchronized void setDamageRedraw(boolean b)
+	{
 		m_damageRedraw = b;
 		m_clip.invalidate();
 	}
@@ -581,7 +553,8 @@ public class PDisplay extends View {
 	 * @param region
 	 *            the damaged region, in absolute coordinates
 	 */
-	public synchronized void damageReport(Rectangle2D region) {
+	public synchronized void damageReport(Rectangle2D region)
+	{
 		if (m_damageRedraw)
 			m_clip.union(region);
 	}
@@ -589,44 +562,42 @@ public class PDisplay extends View {
 	/**
 	 * Reports damage to the entire Display.
 	 */
-	public synchronized void damageReport() {
+	public synchronized void damageReport()
+	{
 		m_clip.invalidate();
 	}
 
 	/**
-	 * Clears any reports of damaged regions, causing the Display to believe
-	 * that the display contents are up-to-date. If used incorrectly this can
-	 * cause inaccurate rendering. <strong>Call this method only if you know
-	 * what you are doing.</strong>
+	 * Clears any reports of damaged regions, causing the Display to believe that the display contents are up-to-date. If used incorrectly this can cause inaccurate rendering. <strong>Call this method
+	 * only if you know what you are doing.</strong>
 	 */
-	public synchronized void clearDamage() {
+	public synchronized void clearDamage()
+	{
 		if (m_damageRedraw)
 			m_clip.reset();
 	}
 
 	/**
-	 * Returns the bounds, in absolute (item-space) coordinates, of the total
-	 * bounds occupied by all currently visible VisualItems. This method
-	 * allocates a new Rectangle2D instance for the result.
+	 * Returns the bounds, in absolute (item-space) coordinates, of the total bounds occupied by all currently visible VisualItems. This method allocates a new Rectangle2D instance for the result.
 	 * 
 	 * @return the bounding box of all visibile VisualItems
 	 * @see #getItemBounds(Rectangle2D)
 	 */
-	public synchronized Rectangle2D getItemBounds() {
+	public synchronized Rectangle2D getItemBounds()
+	{
 		return getItemBounds(new Rectangle2D.Double());
 	}
 
 	/**
-	 * Returns the bounds, in absolute (item-space) coordinates, of the total
-	 * bounds occupied by all currently visible VisualItems.
+	 * Returns the bounds, in absolute (item-space) coordinates, of the total bounds occupied by all currently visible VisualItems.
 	 * 
 	 * @param b
 	 *            the Rectangle2D to use to store the return value
 	 * @return the bounding box of all visibile VisualItems
 	 */
-	public synchronized Rectangle2D getItemBounds(Rectangle2D b) {
-		b.setFrameFromDiagonal(m_bounds.getMinX(), m_bounds.getMinY(),
-				m_bounds.getMaxX(), m_bounds.getMaxY());
+	public synchronized Rectangle2D getItemBounds(Rectangle2D b)
+	{
+		b.setFrameFromDiagonal(m_bounds.getMinX(), m_bounds.getMinY(), m_bounds.getMaxX(), m_bounds.getMaxY());
 		return b;
 	}
 
@@ -638,16 +609,16 @@ public class PDisplay extends View {
 	 * 
 	 * @return the offscreen buffer
 	 */
-	public BufferedImage getOffscreenBuffer() {
+	public BufferedImage getOffscreenBuffer()
+	{
 		return m_offscreen;
 	}
 
 	/**
-	 * @incomplete TODO for Dritan: this code is not tested and not necessary
-	 *             for the Version 1.0 Creates a new buffered image to use as an
-	 *             offscreen buffer.
+	 * @incomplete TODO for Dritan: this code is not tested and not necessary for the Version 1.0 Creates a new buffered image to use as an offscreen buffer.
 	 */
-	protected BufferedImage getNewOffscreenBuffer(int width, int height) {
+	protected BufferedImage getNewOffscreenBuffer(int width, int height)
+	{
 		BufferedImage img = null;
 		// if (!GraphicsEnvironment.isHeadless()) {
 		// try {
@@ -657,36 +628,31 @@ public class PDisplay extends View {
 		// }
 		// }
 		// if (img == null) {
-		 return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		// }
-//		return img;
+		// return img;
 	}
 
 	/**
 	 * Saves a copy of this display as an image to the specified output stream.
 	 * 
-	 * @incomplete TODO for Dritan: this code is not tested and not necessary
-	 *             for the Version 1.0
+	 * @incomplete TODO for Dritan: this code is not tested and not necessary for the Version 1.0
 	 * @param output
 	 *            the output stream to write to.
 	 * @param format
-	 *            the image format (e.g., "JPG", "PNG"). The number and kind of
-	 *            available formats varies by platform. See
-	 *            {@link javax.imageio.ImageIO} and related classes for more.
+	 *            the image format (e.g., "JPG", "PNG"). The number and kind of available formats varies by platform. See {@link javax.imageio.ImageIO} and related classes for more.
 	 * @param scale
-	 *            how much to scale the image by. For example, a value of 2.0
-	 *            will result in an image with twice the pixel width and height
-	 *            of this Display.
+	 *            how much to scale the image by. For example, a value of 2.0 will result in an image with twice the pixel width and height of this Display.
 	 * @return true if image was successfully saved, false if an error occurred.
 	 */
-	public boolean saveImage(OutputStream output, Bitmap.CompressFormat format,
-			int quality, double scale) {
-		try {
+	public boolean saveImage(OutputStream output, Bitmap.CompressFormat format, int quality, double scale)
+	{
+		try
+		{
 
 			// get an image to draw into
 			// Define a bitmap with the same size as the view
-			Bitmap bitmap = Bitmap.createBitmap(this.getWidth(),
-					this.getHeight(), Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
 			// Bind a canvas to it
 			Canvas canvas = new Canvas(bitmap);
 			// Get the view's background
@@ -703,7 +669,8 @@ public class PDisplay extends View {
 
 			bitmap.compress(format, quality, output);
 			return true;
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 			return false;
 		}
@@ -717,8 +684,10 @@ public class PDisplay extends View {
 	 * @param scale
 	 * @return
 	 */
-	public boolean saveImageOld(OutputStream output, String format, double scale) {
-		try {
+	public boolean saveImageOld(OutputStream output, String format, double scale)
+	{
+		try
+		{
 			// get an image to draw into
 			// Dimension d = new Dimension((int) (scale * getWidth()),
 			// (int) (scale * getHeight()));
@@ -737,7 +706,8 @@ public class PDisplay extends View {
 			// // save the image and return
 			// ImageIO.write(img, format, output);
 			return true;
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 			return false;
 		}
@@ -750,7 +720,8 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the Graphics context to paint to
 	 */
-	protected void paintBufferToScreen(Graphics g) {
+	protected void paintBufferToScreen(Graphics g)
+	{
 
 		// synchronized (this) {
 		// g.drawImage(m_offscreen, 0, 0, null);
@@ -758,11 +729,10 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * @incomplete TODO for Dritan: not for the Version 1.0 Immediately repaints
-	 *             the contents of the offscreen buffer to the screen. This
-	 *             bypasses the usual rendering loop.
+	 * @incomplete TODO for Dritan: not for the Version 1.0 Immediately repaints the contents of the offscreen buffer to the screen. This bypasses the usual rendering loop.
 	 */
-	public void repaintImmediate() {
+	public void repaintImmediate()
+	{
 		// Graphics g = this.getGraphics();
 		// if (g != null && m_offscreen != null) {
 		// paintBufferToScreen(g);
@@ -770,93 +740,99 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Sets the transform of the provided Graphics context to be the transform
-	 * of this Display and sets the desired rendering hints.
+	 * Sets the transform of the provided Graphics context to be the transform of this Display and sets the desired rendering hints.
 	 * 
 	 * @param g
 	 *            the Graphics context to prepare.
 	 */
-	protected void prepareGraphics(AndroidGraphics2D g) {
+	protected void prepareGraphics(AndroidGraphics2D g)
+	{
 		if (m_transform != null)
 			g.transform(m_transform);
 		setRenderingHints(g);
 	}
 
 	/**
-	 * Sets the rendering hints that should be used while drawing the
-	 * visualization to the screen. Subclasses can override this method to set
-	 * hints as desired. Such subclasses should consider honoring the high
-	 * quality flag in one form or another.
+	 * Sets the rendering hints that should be used while drawing the visualization to the screen. Subclasses can override this method to set hints as desired. Such subclasses should consider honoring
+	 * the high quality flag in one form or another.
 	 * 
 	 * @param g
 	 *            the Graphics context on which to set the rendering hints
 	 */
-	protected void setRenderingHints(AndroidGraphics2D g) {
-		if (m_highQuality) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-		} else {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_OFF);
+	protected void setRenderingHints(AndroidGraphics2D g)
+	{
+		if (m_highQuality)
+		{
+			g.getCurrentPaint().setAntiAlias(true);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		} else
+		{
+			g.getCurrentPaint().setAntiAlias(false);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		}
-		g.setRenderingHint(RenderingHints.KEY_RENDERING,
-				RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
 	}
 
 	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
-	public void paintComponent(Graphics g) {
-//		if (m_offscreen == null) {
-//			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
-//			damageReport();
-//		}
-//		AndroidGraphics2D g2D = (AndroidGraphics2D) g;
-//		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics();
-//
-//		// Why not fire a pre-paint event here?
-//		// Pre-paint events are fired by the clearRegion method
-//
-//		// paint the visualization
-//		paintDisplay(buf_g2D, getSize());
-//		paintBufferToScreen(g2D);
-//
-//		// fire post-paint events to any painters
-//		firePostPaint(g2D);
-//
-//		buf_g2D.dispose();
-//
-//		// compute frame rate
-//		nframes++;
-//		if (mark < 0) {
-//			mark = System.currentTimeMillis();
-//			nframes = 0;
-//		} else if (nframes == sampleInterval) {
-//			long t = System.currentTimeMillis();
-//			frameRate = (1000.0 * nframes) / (t - mark);
-//			mark = t;
-//			nframes = 0;
-//		}
+	public void paintComponent(Graphics g)
+	{
+		// if (m_offscreen == null) {
+		// m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
+		// damageReport();
+		// }
+		// AndroidGraphics2D g2D = (AndroidGraphics2D) g;
+		// AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics();
+		//
+		// // Why not fire a pre-paint event here?
+		// // Pre-paint events are fired by the clearRegion method
+		//
+		// // paint the visualization
+		// paintDisplay(buf_g2D, getSize());
+		// paintBufferToScreen(g2D);
+		//
+		// // fire post-paint events to any painters
+		// firePostPaint(g2D);
+		//
+		// buf_g2D.dispose();
+		//
+		// // compute frame rate
+		// nframes++;
+		// if (mark < 0) {
+		// mark = System.currentTimeMillis();
+		// nframes = 0;
+		// } else if (nframes == sampleInterval) {
+		// long t = System.currentTimeMillis();
+		// frameRate = (1000.0 * nframes) / (t - mark);
+		// mark = t;
+		// nframes = 0;
+		// }
 	}
 
-	@SuppressLint("DrawAllocation") @Override
-	protected void onDraw(Canvas g) {
+	@SuppressLint("DrawAllocation")
+	@Override
+	protected void onDraw(Canvas g)
+	{
 		super.onDraw(g);
-        
-		if (m_offscreen == null) {
+
+		if (m_offscreen == null)
+		{
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
 			damageReport();
 		}
-		AndroidGraphics2D g2D = new AndroidGraphics2D( g );
+		AndroidGraphics2D g2D = new AndroidGraphics2D(g);
 		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g); // TODO for Dritan: Analyze why this is necessary
 
-		int width =  getWidth();; // TODO for Dritan: get screen width 
-		int height =  getHeight(); // TODO for Dritan: get screen height
+		this.currentGraphic = g2D;
+
+		int width = getWidth();
+		int height = getHeight(); // TODO for Dritan: get screen height
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
-				
+
 		// paint the visualization
 		paintDisplay(buf_g2D, new Dimension(width, height)); // TODO for Dritan: Analyze why this is necessary
 		paintBufferToScreen(g2D); // TODO for Dritan: Analyze why this is necessary
@@ -868,20 +844,22 @@ public class PDisplay extends View {
 
 		// compute frame rate
 		nframes++;
-		if (mark < 0) {
+		if (mark < 0)
+		{
 			mark = System.currentTimeMillis();
 			nframes = 0;
-		} else if (nframes == sampleInterval) {
+		} else if (nframes == sampleInterval)
+		{
 			long t = System.currentTimeMillis();
 			frameRate = (1000.0 * nframes) / (t - mark);
 			mark = t;
 			nframes = 0;
 		}
-		
 	}
 
 	/**
 	 * set borders of display
+	 * 
 	 * @author Dritan
 	 * @param top
 	 * @param left
@@ -891,8 +869,8 @@ public class PDisplay extends View {
 	public void setBorders(int top, int left, int bottom, int right)
 	{
 		this.m_insets.set(top, left, bottom, right);
-	}	
-	
+	}
+
 	/**
 	 * Renders the display within the given graphics context and size bounds.
 	 * 
@@ -901,10 +879,13 @@ public class PDisplay extends View {
 	 * @param d
 	 *            the rendering width and height of the Display
 	 */
-	public void paintDisplay(AndroidGraphics2D g2D, Dimension d) {
+	public void paintDisplay(AndroidGraphics2D g2D, Dimension d)
+	{
 		// if double-locking *ALWAYS* lock on the visualization first
-		synchronized (m_vis) {
-			synchronized (this) {
+		synchronized (m_vis)
+		{
+			synchronized (this)
+			{
 
 				if (m_clip.isEmpty())
 					return; // no damage, no render
@@ -918,11 +899,14 @@ public class PDisplay extends View {
 				// values too small will cause incorrect rendering
 				double pixel = 1.0 + 1.0 / getScale();
 
-				if (m_damageRedraw) {
-					if (m_clip.isInvalid()) {
+				if (m_damageRedraw)
+				{
+					if (m_clip.isInvalid())
+					{
 						// if clip is invalid, we clip to the entire screen
 						m_clip.setClip(m_screen);
-					} else {
+					} else
+					{
 						// otherwise intersect damaged region with display
 						// bounds
 						m_clip.intersection(m_screen);
@@ -935,9 +919,7 @@ public class PDisplay extends View {
 					prepareGraphics(g2D);
 
 					// now set the actual rendering clip
-					m_rclip.setFrameFromDiagonal(m_clip.getMinX(),
-							m_clip.getMinY(), m_clip.getMaxX(),
-							m_clip.getMaxY());
+					m_rclip.setFrameFromDiagonal(m_clip.getMinX(), m_clip.getMinY(), m_clip.getMaxX(), m_clip.getMaxY());
 					g2D.setClip(m_rclip);
 
 					// finally, we want to clear the region we'll redraw. we
@@ -946,14 +928,12 @@ public class PDisplay extends View {
 					// this,
 					// we sometimes get rendering artifacts, possibly due to
 					// scaling mismatches in the Java2D implementation
-					m_rclip.setFrameFromDiagonal(m_clip.getMinX() - pixel,
-							m_clip.getMinY() - pixel, m_clip.getMaxX() + pixel,
-							m_clip.getMaxY() + pixel);
+					m_rclip.setFrameFromDiagonal(m_clip.getMinX() - pixel, m_clip.getMinY() - pixel, m_clip.getMaxX() + pixel, m_clip.getMaxY() + pixel);
 
-				} else {
+				} else
+				{
 					// set the background region to clear
-					m_rclip.setFrame(m_screen.getMinX(), m_screen.getMinY(),
-							m_screen.getWidth(), m_screen.getHeight());
+					m_rclip.setFrame(m_screen.getMinX(), m_screen.getMinY(), m_screen.getWidth(), m_screen.getHeight());
 
 					// set the item clip to the current screen
 					m_clip.setClip(m_screen);
@@ -975,7 +955,8 @@ public class PDisplay extends View {
 				// fill the rendering and picking queues
 				m_queue.clear(); // clear the queue
 				Iterator items = m_vis.items(m_predicate);
-				for (m_visibleCount = 0; items.hasNext(); ++m_visibleCount) {
+				for (m_visibleCount = 0; items.hasNext(); ++m_visibleCount)
+				{
 					VisualItem item = (VisualItem) items.next();
 					Rectangle2D bounds = item.getBounds();
 					m_bounds.union(bounds); // add to item bounds
@@ -990,7 +971,8 @@ public class PDisplay extends View {
 				m_queue.sortRenderQueue();
 
 				// render each visual item
-				for (int i = 0; i < m_queue.rsize; ++i) {
+				for (int i = 0; i < m_queue.rsize; ++i)
+				{
 					m_queue.ritems[i].render(g2D);
 				}
 
@@ -1006,54 +988,55 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Immediately render the given VisualItem to the screen. This method
-	 * bypasses the Display's offscreen buffer.
-	 * TODO for Dritan: see if it is neccessary to implement this method
+	 * Immediately render the given VisualItem to the screen. This method bypasses the Display's offscreen buffer. TODO for Dritan: see if it is neccessary to implement this method
+	 * 
 	 * @param item
 	 *            the VisualItem to render immediately
 	 */
-//	public void renderImmediate(VisualItem item) {
-//		this.getC
-//		AndroidGraphics2D g2D = (AndroidGraphics2D) this.getGraphics();
-//		prepareGraphics(g2D);
-//		item.render(g2D);
-//	}
+	// public void renderImmediate(VisualItem item) {
+	// this.getC
+	// AndroidGraphics2D g2D = (AndroidGraphics2D) this.getGraphics();
+	// prepareGraphics(g2D);
+	// item.render(g2D);
+	// }
 
 	/**
-	 * Paints the graph to the provided graphics context, for output to a
-	 * printer. This method does not double buffer the painting, in order to
-	 * provide the maximum print quality.
-	 * TODO for Dritan: see if it is neccesary to implement this method
-	 * <b>This method may not be working correctly, and will be repaired at a
-	 * later date.</b>
+	 * Paints the graph to the provided graphics context, for output to a printer. This method does not double buffer the painting, in order to provide the maximum print quality. TODO for Dritan: see
+	 * if it is neccesary to implement this method <b>This method may not be working correctly, and will be repaired at a later date.</b>
 	 * 
 	 * @param g
 	 *            the printer graphics context.
 	 */
-	protected void printComponent(Graphics g) {
-//		boolean wasHighQuality = m_highQuality;
-//		try {
-//			// Set the quality to high for the duration of the printing.
-//			m_highQuality = true;
-//			// Paint directly to the print graphics context.
-//			paintDisplay((AndroidGraphics2D) g, getSize());
-//		} finally {
-//			// Reset the quality to the state it was in before printing.
-//			m_highQuality = wasHighQuality;
-//		}
+	protected void printComponent(Graphics g)
+	{
+		// boolean wasHighQuality = m_highQuality;
+		// try {
+		// // Set the quality to high for the duration of the printing.
+		// m_highQuality = true;
+		// // Paint directly to the print graphics context.
+		// paintDisplay((AndroidGraphics2D) g, getSize());
+		// } finally {
+		// // Reset the quality to the state it was in before printing.
+		// m_highQuality = wasHighQuality;
+		// }
+	}
+
+	public AndroidGraphics2D getGraphic()
+	{
+		return currentGraphic;
 	}
 
 	/**
-	 * Clears the specified region of the display in the display's offscreen
-	 * buffer.
+	 * Clears the specified region of the display in the display's offscreen buffer.
 	 * 
 	 * @incomplete
 	 */
-	protected void clearRegion(AndroidGraphics2D g, Rectangle2D r) {
+	protected void clearRegion(AndroidGraphics2D g, Rectangle2D r)
+	{
 		ColorDrawable bg = (ColorDrawable) getBackground();
 		int color = bg.getColor();
 
-		g.setColor(new Color(color)); 
+		g.setColor(new Color(color));
 		g.fill(r);
 		// fire pre-paint events to any painters
 		firePrePaint(g);
@@ -1063,86 +1046,79 @@ public class PDisplay extends View {
 	// Transformations
 
 	/**
-	 * Set the 2D AffineTransform (e.g., scale, shear, pan, rotate) used by this
-	 * display before rendering visual items. The provided transform must be
-	 * invertible, otherwise an expection will be thrown. For simple panning and
-	 * zooming transforms, you can instead use the provided pan() and zoom()
-	 * methods.
+	 * Set the 2D AffineTransform (e.g., scale, shear, pan, rotate) used by this display before rendering visual items. The provided transform must be invertible, otherwise an expection will be
+	 * thrown. For simple panning and zooming transforms, you can instead use the provided pan() and zoom() methods.
 	 */
-	public synchronized void setTransform(AffineTransform transform)
-			throws NoninvertibleTransformException {
+	public synchronized void setTransform(AffineTransform transform) throws NoninvertibleTransformException
+	{
 		damageReport();
 		m_transform = transform;
 		m_itransform = m_transform.createInverse();
 	}
 
 	/**
-	 * Returns a reference to the AffineTransformation used by this Display.
-	 * Changes made to this reference WILL corrupt the state of this display.
-	 * Use setTransform() to safely update the transform state.
+	 * Returns a reference to the AffineTransformation used by this Display. Changes made to this reference WILL corrupt the state of this display. Use setTransform() to safely update the transform
+	 * state.
 	 * 
 	 * @return the AffineTransform
 	 */
-	public AffineTransform getTransform() {
+	public AffineTransform getTransform()
+	{
 		return m_transform;
 	}
 
 	/**
-	 * Returns a reference to the inverse of the AffineTransformation used by
-	 * this display. Direct changes made to this reference WILL corrupt the
-	 * state of this display.
+	 * Returns a reference to the inverse of the AffineTransformation used by this display. Direct changes made to this reference WILL corrupt the state of this display.
 	 * 
 	 * @return the inverse AffineTransform
 	 */
-	public AffineTransform getInverseTransform() {
+	public AffineTransform getInverseTransform()
+	{
 		return m_itransform;
 	}
 
 	/**
-	 * Gets the absolute co-ordinate corresponding to the given screen
-	 * co-ordinate.
+	 * Gets the absolute co-ordinate corresponding to the given screen co-ordinate.
 	 * 
 	 * @param screen
 	 *            the screen co-ordinate to transform
 	 * @param abs
-	 *            a reference to put the result in. If this is the same object
-	 *            as the screen co-ordinate, it will be overridden safely. If
-	 *            this value is null, a new Point2D instance will be created and
-	 *            returned.
+	 *            a reference to put the result in. If this is the same object as the screen co-ordinate, it will be overridden safely. If this value is null, a new Point2D instance will be created
+	 *            and returned.
 	 * @return the point in absolute co-ordinates
 	 */
-	public Point2D getAbsoluteCoordinate(Point2D screen, Point2D abs) {
+	public Point2D getAbsoluteCoordinate(Point2D screen, Point2D abs)
+	{
 		return m_itransform.transform(screen, abs);
 	}
 
 	/**
 	 * Returns the current scale (zoom) value.
 	 * 
-	 * @return the current scale. This is the scaling factor along the
-	 *         x-dimension, so be careful when using this value in rare
-	 *         non-uniform scaling cases.
+	 * @return the current scale. This is the scaling factor along the x-dimension, so be careful when using this value in rare non-uniform scaling cases.
 	 */
-	public double getScale() {
+	public double getScale()
+	{
 		return m_transform.getScaleX();
 	}
 
 	/**
-	 * Returns the x-coordinate of the top-left of the display, in absolute
-	 * (item-space) co-ordinates.
+	 * Returns the x-coordinate of the top-left of the display, in absolute (item-space) co-ordinates.
 	 * 
 	 * @return the x co-ord of the top-left corner, in absolute coordinates
 	 */
-	public double getDisplayX() {
+	public double getDisplayX()
+	{
 		return -m_transform.getTranslateX();
 	}
 
 	/**
-	 * Returns the y-coordinate of the top-left of the display, in absolute
-	 * (item-space) co-ordinates.
+	 * Returns the y-coordinate of the top-left of the display, in absolute (item-space) co-ordinates.
 	 * 
 	 * @return the y co-ord of the top-left corner, in absolute coordinates
 	 */
-	public double getDisplayY() {
+	public double getDisplayY()
+	{
 		return -m_transform.getTranslateY();
 	}
 
@@ -1154,7 +1130,8 @@ public class PDisplay extends View {
 	 * @param dy
 	 *            the amount to pan along the y-dimension, in pixel units
 	 */
-	public synchronized void pan(double dx, double dy) {
+	public synchronized void pan(double dx, double dy)
+	{
 		m_tmpPoint.setLocation(dx, dy);
 		m_itransform.transform(m_tmpPoint, m_tmpPoint);
 		double panx = m_tmpPoint.getX();
@@ -1168,43 +1145,45 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Pans the view provided by this display in absolute (i.e. item-space)
-	 * coordinates.
+	 * Pans the view provided by this display in absolute (i.e. item-space) coordinates.
 	 * 
 	 * @param dx
 	 *            the amount to pan along the x-dimension, in absolute co-ords
 	 * @param dy
 	 *            the amount to pan along the y-dimension, in absolute co-ords
 	 */
-	public synchronized void panAbs(double dx, double dy) {
+	public synchronized void panAbs(double dx, double dy)
+	{
 		damageReport();
 		m_transform.translate(dx, dy);
-		try {
+		try
+		{
 			m_itransform = m_transform.createInverse();
-		} catch (Exception e) { /* will never happen here */
+		} catch (Exception e)
+		{ /* will never happen here */
 		}
 	}
 
 	/**
-	 * Pans the display view to center on the provided point in screen (pixel)
-	 * coordinates.
+	 * Pans the display view to center on the provided point in screen (pixel) coordinates.
 	 * 
 	 * @param p
 	 *            the point to center on, in screen co-ords
 	 */
-	public synchronized void panTo(Point2D p) {
+	public synchronized void panTo(Point2D p)
+	{
 		m_itransform.transform(p, m_tmpPoint);
 		panToAbs(m_tmpPoint);
 	}
 
 	/**
-	 * Pans the display view to center on the provided point in absolute (i.e.
-	 * item-space) coordinates.
+	 * Pans the display view to center on the provided point in absolute (i.e. item-space) coordinates.
 	 * 
 	 * @param p
 	 *            the point to center on, in absolute co-ords
 	 */
-	public synchronized void panToAbs(Point2D p) {
+	public synchronized void panToAbs(Point2D p)
+	{
 		double sx = m_transform.getScaleX();
 		double sy = m_transform.getScaleY();
 		double x = p.getX();
@@ -1219,88 +1198,90 @@ public class PDisplay extends View {
 
 		damageReport();
 		m_transform.translate(dx, dy);
-		try {
+		try
+		{
 			m_itransform = m_transform.createInverse();
-		} catch (Exception e) { /* will never happen here */
+		} catch (Exception e)
+		{ /* will never happen here */
 		}
 	}
 
 	/**
-	 * Zooms the view provided by this display by the given scale, anchoring the
-	 * zoom at the specified point in screen coordinates.
+	 * Zooms the view provided by this display by the given scale, anchoring the zoom at the specified point in screen coordinates.
 	 * 
 	 * @param p
 	 *            the anchor point for the zoom, in screen coordinates
 	 * @param scale
 	 *            the amount to zoom by
 	 */
-	public synchronized void zoom(final Point2D p, double scale) {
+	public synchronized void zoom(final Point2D p, double scale)
+	{
 		m_itransform.transform(p, m_tmpPoint);
 		zoomAbs(m_tmpPoint, scale);
 	}
 
 	/**
-	 * Zooms the view provided by this display by the given scale, anchoring the
-	 * zoom at the specified point in absolute coordinates.
+	 * Zooms the view provided by this display by the given scale, anchoring the zoom at the specified point in absolute coordinates.
 	 * 
 	 * @param p
-	 *            the anchor point for the zoom, in absolute (i.e. item-space)
-	 *            co-ordinates
+	 *            the anchor point for the zoom, in absolute (i.e. item-space) co-ordinates
 	 * @param scale
 	 *            the amount to zoom by
 	 */
-	public synchronized void zoomAbs(final Point2D p, double scale) {
-		;
+	public synchronized void zoomAbs(final Point2D p, double scale)
+	{
 		double zx = p.getX(), zy = p.getY();
 		damageReport();
 		m_transform.translate(zx, zy);
 		m_transform.scale(scale, scale);
 		m_transform.translate(-zx, -zy);
-		try {
+		try
+		{
 			m_itransform = m_transform.createInverse();
-		} catch (Exception e) { /* will never happen here */
+		} catch (Exception e)
+		{ /* will never happen here */
 		}
 	}
 
 	/**
-	 * Rotates the view provided by this display by the given angle in radians,
-	 * anchoring the rotation at the specified point in screen coordinates.
+	 * Rotates the view provided by this display by the given angle in radians, anchoring the rotation at the specified point in screen coordinates.
 	 * 
 	 * @param p
 	 *            the anchor point for the rotation, in screen coordinates
 	 * @param theta
 	 *            the angle to rotate by, in radians
 	 */
-	public synchronized void rotate(final Point2D p, double theta) {
+	public synchronized void rotate(final Point2D p, double theta)
+	{
 		m_itransform.transform(p, m_tmpPoint);
 		rotateAbs(m_tmpPoint, theta);
 	}
 
 	/**
-	 * Rotates the view provided by this display by the given angle in radians,
-	 * anchoring the rotation at the specified point in absolute coordinates.
+	 * Rotates the view provided by this display by the given angle in radians, anchoring the rotation at the specified point in absolute coordinates.
 	 * 
 	 * @param p
-	 *            the anchor point for the rotation, in absolute (i.e.
-	 *            item-space) co-ordinates
+	 *            the anchor point for the rotation, in absolute (i.e. item-space) co-ordinates
 	 * @param theta
 	 *            the angle to rotation by, in radians
 	 */
-	public synchronized void rotateAbs(final Point2D p, double theta) {
+	public synchronized void rotateAbs(final Point2D p, double theta)
+	{
 		double zx = p.getX(), zy = p.getY();
 		damageReport();
 		m_transform.translate(zx, zy);
 		m_transform.rotate(theta);
 		m_transform.translate(-zx, -zy);
-		try {
+		try
+		{
 			m_itransform = m_transform.createInverse();
-		} catch (Exception e) { /* will never happen here */
+		} catch (Exception e)
+		{ /* will never happen here */
 		}
 	}
 
 	/**
-	 * Animate a pan along the specified distance in screen (pixel) co-ordinates
-	 * using the provided duration.
+	 * Animate a pan along the specified distance in screen (pixel) co-ordinates using the provided duration.
 	 * 
 	 * @param dx
 	 *            the amount to pan along the x-dimension, in pixel units
@@ -1309,15 +1290,15 @@ public class PDisplay extends View {
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animatePan(double dx, double dy, long duration) {
+	public synchronized void animatePan(double dx, double dy, long duration)
+	{
 		double panx = dx / m_transform.getScaleX();
 		double pany = dy / m_transform.getScaleY();
 		animatePanAbs(panx, pany, duration);
 	}
 
 	/**
-	 * Animate a pan along the specified distance in absolute (item-space)
-	 * co-ordinates using the provided duration.
+	 * Animate a pan along the specified distance in absolute (item-space) co-ordinates using the provided duration.
 	 * 
 	 * @param dx
 	 *            the amount to pan along the x-dimension, in absolute co-ords
@@ -1326,35 +1307,36 @@ public class PDisplay extends View {
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animatePanAbs(double dx, double dy, long duration) {
+	public synchronized void animatePanAbs(double dx, double dy, long duration)
+	{
 		m_transact.pan(dx, dy, duration);
 	}
 
 	/**
-	 * Animate a pan to the specified location in screen (pixel) co-ordinates
-	 * using the provided duration.
+	 * Animate a pan to the specified location in screen (pixel) co-ordinates using the provided duration.
 	 * 
 	 * @param p
 	 *            the point to pan to in screen (pixel) units
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animatePanTo(Point2D p, long duration) {
+	public synchronized void animatePanTo(Point2D p, long duration)
+	{
 		Point2D pp = new Point2D.Double();
 		m_itransform.transform(p, pp);
 		animatePanToAbs(pp, duration);
 	}
 
 	/**
-	 * Animate a pan to the specified location in absolute (item-space)
-	 * co-ordinates using the provided duration.
+	 * Animate a pan to the specified location in absolute (item-space) co-ordinates using the provided duration.
 	 * 
 	 * @param p
 	 *            the point to pan to in absolute (item-space) units
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animatePanToAbs(Point2D p, long duration) {
+	public synchronized void animatePanToAbs(Point2D p, long duration)
+	{
 		m_tmpPoint.setLocation(0, 0);
 		m_itransform.transform(m_tmpPoint, m_tmpPoint);
 		double x = p.getX();
@@ -1369,8 +1351,7 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Animate a zoom centered on a given location in screen (pixel)
-	 * co-ordinates by the given scale using the provided duration.
+	 * Animate a zoom centered on a given location in screen (pixel) co-ordinates by the given scale using the provided duration.
 	 * 
 	 * @param p
 	 *            the point to center on in screen (pixel) units
@@ -1379,16 +1360,15 @@ public class PDisplay extends View {
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animateZoom(final Point2D p, double scale,
-			long duration) {
+	public synchronized void animateZoom(final Point2D p, double scale, long duration)
+	{
 		Point2D pp = new Point2D.Double();
 		m_itransform.transform(p, pp);
 		animateZoomAbs(pp, scale, duration);
 	}
 
 	/**
-	 * Animate a zoom centered on a given location in absolute (item-space)
-	 * co-ordinates by the given scale using the provided duration.
+	 * Animate a zoom centered on a given location in absolute (item-space) co-ordinates by the given scale using the provided duration.
 	 * 
 	 * @param p
 	 *            the point to center on in absolute (item-space) units
@@ -1397,14 +1377,13 @@ public class PDisplay extends View {
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animateZoomAbs(final Point2D p, double scale,
-			long duration) {
+	public synchronized void animateZoomAbs(final Point2D p, double scale, long duration)
+	{
 		m_transact.zoom(p, scale, duration);
 	}
 
 	/**
-	 * Animate a pan to the specified location in screen (pixel) co-ordinates
-	 * and zoom to the given scale using the provided duration.
+	 * Animate a pan to the specified location in screen (pixel) co-ordinates and zoom to the given scale using the provided duration.
 	 * 
 	 * @param p
 	 *            the point to center on in screen (pixel) units
@@ -1413,16 +1392,15 @@ public class PDisplay extends View {
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animatePanAndZoomTo(final Point2D p, double scale,
-			long duration) {
+	public synchronized void animatePanAndZoomTo(final Point2D p, double scale, long duration)
+	{
 		Point2D pp = new Point2D.Double();
 		m_itransform.transform(p, pp);
 		animatePanAndZoomToAbs(pp, scale, duration);
 	}
 
 	/**
-	 * Animate a pan to the specified location in absolute (item-space)
-	 * co-ordinates and zoom to the given scale using the provided duration.
+	 * Animate a pan to the specified location in absolute (item-space) co-ordinates and zoom to the given scale using the provided duration.
 	 * 
 	 * @param p
 	 *            the point to center on in absolute (item-space) units
@@ -1431,8 +1409,8 @@ public class PDisplay extends View {
 	 * @param duration
 	 *            the duration of the animation, in milliseconds
 	 */
-	public synchronized void animatePanAndZoomToAbs(final Point2D p,
-			double scale, long duration) {
+	public synchronized void animatePanAndZoomToAbs(final Point2D p, double scale, long duration)
+	{
 		m_transact.panAndZoom(p, scale, duration);
 	}
 
@@ -1441,14 +1419,16 @@ public class PDisplay extends View {
 	 * 
 	 * @return true if a transform is in progress, false otherwise
 	 */
-	public boolean isTranformInProgress() {
+	public boolean isTranformInProgress()
+	{
 		return m_transact.isRunning();
 	}
 
 	/**
 	 * Activity for conducting animated view transformations.
 	 */
-	private class TransformActivity extends PActivity {
+	private class TransformActivity extends PActivity
+	{
 		// TODO: clean this up to be more general...
 		// TODO: change mechanism so that multiple transform activities can be
 		// running at once?
@@ -1456,7 +1436,8 @@ public class PDisplay extends View {
 		private double[] src, dst;
 		private AffineTransform m_at;
 
-		public TransformActivity() {
+		public TransformActivity()
+		{
 			super(2000, 20, 0);
 			src = new double[6];
 			dst = new double[6];
@@ -1464,16 +1445,17 @@ public class PDisplay extends View {
 			setPacingFunction(new SlowInSlowOutPacer());
 		}
 
-		private AffineTransform getTransform() {
+		private AffineTransform getTransform()
+		{
 			if (this.isScheduled())
-				m_at.setTransform(dst[0], dst[1], dst[2], dst[3], dst[4],
-						dst[5]);
+				m_at.setTransform(dst[0], dst[1], dst[2], dst[3], dst[4], dst[5]);
 			else
 				m_at.setTransform(m_transform);
 			return m_at;
 		}
 
-		public void panAndZoom(final Point2D p, double scale, long duration) {
+		public void panAndZoom(final Point2D p, double scale, long duration)
+		{
 			AffineTransform at = getTransform();
 			this.cancel();
 			setDuration(duration);
@@ -1499,7 +1481,8 @@ public class PDisplay extends View {
 			this.run();
 		}
 
-		public void pan(double dx, double dy, long duration) {
+		public void pan(double dx, double dy, long duration)
+		{
 			AffineTransform at = getTransform();
 			this.cancel();
 			setDuration(duration);
@@ -1509,7 +1492,8 @@ public class PDisplay extends View {
 			this.run();
 		}
 
-		public void zoom(final Point2D p, double scale, long duration) {
+		public void zoom(final Point2D p, double scale, long duration)
+		{
 			AffineTransform at = getTransform();
 			this.cancel();
 			setDuration(duration);
@@ -1522,16 +1506,17 @@ public class PDisplay extends View {
 			this.run();
 		}
 
-		protected void run(long elapsedTime) {
+		protected void run(long elapsedTime)
+		{
 			double f = getPace(elapsedTime);
 			damageReport();
-			m_transform.setTransform(src[0] + f * (dst[0] - src[0]), src[1] + f
-					* (dst[1] - src[1]), src[2] + f * (dst[2] - src[2]), src[3]
-					+ f * (dst[3] - src[3]), src[4] + f * (dst[4] - src[4]),
-					src[5] + f * (dst[5] - src[5]));
-			try {
+			m_transform.setTransform(src[0] + f * (dst[0] - src[0]), src[1] + f * (dst[1] - src[1]), src[2] + f * (dst[2] - src[2]), src[3] + f * (dst[3] - src[3]), src[4] + f * (dst[4] - src[4]), src[5]
+					+ f * (dst[5] - src[5]));
+			try
+			{
 				m_itransform = m_transform.createInverse();
-			} catch (Exception e) { /* won't happen */
+			} catch (Exception e)
+			{ /* won't happen */
 			}
 			// repaint();
 			invalidate(); // TODO for Dritan: see if this is a correct
@@ -1543,13 +1528,13 @@ public class PDisplay extends View {
 	// Paint Listeners
 
 	/**
-	 * Add a PaintListener to this Display to receive notifications about paint
-	 * events.
+	 * Add a PaintListener to this Display to receive notifications about paint events.
 	 * 
 	 * @param pl
 	 *            the {@link prefuse.util.display.PaintListener} to add
 	 */
-	public void addPaintListener(PaintListener pl) {
+	public void addPaintListener(PaintListener pl)
+	{
 		if (m_painters == null)
 			m_painters = new CopyOnWriteArrayList();
 		m_painters.add(pl);
@@ -1561,7 +1546,8 @@ public class PDisplay extends View {
 	 * @param pl
 	 *            the {@link prefuse.util.display.PaintListener} to remove
 	 */
-	public void removePaintListener(PaintListener pl) {
+	public void removePaintListener(PaintListener pl)
+	{
 		m_painters.remove(pl);
 	}
 
@@ -1571,15 +1557,19 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the current graphics context
 	 */
-	protected void firePrePaint(AndroidGraphics2D g) {
-		if (m_painters != null && m_painters.size() > 0) {
+	protected void firePrePaint(AndroidGraphics2D g)
+	{
+		if (m_painters != null && m_painters.size() > 0)
+		{
 			Object[] lstnrs = m_painters.getArray();
-			for (int i = 0; i < lstnrs.length; ++i) {
-				try {
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				try
+				{
 					((PaintListener) lstnrs[i]).prePaint(this, g);
-				} catch (Exception e) {
-					s_logger.warning("Exception thrown by PaintListener: " + e
-							+ "\n" + StringLib.getStackTrace(e));
+				} catch (Exception e)
+				{
+					s_logger.warning("Exception thrown by PaintListener: " + e + "\n" + StringLib.getStackTrace(e));
 				}
 			}
 		}
@@ -1591,15 +1581,19 @@ public class PDisplay extends View {
 	 * @param g
 	 *            the current graphics context
 	 */
-	protected void firePostPaint(AndroidGraphics2D g) {
-		if (m_painters != null && m_painters.size() > 0) {
+	protected void firePostPaint(AndroidGraphics2D g)
+	{
+		if (m_painters != null && m_painters.size() > 0)
+		{
 			Object[] lstnrs = m_painters.getArray();
-			for (int i = 0; i < lstnrs.length; ++i) {
-				try {
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				try
+				{
 					((PaintListener) lstnrs[i]).postPaint(this, g);
-				} catch (Exception e) {
-					s_logger.warning("Exception thrown by PaintListener: " + e
-							+ "\n" + StringLib.getStackTrace(e));
+				} catch (Exception e)
+				{
+					s_logger.warning("Exception thrown by PaintListener: " + e + "\n" + StringLib.getStackTrace(e));
 				}
 			}
 		}
@@ -1609,26 +1603,26 @@ public class PDisplay extends View {
 	// Item Bounds Listeners
 
 	/**
-	 * Add an ItemBoundsListener to receive notifications when the bounds
-	 * occupied by the VisualItems in this Display change.
+	 * Add an ItemBoundsListener to receive notifications when the bounds occupied by the VisualItems in this Display change.
 	 * 
 	 * @param ibl
 	 *            the {@link prefuse.util.display.ItemBoundsListener} to add
 	 */
-	public void addItemBoundsListener(ItemBoundsListener ibl) {
+	public void addItemBoundsListener(ItemBoundsListener ibl)
+	{
 		if (m_bounders == null)
 			m_bounders = new CopyOnWriteArrayList();
 		m_bounders.add(ibl);
 	}
 
 	/**
-	 * Remove an ItemBoundsListener to receive notifications when the bounds
-	 * occupied by the VisualItems in this Display change.
+	 * Remove an ItemBoundsListener to receive notifications when the bounds occupied by the VisualItems in this Display change.
 	 * 
 	 * @param ibl
 	 *            the {@link prefuse.util.display.ItemBoundsListener} to remove
 	 */
-	public void removeItemBoundsListener(ItemBoundsListener ibl) {
+	public void removeItemBoundsListener(ItemBoundsListener ibl)
+	{
 		m_bounders.remove(ibl);
 	}
 
@@ -1638,18 +1632,22 @@ public class PDisplay extends View {
 	 * @param prev
 	 *            the previous item bounds of the Display
 	 */
-	protected void checkItemBoundsChanged(Rectangle2D prev) {
+	protected void checkItemBoundsChanged(Rectangle2D prev)
+	{
 		if (m_bounds.equals(prev))
 			return; // nothing to do
 
-		if (m_bounders != null && m_bounders.size() > 0) {
+		if (m_bounders != null && m_bounders.size() > 0)
+		{
 			Object[] lstnrs = m_bounders.getArray();
-			for (int i = 0; i < lstnrs.length; ++i) {
-				try {
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				try
+				{
 					((ItemBoundsListener) lstnrs[i]).itemBoundsChanged(this);
-				} catch (Exception e) {
-					s_logger.warning("Exception thrown by ItemBoundsListener: "
-							+ e + "\n" + StringLib.getStackTrace(e));
+				} catch (Exception e)
+				{
+					s_logger.warning("Exception thrown by ItemBoundsListener: " + e + "\n" + StringLib.getStackTrace(e));
 				}
 			}
 		}
@@ -1664,7 +1662,8 @@ public class PDisplay extends View {
 	 * @param cl
 	 *            the listener to add.
 	 */
-	public void addControlListener(Control cl) {
+	public void addControlListener(Control cl)
+	{
 		m_controls.add(cl);
 	}
 
@@ -1674,7 +1673,8 @@ public class PDisplay extends View {
 	 * @param cl
 	 *            the listener to remove.
 	 */
-	public void removeControlListener(Control cl) {
+	public void removeControlListener(Control cl)
+	{
 		m_controls.remove(cl);
 	}
 
@@ -1685,506 +1685,222 @@ public class PDisplay extends View {
 	 *            the Point at which to look
 	 * @return the VisualItem located at the given point, if any
 	 */
-	public synchronized VisualItem findItem(Point p) {
+	public synchronized VisualItem findItem(Point p)
+	{
 		// transform mouse point from screen space to item space
-		Point2D p2 = (m_itransform == null ? p : m_itransform.transform(p,
-				m_tmpPoint));
+		Point2D p2 = (m_itransform == null ? p : m_itransform.transform(p, m_tmpPoint));
 		// ensure that the picking queue has been z-sorted
 		if (!m_queue.psorted)
 			m_queue.sortPickingQueue();
 		// walk queue from front to back looking for hits
-		for (int i = m_queue.psize; --i >= 0;) {
+		for (int i = m_queue.psize; --i >= 0;)
+		{
 			VisualItem vi = m_queue.pitems[i];
 			if (!vi.isValid())
 				continue; // in case tuple went invalid
 			Renderer r = vi.getRenderer();
-			if (r != null && vi.isInteractive() && r.locatePoint(p2, vi)) {
+			if (r != null && vi.isInteractive() && r.locatePoint(p2, vi))
+			{
 				return vi;
 			}
 		}
 		return null;
 	}
 
-	/**
-	 * TODO for Dritan: Implement Interactive Event Handlers for a later version
-	 * Captures all mouse and key events on the display, detects relevant
-	 * VisualItems, and informs ControlListeners.
-	 */
-	// public class InputEventCapturer implements MouseMotionListener,
-	// MouseWheelListener, MouseListener, KeyListener {
-	// private VisualItem activeItem = null;
-	// private boolean mouseDown = false;
-	//
-	// private boolean validityCheck() {
-	// if (activeItem.isValid())
-	// return true;
-	// activeItem = null;
-	// return false;
-	// }
-	//
-	// public void mouseDragged(MouseEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemDragged(activeItem, e);
-	// } else {
-	// fireMouseDragged(e);
-	// }
-	// }
-	// }
-	//
-	// public void mouseMoved(MouseEvent e) {
-	// synchronized (m_vis) {
-	// boolean earlyReturn = false;
-	// // check if we've gone over any item
-	// VisualItem vi = findItem(e.getPoint());
-	// if (activeItem != null && activeItem != vi) {
-	// if (validityCheck())
-	// fireItemExited(activeItem, e);
-	// earlyReturn = true;
-	// }
-	// if (vi != null && vi != activeItem) {
-	// fireItemEntered(vi, e);
-	// earlyReturn = true;
-	// }
-	// activeItem = vi;
-	// if (earlyReturn)
-	// return;
-	//
-	// if (vi != null && vi == activeItem) {
-	// fireItemMoved(vi, e);
-	// }
-	// if (vi == null) {
-	// fireMouseMoved(e);
-	// }
-	// }
-	// }
-	//
-	// public void mouseWheelMoved(MouseWheelEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemWheelMoved(activeItem, e);
-	// } else {
-	// fireMouseWheelMoved(e);
-	// }
-	// }
-	// }
-	//
-	// public void mouseClicked(MouseEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemClicked(activeItem, e);
-	// } else {
-	// fireMouseClicked(e);
-	// }
-	// }
-	// }
-	//
-	// public void mousePressed(MouseEvent e) {
-	// synchronized (m_vis) {
-	// mouseDown = true;
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemPressed(activeItem, e);
-	// } else {
-	// fireMousePressed(e);
-	// }
-	// }
-	// }
-	//
-	// public void mouseReleased(MouseEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemReleased(activeItem, e);
-	// } else {
-	// fireMouseReleased(e);
-	// }
-	// if (activeItem != null && mouseDown && isOffComponent(e)) {
-	// // mouse was dragged off of the component,
-	// // then released, so register an exit
-	// fireItemExited(activeItem, e);
-	// activeItem = null;
-	// }
-	// mouseDown = false;
-	// }
-	// }
-	//
-	// public void mouseEntered(MouseEvent e) {
-	// synchronized (m_vis) {
-	// fireMouseEntered(e);
-	// }
-	// }
-	//
-	// public void mouseExited(MouseEvent e) {
-	// synchronized (m_vis) {
-	// if (!mouseDown && activeItem != null) {
-	// // we've left the component and an item
-	// // is active but not being dragged, deactivate it
-	// fireItemExited(activeItem, e);
-	// activeItem = null;
-	// }
-	// fireMouseExited(e);
-	// }
-	// }
-	//
-	// public void keyPressed(KeyEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemKeyPressed(activeItem, e);
-	// } else {
-	// fireKeyPressed(e);
-	// }
-	// }
-	// }
-	//
-	// public void keyReleased(KeyEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemKeyReleased(activeItem, e);
-	// } else {
-	// fireKeyReleased(e);
-	// }
-	// }
-	// }
-	//
-	// public void keyTyped(KeyEvent e) {
-	// synchronized (m_vis) {
-	// if (activeItem != null) {
-	// if (validityCheck())
-	// fireItemKeyTyped(activeItem, e);
-	// } else {
-	// fireKeyTyped(e);
-	// }
-	// }
-	// }
-	//
-	// private boolean isOffComponent(MouseEvent e) {
-	// int x = e.getX(), y = e.getY();
-	// return (x < 0 || x > getWidth() || y < 0 || y > getHeight());
-	// }
-	//
-	// // --------------------------------------------------------------------
-	// // Fire Event Notifications
-	//
-	// private void fireItemDragged(VisualItem item, MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemDragged(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemMoved(VisualItem item, MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemMoved(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemWheelMoved(VisualItem item, MouseWheelEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemWheelMoved(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemClicked(VisualItem item, MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemClicked(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemPressed(VisualItem item, MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemPressed(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemReleased(VisualItem item, MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemReleased(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemEntered(VisualItem item, MouseEvent e) {
-	// item.setHover(true);
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemEntered(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemExited(VisualItem item, MouseEvent e) {
-	// if (item.isValid())
-	// item.setHover(false);
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemExited(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemKeyPressed(VisualItem item, KeyEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// if (lstnrs.length == 0)
-	// return;
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemKeyPressed(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemKeyReleased(VisualItem item, KeyEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemKeyReleased(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireItemKeyTyped(VisualItem item, KeyEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.itemKeyTyped(item, e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseEntered(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseEntered(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseExited(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseExited(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMousePressed(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mousePressed(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseReleased(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseReleased(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseClicked(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseClicked(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseDragged(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseDragged(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseMoved(MouseEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseMoved(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireMouseWheelMoved(MouseWheelEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.mouseWheelMoved(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireKeyPressed(KeyEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.keyPressed(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireKeyReleased(KeyEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.keyReleased(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// private void fireKeyTyped(KeyEvent e) {
-	// Object[] lstnrs = m_controls.getArray();
-	// for (int i = 0; i < lstnrs.length; ++i) {
-	// Control ctrl = (Control) lstnrs[i];
-	// if (ctrl.isEnabled())
-	// try {
-	// ctrl.keyTyped(e);
-	// } catch (Exception ex) {
-	// s_logger.warning("Exception thrown by Control: " + ex
-	// + "\n" + StringLib.getStackTrace(ex));
-	// }
-	// }
-	// }
-	//
-	// } // end of inner class MouseEventCapturer
+	private boolean validityCheck()
+	{
+		if (activeItem.isValid())
+			return true;
+		activeItem = null;
+		return false;
+	}
+
+	public void touchReleased(MotionEvent event)
+	{
+		synchronized (m_vis)
+		{
+			if (activeItem != null)
+			{
+				if (validityCheck())
+					fireItemReleased(activeItem, event);
+			} else
+			{
+				fireTouchReleased(event);
+			}
+			if (activeItem != null && isOffComponent(event))
+			{
+				// mouse was dragged off of the component,
+				// then released, so register an exit
+				fireItemExited(activeItem, event);
+				activeItem = null;
+			}
+			touchDown = false;
+		}
+	}
+
+	private void fireItemExited(VisualItem item, MotionEvent event)
+	{
+		if (item.isValid())
+			item.setHover(false);
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.itemExited(item, event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private boolean isOffComponent(MotionEvent event)
+	{
+		float x = event.getX(), y = event.getY();
+		return (x < 0 || x > getWidth() || y < 0 || y > getHeight());
+	}
+
+	// --------------------------------------------------------------------
+	// Fire Event Notifications
+
+	private void fireItemMoved(VisualItem item, MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.itemMoved(item, event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireItemClicked(VisualItem item, MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.itemClicked(item, event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireItemPressed(VisualItem item, MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.itemPressed(item, event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireItemReleased(VisualItem item, MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.itemReleased(item, event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireTouchReleased(MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.touchReleased(event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireMouseClicked(MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.mouseClicked(event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireMouseDragged(MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.touchDragged(event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
+
+	private void fireMouseMoved(MotionEvent event)
+	{
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			if (ctrl.isEnabled())
+				try
+				{
+					ctrl.mouseMoved(event);
+				} catch (Exception ex)
+				{
+					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+				}
+		}
+	}
 
 	// ------------------------------------------------------------------------
 	// Text Editing
@@ -2194,7 +1910,8 @@ public class PDisplay extends View {
 	 * 
 	 * @return the TextComponent used for text editing
 	 */
-	public EditText getTextEditor() {
+	public EditText getTextEditor()
+	{
 		return m_editor;
 	}
 
@@ -2204,23 +1921,24 @@ public class PDisplay extends View {
 	 * @param tc
 	 *            the TextComponent to use for text editing
 	 */
-	public void setTextEditor(EditText tc) {
+	public void setTextEditor(EditText tc)
+	{
 		m_editor = tc;
 	}
 
 	/**
-	 * Edit text for the given VisualItem and attribute. Presents a text editing
-	 * widget spaning the item's bounding box. Use stopEditing() to hide the
-	 * text widget. When stopEditing() is called, the data field will
-	 * automatically be updated with the VisualItem.
+	 * Edit text for the given VisualItem and attribute. Presents a text editing widget spaning the item's bounding box. Use stopEditing() to hide the text widget. When stopEditing() is called, the
+	 * data field will automatically be updated with the VisualItem.
 	 * 
 	 * @param item
 	 *            the VisualItem to edit
 	 * @param attribute
 	 *            the attribute to edit
 	 */
-	public void editText(VisualItem item, String attribute) {
-		if (m_editing) {
+	public void editText(VisualItem item, String attribute)
+	{
+		if (m_editing)
+		{
 			stopEditing();
 		}
 		Rectangle2D b = item.getBounds();
@@ -2235,21 +1953,20 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Edit text for the given VisualItem and field. Presents a text editing
-	 * widget spaning the given bounding box. Use stopEditing() to hide the text
-	 * widget. When stopEditing() is called, the field will automatically be
-	 * updated with the VisualItem.
+	 * Edit text for the given VisualItem and field. Presents a text editing widget spaning the given bounding box. Use stopEditing() to hide the text widget. When stopEditing() is called, the field
+	 * will automatically be updated with the VisualItem.
 	 * 
 	 * @param item
 	 *            the VisualItem to edit
 	 * @param attribute
 	 *            the attribute to edit
 	 * @param r
-	 *            Rectangle representing the desired bounding box of the text
-	 *            editing widget
+	 *            Rectangle representing the desired bounding box of the text editing widget
 	 */
-	public void editText(VisualItem item, String attribute, Rectangle r) {
-		if (m_editing) {
+	public void editText(VisualItem item, String attribute, Rectangle r)
+	{
+		if (m_editing)
+		{
 			stopEditing();
 		}
 		String txt = item.getString(attribute);
@@ -2263,13 +1980,9 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Show a text editing widget containing the given text and spanning the
-	 * specified bounding box. Use stopEditing() to hide the text widget. Use
-	 * the method calls getTextEditor().getText() to get the resulting edited
-	 * text. TODO for Dritan: currently this method can not be completed because
-	 * it is not possible to set the absolute position like in swing over the
-	 * method setBounds. => => it is possible to call setFrame, but the values
-	 * are relative to layout in which the EditText is
+	 * Show a text editing widget containing the given text and spanning the specified bounding box. Use stopEditing() to hide the text widget. Use the method calls getTextEditor().getText() to get
+	 * the resulting edited text. TODO for Dritan: currently this method can not be completed because it is not possible to set the absolute position like in swing over the method setBounds. => => it
+	 * is possible to call setFrame, but the values are relative to layout in which the EditText is
 	 * 
 	 * @param txt
 	 *            the text string to display in the text widget
@@ -2279,8 +1992,10 @@ public class PDisplay extends View {
 	 * @incomplete
 	 * @deprecated editing widget
 	 */
-	public void editText(String txt, Rectangle r) {
-		if (m_editing) {
+	public void editText(String txt, Rectangle r)
+	{
+		if (m_editing)
+		{
 			stopEditing();
 		}
 		// int width = getWidth();
@@ -2300,14 +2015,14 @@ public class PDisplay extends View {
 	}
 
 	/**
-	 * Stops text editing on the display, hiding the text editing widget. If the
-	 * text editor was associated with a specific VisualItem (ie one of the
-	 * editText() methods which include a VisualItem as an argument was called),
-	 * the item is updated with the edited text.
+	 * Stops text editing on the display, hiding the text editing widget. If the text editor was associated with a specific VisualItem (ie one of the editText() methods which include a VisualItem as
+	 * an argument was called), the item is updated with the edited text.
 	 */
-	public void stopEditing() {
+	public void stopEditing()
+	{
 		m_editor.setVisibility(View.GONE);
-		if (m_editItem != null) {
+		if (m_editItem != null)
+		{
 			Editable txt = m_editor.getText();
 			m_editItem.set(m_editAttribute, txt.toString());
 			m_editItem = null;
@@ -2316,14 +2031,350 @@ public class PDisplay extends View {
 		m_editing = false;
 	}
 
-	public Insets getInsets(Insets insets) {
+	public Insets getInsets(Insets insets)
+	{
 		insets.set(this.m_insets.top, this.m_insets.left, this.m_insets.bottom, this.m_insets.right);
 		return insets;
 	}
-	
-	public Insets getInsets() {
+
+	public Insets getInsets()
+	{
 		return m_insets;
-	}	
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		/**
+		 * set to all controlers the display
+		 */
+
+		Object[] lstnrs = m_controls.getArray();
+		for (int i = 0; i < lstnrs.length; ++i)
+		{
+			Control ctrl = (Control) lstnrs[i];
+			ctrl.setDisplay(this);
+		}
+		int maskedAction = event.getActionMasked();
+
+		switch (maskedAction)
+		{
+
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
+			{
+				Point p = new Point((int) event.getX(), (int) event.getY());
+				activeItem = findItem(p);
+				if (activeItem != null)
+				{
+					inputEC.fireItemEntered(activeItem, event);
+				} else
+				{
+					inputEC.fireTouchDown(event);
+				}
+				break;
+			}
+			case MotionEvent.ACTION_MOVE:
+			{ // a pointer was moved
+				// TODO use data
+				break;
+			}
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_POINTER_UP:
+			case MotionEvent.ACTION_CANCEL:
+			{
+				// TODO use data
+				break;
+			}
+		}
+
+		boolean retVal = mScaleGestureDetector.onTouchEvent(event);
+		retVal = mGestureDetector.onTouchEvent(event) || retVal;
+		retVal = retVal || super.onTouchEvent(event);
+		return retVal;
+	}
+
+	/**
+	 * Captures all mouse and key events on the display, detects relevant VisualItems, and informs ControlListeners.
+	 */
+	public class InputEventCapturer
+	{
+		public void fireItemEntered(VisualItem item, MotionEvent event)
+		{
+			item.setHover(true);
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.itemEntered(item, event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		public void fireItemLongPres(VisualItem item, MotionEvent event)
+		{
+			item.setHover(true);
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.itemLongPress(item, event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		/* NON ITEM EVENTS */
+
+		public void fireTouchDragged(MotionEvent event)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.touchDragged(event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		public void fireScale(ScaleGestureDetector scaleGestureDetector)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.onScale(scaleGestureDetector);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		public void fireLongPress(MotionEvent event)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.onLongPress(event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		public void fireSingleTapUp(MotionEvent event)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.onSingleTapUp(event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		public void fireTouchDown(MotionEvent event)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.onTouchDown(event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+
+		public void touchDragged(MotionEvent event)
+		{
+			synchronized (m_vis)
+			{
+				if (activeItem != null)
+				{
+					if (validityCheck())
+						fireItemDragged(activeItem, event);
+				} else
+				{
+					fireTouchDragged(event);
+				}
+			}
+		}
+
+		private void fireItemDragged(VisualItem item, MotionEvent event)
+		{
+			Object[] lstnrs = m_controls.getArray();
+			for (int i = 0; i < lstnrs.length; ++i)
+			{
+				Control ctrl = (Control) lstnrs[i];
+				if (ctrl.isEnabled())
+					try
+					{
+						ctrl.itemDragged(item, event);
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
+			}
+		}
+	}
+
+	/**
+	 * The gesture listener, used for handling simple gestures such as double touches, scrolls, and flings.
+	 */
+	private final GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener()
+	{
+		@Override
+		public boolean onDown(MotionEvent event)
+		{
+			// TODO for Dritan: Implement this
+			return true;
+		}
+
+		@Override
+		public boolean onDoubleTap(MotionEvent event)
+		{
+			// TODO for Dritan: Implement this
+			return true;
+		}
+
+		@Override
+		public boolean onSingleTapConfirmed(MotionEvent event)
+		{
+			synchronized (m_vis)
+			{
+				// check if we've gone over any item
+				Point p = new Point((int) event.getX(), (int) event.getY());
+				activeItem = findItem(p);
+				if (activeItem != null)
+				{
+					inputEC.fireItemEntered(activeItem, event);
+				} else
+				{
+					inputEC.fireSingleTapUp(event);
+				}
+				return true;
+			}
+		}
+
+		@Override
+		public boolean onSingleTapUp(MotionEvent event)
+		{
+			synchronized (m_vis)
+			{
+				// check if we've gone over any item
+				Point p = new Point((int) event.getX(), (int) event.getY());
+				activeItem = findItem(p);
+				if (activeItem != null)
+				{
+					inputEC.fireItemEntered(activeItem, event);
+				} else
+				{
+					inputEC.fireSingleTapUp(event);
+				}
+				return true;
+			}
+		}
+
+		@Override
+		public void onLongPress(MotionEvent event)
+		{
+			synchronized (m_vis)
+			{
+				// check if we've gone over any item
+				Point p = new Point((int) event.getX(), (int) event.getY());
+				activeItem = findItem(p);
+				if (activeItem != null)
+				{
+					inputEC.fireItemEntered(activeItem, event);
+					inputEC.fireItemLongPres(activeItem, event);
+				} else
+				{
+					inputEC.fireLongPress(event);
+				}
+			}
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+		{
+			return true;
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+		{
+			// TODO for Dritan: Implement this
+			return true;
+		}
+
+	};
+
+	/**
+	 * The scale listener, used for handling multi-finger scale gestures.
+	 */
+	private final ScaleGestureDetector.OnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener()
+	{
+		/**
+		 * This is the active focal point in terms of the viewport. Could be a local variable but kept here to minimize per-frame allocations.
+		 */
+		private PointF viewportFocus = new PointF();
+		private float lastSpanX;
+		private float lastSpanY;
+
+		@Override
+		public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector)
+		{
+			// TODO for Dritan: Implement this
+			return true;
+		}
+
+		@Override
+		public boolean onScale(ScaleGestureDetector scaleGestureDetector)
+		{
+			synchronized (m_vis)
+			{
+				inputEC.fireScale(scaleGestureDetector);
+				return true;
+			}
+		}
+	};
 
 } // end of class Display
 
