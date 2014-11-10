@@ -79,7 +79,7 @@ public class MainActivity extends Activity
 		/* STEP 2: set up renderers for the visual data */
 		vis.setRendererFactory(new RendererFactory()
 		{
-			AbstractShapeRenderer sr = new ShapeRenderer(90);
+			AbstractShapeRenderer sr = new ShapeRenderer(30);
 			Renderer arY = new AxisRenderer(Constants.FAR_LEFT, Constants.CENTER);
 			Renderer arX = new AxisRenderer(Constants.CENTER, Constants.FAR_BOTTOM);
 
@@ -103,7 +103,7 @@ public class MainActivity extends Activity
 		AxisLabelLayout y_labels = new AxisLabelLayout("ylab", y_axis, boundsLabelsY);
 
 		// define the visible range for the y axis
-		y_axis.setRangeModel(new NumberRangeModel(19, 40, 19, 40));
+		y_axis.setRangeModel(new NumberRangeModel(1, 40, 1, 40));
 
 		// use square root scale for y axis
 		y_axis.setScale(Constants.SQRT_SCALE);
@@ -134,8 +134,8 @@ public class MainActivity extends Activity
 		// --------------------------------------------------------------------
 		// STEP 4: set up a display and controls
 
-		display.setHighQuality(true);
-		display.setSize(700, 450);
+		display.setHighQuality(false);
+		display.setSize(700, 450); // TODO for Dritan: this method is still not implemented
 
 		// show data items in front of axis labels
 		display.setItemSorter(new ItemSorter()

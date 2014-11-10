@@ -24,6 +24,7 @@ package awt.java.awt.image;
 //import com.android.internal.awt.AndroidGraphics2D;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import awt.java.awt.Graphics;
 import awt.java.awt.Graphics2D;
 import awt.java.awt.AndroidGraphics2D;
@@ -41,6 +42,8 @@ import org.apache.harmony.awt.gl.ImageSurface;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.image.BufferedImageSource;
 import org.apache.harmony.awt.internal.nls.Messages;
+
+import prefuse.PDisplay;
 
 /**
  * The BufferedImage class describes an Image which contains a buffer of image
@@ -720,8 +723,8 @@ public class BufferedImage extends Image implements WritableRenderedImage, Trans
         return null;
     }
 
-    public AndroidGraphics2D createGraphics(Canvas canvas) {
-    	return new AndroidGraphics2D(canvas);
+    public AndroidGraphics2D createGraphics(Canvas canvas, PDisplay display) {
+    	return new AndroidGraphics2D(canvas, display);
   }    
     
     @Override
@@ -729,8 +732,8 @@ public class BufferedImage extends Image implements WritableRenderedImage, Trans
         return createGraphics();
     }
 
-    public AndroidGraphics2D getGraphics(Canvas canvas) {
-        return createGraphics( canvas );
+    public AndroidGraphics2D getGraphics(Canvas canvas, PDisplay display) {
+        return createGraphics( canvas, display );
     }
 
     

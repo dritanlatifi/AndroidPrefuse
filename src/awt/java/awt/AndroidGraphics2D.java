@@ -1,5 +1,17 @@
-/**
- * 
+/*
+ * Copyright 2007, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
  */
 package awt.java.awt;
 
@@ -7,15 +19,23 @@ import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.Map;
 
+import prefuse.PDisplay;
+
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelXorXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
+import awt.java.awt.geom.Area;
 import awt.java.awt.RenderingHints.Key;
 import awt.java.awt.font.FontRenderContext;
 import awt.java.awt.font.GlyphVector;
 import awt.java.awt.geom.AffineTransform;
 import awt.java.awt.geom.GeneralPath;
+import awt.java.awt.geom.NoninvertibleTransformException;
 import awt.java.awt.geom.PathIterator;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
@@ -28,17 +48,95 @@ import awt.java.awt.image.renderable.RenderableImage;
  * @author Dritan
  * 
  */
-public class AndroidGraphics2D implements Graphics2D {
+public class AndroidGraphics2D implements Graphics2D
+{
 
 	protected Paint currentPaint = new Paint();
 	protected Canvas canvas = null;
 	protected AffineTransform afineTransform = new AffineTransform();
 	protected Font font = Font.DEFAULT_FONT;
-	protected AwtFontMetrics fm = new AwtFontMetrics( this.font );
-	
-	public AndroidGraphics2D(Canvas canvas)
+	protected AwtFontMetrics fontMetrics = new AwtFontMetrics(this.font);
+	protected Matrix currentMatrix;
+	protected PDisplay display;
+	protected Area mCurrClip;
+	protected Color currentColor;
+	protected RenderingHints currentRenderingHints;
+	public final static double RAD_360 = Math.PI / 180 * 360;
+
+	public AndroidGraphics2D(Canvas canvas, PDisplay display)
 	{
 		this.canvas = canvas;
+		this.display = display;
+		currentMatrix = new Matrix();
+		currentMatrix.reset();
+		currentMatrix = display.getMatrix();
+		Rect r = canvas.getClipBounds();
+		int cl[] =
+		{ -1, r.top, r.left, -2, r.top, r.right, -2, r.bottom, r.right, -2, r.bottom, r.left };
+		mCurrClip = new Area(createShape(cl));
+	}
+
+	public float[] getMatrix()
+	{
+		float[] f = new float[9];
+		display.getMatrix().getValues(f);
+		return f;
+	}
+
+	/**
+	 * 
+	 * @return a Matrix in Android format
+	 */
+	public float[] getInverseMatrix()
+	{
+		AffineTransform af = new AffineTransform(createAWTMatrix(getMatrix()));
+		try
+		{
+			af = af.createInverse();
+		} catch (NoninvertibleTransformException e)
+		{
+		}
+		return createMatrix(af);
+	}
+
+	public static Matrix createMatrixObj(AffineTransform Tx)
+	{
+		Matrix m = new Matrix();
+		m.reset();
+		m.setValues(createMatrix(Tx));
+		return m;
+	}
+
+	public static float[] createMatrix(AffineTransform Tx)
+	{
+		double[] at = new double[9];
+		Tx.getMatrix(at);
+		float[] f = new float[at.length];
+		f[0] = (float) at[0];
+		f[1] = (float) at[2];
+		f[2] = (float) at[4];
+		f[3] = (float) at[1];
+		f[4] = (float) at[3];
+		f[5] = (float) at[5];
+		f[6] = 0;
+		f[7] = 0;
+		f[8] = 1;
+		return f;
+	}
+
+	private float[] createAWTMatrix(float[] matrix)
+	{
+		float[] at = new float[9];
+		at[0] = matrix[0];
+		at[1] = matrix[3];
+		at[2] = matrix[1];
+		at[3] = matrix[4];
+		at[4] = matrix[2];
+		at[5] = matrix[5];
+		at[6] = 0;
+		at[7] = 0;
+		at[8] = 1;
+		return at;
 	}
 
 	/*
@@ -47,7 +145,8 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#create(int, int, int, int)
 	 */
 	@Override
-	public Graphics create(int x, int y, int width, int height) {
+	public Graphics create(int x, int y, int width, int height)
+	{
 		Graphics res = create();
 		res.translate(x, y);
 		res.clipRect(0, 0, width, height);
@@ -60,9 +159,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawBytes(byte[], int, int, int, int)
 	 */
 	@Override
-	public void drawBytes(byte[] bytes, int off, int len, int x, int y) {
-		// TODO Auto-generated method stub
-
+	public void drawBytes(byte[] bytes, int off, int len, int x, int y)
+	{
+		drawString(new String(bytes, off, len), x, y);
 	}
 
 	/*
@@ -71,8 +170,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawChars(char[], int, int, int, int)
 	 */
 	@Override
-	public void drawChars(char[] chars, int off, int len, int x, int y) {
-		canvas.drawText(chars, off, len, x, y, getCurrentPaint());
+	public void drawChars(char[] chars, int off, int len, int x, int y)
+	{
+		canvas.drawText(chars, off, len, x, y, currentPaint);
 	}
 
 	/*
@@ -81,9 +181,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawPolygon(awt.java.awt.Polygon)
 	 */
 	@Override
-	public void drawPolygon(Polygon p) {
-		// TODO Auto-generated method stub
-
+	public void drawPolygon(Polygon p)
+	{
+		drawPolygon(p.xpoints, p.ypoints, p.npoints);
 	}
 
 	/*
@@ -92,27 +192,37 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawRect(int, int, int, int)
 	 */
 	@Override
-	public void drawRect(int x, int y, int width, int height) {
+	public void drawRect(int x, int y, int width, int height)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.STROKE);
 		RectF rect = new RectF(x, y, x + width, y + height);
-		this.setStroke();
-		canvas.drawRect(rect, getCurrentPaint());		
+		canvas.drawRect(rect, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
 
-	public void drawRect(float x, float y, float width, float height) {
+	public void drawRect(float x, float y, float width, float height)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.STROKE);
 		RectF rect = new RectF(x, y, x + width, y + height);
-		this.setStroke();
-		canvas.drawRect(rect, getCurrentPaint());		
-	}	
-	
+		canvas.drawRect(rect, currentPaint);
+		currentPaint.setStyle(tmp);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see awt.java.awt.Graphics#fillPolygon(awt.java.awt.Polygon)
 	 */
 	@Override
-	public void fillPolygon(Polygon p) {
-		// TODO Auto-generated method stub
-
+	public void fillPolygon(Polygon p)
+	{
+		fillPolygon(p.xpoints, p.ypoints, p.npoints);
 	}
 
 	/*
@@ -121,9 +231,24 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getClipBounds(awt.java.awt.Rectangle)
 	 */
 	@Override
-	public Rectangle getClipBounds(Rectangle r) {
-		// TODO Auto-generated method stub
-		return null;
+	public Rectangle getClipBounds(Rectangle r)
+	{
+		Shape clip = getClip();
+		if (clip != null)
+		{
+			Rectangle b = clip.getBounds();
+			r.x = b.x;
+			r.y = b.y;
+			r.width = b.width;
+			r.height = b.height;
+		}
+		return r;
+	}
+
+	public Rectangle getClipBounds()
+	{
+		Rect r = canvas.getClipBounds();
+		return new Rectangle(r.left, r.top, r.width(), r.height());
 	}
 
 	/*
@@ -133,8 +258,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 */
 	@Override
 	@Deprecated
-	public Rectangle getClipRect() {
-		// TODO Auto-generated method stub
+	public Rectangle getClipRect()
+	{
+		// TODO for Dritan: check if it is necessary to implement this
 		return null;
 	}
 
@@ -144,9 +270,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getFontMetrics()
 	 */
 	@Override
-	public AwtFontMetrics getFontMetrics() {
-
-		return this.fm;
+	public AwtFontMetrics getFontMetrics()
+	{
+		return this.fontMetrics;
 	}
 
 	/*
@@ -155,9 +281,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#hitClip(int, int, int, int)
 	 */
 	@Override
-	public boolean hitClip(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hitClip(int x, int y, int width, int height)
+	{
+		return getClipBounds().intersects(new Rectangle(x, y, width, height));
 	}
 
 	/*
@@ -166,9 +292,16 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#clearRect(int, int, int, int)
 	 */
 	@Override
-	public void clearRect(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-
+	public void clearRect(int x, int y, int width, int height)
+	{
+		canvas.clipRect(x, y, x + width, y + height);
+		if (currentColor != null)
+		{
+			canvas.drawARGB(currentColor.getAlpha(), currentColor.getBlue(), currentColor.getGreen(), currentColor.getRed());
+		} else
+		{
+			canvas.drawARGB(0xff, 0xff, 0xff, 0xff);
+		}
 	}
 
 	/*
@@ -177,8 +310,13 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#clipRect(int, int, int, int)
 	 */
 	@Override
-	public boolean clipRect(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
+	public boolean clipRect(int x, int y, int width, int height)
+	{
+		int cl[] =
+		{ -1, x, y, -2, x, y + width, -2, x + height, y + width, -2, x + height, y };
+		Shape shp = createShape(cl);
+		mCurrClip.intersect(new Area(shp));
+		canvas.clipRect(new Rect(x, y, x + width, y + height), Region.Op.INTERSECT);
 		return true;
 	}
 
@@ -188,9 +326,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#copyArea(int, int, int, int, int, int)
 	 */
 	@Override
-	public void copyArea(int sx, int sy, int width, int height, int dx, int dy) {
-		// TODO Auto-generated method stub
-
+	public void copyArea(int sx, int sy, int width, int height, int dx, int dy)
+	{
+		// TODO for Dritan: check if it is neccesary to implement this method
 	}
 
 	/*
@@ -199,7 +337,8 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#create()
 	 */
 	@Override
-	public Graphics create() {
+	public Graphics create()
+	{
 		return this;
 	}
 
@@ -209,9 +348,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#dispose()
 	 */
 	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+	public void dispose()
+	{
+		canvas = null;
+		currentPaint = null;
 	}
 
 	/*
@@ -220,88 +360,85 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawArc(int, int, int, int, int, int)
 	 */
 	@Override
-	public void drawArc(int x, int y, int width, int height, int sa, int ea) {
-		RectF oval = new RectF(x, y, x + width, y + height);
-		this.setStroke();
-		canvas.drawArc(oval, sa, ea, false, getCurrentPaint());
+	public void drawArc(int x, int y, int width, int height, int sa, int ea)
+	{
+		if (currentPaint == null)
+		{
+			currentPaint = new Paint();
+		}
+		currentPaint.setStrokeWidth(0);
+		canvas.drawArc(new RectF(x, y, x + width, y + height), 360 - (ea + sa), ea, true, currentPaint);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int,
-	 * awt.java.awt.Color, awt.java.awt.image.ImageObserver)
+	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, awt.java.awt.Color, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public boolean drawImage(Image img, int x, int y, Color bgcolor,
-			ImageObserver observer) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, int x, int y, Color bgcolor, ImageObserver observer)
+	{
+		// TODO for Dritan: this should be implemented
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int,
-	 * awt.java.awt.image.ImageObserver)
+	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, int x, int y, ImageObserver observer)
+	{
+		// TODO for Dritan: this method is already used in prefuse. check how it can be implemented
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int,
-	 * int, awt.java.awt.Color, awt.java.awt.image.ImageObserver)
+	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int, int, awt.java.awt.Color, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public boolean drawImage(Image img, int x, int y, int width, int height,
-			Color bgcolor, ImageObserver observer) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer)
+	{
+		// TODO for Dritan: this should be implemented
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int,
-	 * int, awt.java.awt.image.ImageObserver)
+	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int, int, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public boolean drawImage(Image img, int x, int y, int width, int height,
-			ImageObserver observer) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer)
+	{
+		// TODO for Dritan: this should be implemented
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int,
-	 * int, int, int, int, int, awt.java.awt.Color,
-	 * awt.java.awt.image.ImageObserver)
+	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int, int, int, int, int, int, awt.java.awt.Color, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
-			int sx1, int sy1, int sx2, int sy2, Color bgcolor,
-			ImageObserver observer) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, Color bgcolor, ImageObserver observer)
+	{
+		// TODO for Dritan: this should be implemented
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int,
-	 * int, int, int, int, int, awt.java.awt.image.ImageObserver)
+	 * @see awt.java.awt.Graphics#drawImage(awt.java.awt.Image, int, int, int, int, int, int, int, int, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
-			int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer)
+	{
+		// TODO for Dritan: this should be implemented
 		return false;
 	}
 
@@ -311,10 +448,13 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawLine(int, int, int, int)
 	 */
 	@Override
-	public void drawLine(int x1, int y1, int x2, int y2) {
+	public void drawLine(int x1, int y1, int x2, int y2)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+
 		this.setStroke();
-		canvas.drawLine((float) x1, (float) y1, (float) x2, (float) y2,
-				getCurrentPaint());
+		canvas.drawLine((float) x1, (float) y1, (float) x2, (float) y2, currentPaint);
 	}
 
 	/*
@@ -323,10 +463,16 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawOval(int, int, int, int)
 	 */
 	@Override
-	public void drawOval(int x, int y, int width, int height) {
+	public void drawOval(int x, int y, int width, int height)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+
 		RectF oval = new RectF(x, y, x + width, y + height);
-		setStroke();
-		canvas.drawOval(oval, getCurrentPaint());
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.STROKE);
+		canvas.drawOval(oval, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
 
 	/*
@@ -335,9 +481,16 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawPolygon(int[], int[], int)
 	 */
 	@Override
-	public void drawPolygon(int[] xpoints, int[] ypoints, int npoints) {
-		// TODO Auto-generated method stub
+	public void drawPolygon(int[] xpoints, int[] ypoints, int npoints)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
 
+		canvas.drawLine(xpoints[npoints - 1], ypoints[npoints - 1], xpoints[0], ypoints[0], currentPaint);
+		for (int i = 0; i < npoints - 1; i++)
+		{
+			canvas.drawLine(xpoints[i], ypoints[i], xpoints[i + 1], ypoints[i + 1], currentPaint);
+		}
 	}
 
 	/*
@@ -346,31 +499,28 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#drawPolyline(int[], int[], int)
 	 */
 	@Override
-	public void drawPolyline(int[] xpoints, int[] ypoints, int npoints) {
-		// TODO Auto-generated method stub
-
+	public void drawPolyline(int[] xpoints, int[] ypoints, int npoints)
+	{
+		for (int i = 0; i < npoints - 1; i++)
+		{
+			drawLine(xpoints[i], ypoints[i], xpoints[i + 1], ypoints[i + 1]);
+		}
 	}
 
 	/*
-	 * (non-Javadoc) FIXME Dritan: this method is not programmed proper. please
-	 * invest more time to make it right
+	 * (non-Javadoc)
 	 * 
 	 * @see awt.java.awt.Graphics#drawRoundRect(int, int, int, int, int, int)
 	 */
 	@Override
-	public void drawRoundRect(int x, int y, int width, int height,
-			int arcWidth, int arcHeight) {
-		RectF rect = new RectF(x, y, x + width, y + height);
-		float r = height / 2 + (width * width) / (8 * height);
-		double q = 1; // I do not know what q is see =>
-						// http://mathforum.org/library/drmath/view/53027.html
-		double rx = x + width - Math.sqrt(r * r - (q / 2) * (q / 2))
-				* (y + height) / 2;
-		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
-				* (x + width) / 2;
-		this.setStroke();
-		canvas.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
-
+	public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.STROKE);
+		canvas.drawRoundRect(new RectF(x, y, width, height), arcWidth, arcHeight, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
 
 	/*
@@ -379,9 +529,16 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#fillArc(int, int, int, int, int, int)
 	 */
 	@Override
-	public void fillArc(int x, int y, int width, int height, int sa, int ea) {
-		// TODO Auto-generated method stub
+	public void fillArc(int x, int y, int width, int height, int sa, int ea)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
 
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+		canvas.drawArc(new RectF(x, y, x + width, y + height), 360 - (sa + ea), ea, true, currentPaint);
+
+		currentPaint.setStyle(tmp);
 	}
 
 	/*
@@ -390,10 +547,15 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#fillOval(int, int, int, int)
 	 */
 	@Override
-	public void fillOval(int x, int y, int width, int height) {
+	public void fillOval(int x, int y, int width, int height)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
 		RectF oval = new RectF(x, y, x + width, y + height);
-		this.setFill();
-		canvas.drawOval(oval, getCurrentPaint());
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.FILL);
+		canvas.drawOval(oval, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
 
 	/*
@@ -402,8 +564,29 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#fillPolygon(int[], int[], int)
 	 */
 	@Override
-	public void fillPolygon(int[] xpoints, int[] ypoints, int npoints) {
-		// TODO Auto-generated method stub
+	public void fillPolygon(int[] xpoints, int[] ypoints, int npoints)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+
+		Paint.Style tmp = currentPaint.getStyle();
+		canvas.save(Canvas.CLIP_SAVE_FLAG);
+
+		currentPaint.setStyle(Paint.Style.FILL);
+
+		GeneralPath filledPolygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, npoints);
+		filledPolygon.moveTo(xpoints[0], ypoints[0]);
+		for (int index = 1; index < xpoints.length; index++)
+		{
+			filledPolygon.lineTo(xpoints[index], ypoints[index]);
+		}
+		filledPolygon.closePath();
+		Path path = getPath(filledPolygon);
+		canvas.clipPath(path);
+		canvas.drawPath(path, currentPaint);
+
+		currentPaint.setStyle(tmp);
+		canvas.restore();
 
 	}
 
@@ -413,37 +596,43 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#fillRect(int, int, int, int)
 	 */
 	@Override
-	public void fillRect(int x, int y, int width, int height) {
+	public void fillRect(int x, int y, int width, int height)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.FILL);
 		RectF rect = new RectF(x, y, x + width, y + height);
-		this.setFill();
-		canvas.drawRect(rect, getCurrentPaint());		
+		canvas.drawRect(rect, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
-	
-	public void fillRect(float x, float y, float width, float height) {
+
+	public void fillRect(float x, float y, float width, float height)
+	{
 		RectF rect = new RectF(x, y, x + width, y + height);
-		this.setFill();
-		canvas.drawRect(rect, getCurrentPaint());		
+		if (currentPaint == null)
+			currentPaint = new Paint();
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.FILL);
+		canvas.drawRect(rect, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
 
 	/*
-	 * (non-Javadoc) FIXME Dritan: this method is not programmed proper. please
-	 * invest more time to make it right
+	 * (non-Javadoc) FIXME Dritan: this method is not programmed proper. please invest more time to make it right
 	 * 
 	 * @see awt.java.awt.Graphics#fillRoundRect(int, int, int, int, int, int)
 	 */
 	@Override
-	public void fillRoundRect(int x, int y, int width, int height,
-			int arcWidth, int arcHeight) {
-		RectF rect = new RectF(x, y, x + width, y + height);
-		float r = height / 2 + (width * width) / (8 * height);
-		double q = 1; // I do not know what q is see =>
-						// http://mathforum.org/library/drmath/view/53027.html
-		double rx = x + width - Math.sqrt(r * r - (q / 2) * (q / 2))
-				* (y + height) / 2;
-		double ry = y + height - Math.sqrt(r * r - (q / 2) * (q / 2))
-				* (x + width) / 2;
-		this.setFill();
-		canvas.drawRoundRect(rect, (float) rx, (float) ry, getCurrentPaint());
+	public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.FILL);
+		canvas.drawRoundRect(new RectF(x, y, x + width, y + height), arcWidth, arcHeight, currentPaint);
+		currentPaint.setStyle(tmp);
 	}
 
 	/*
@@ -452,21 +641,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getClip()
 	 */
 	@Override
-	public Shape getClip() {
-		// TODO Auto-generated method stub
-		return null;
+	public Shape getClip()
+	{
+		return mCurrClip;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see awt.java.awt.Graphics#getClipBounds()
-	 */
-	// @Override
-	// public Rect getClipBounds() {
-	// // TODO Auto-generated method stub
-	// return null;
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -474,8 +652,11 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getColor()
 	 */
 	@Override
-	public Color getColor() {
-		// TODO Auto-generated method stub
+	public Color getColor()
+	{
+		if (currentPaint != null)
+			return new Color(currentPaint.getColor());
+
 		return null;
 	}
 
@@ -485,7 +666,8 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getFont()
 	 */
 	@Override
-	public Font getFont() {
+	public Font getFont()
+	{
 		return this.font;
 	}
 
@@ -495,8 +677,8 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#getFontMetrics(awt.java.awt.Font)
 	 */
 	@Override
-	public AwtFontMetrics getFontMetrics(Font font) {
-		 
+	public AwtFontMetrics getFontMetrics(Font font)
+	{
 		return new AwtFontMetrics(font);
 	}
 
@@ -506,9 +688,12 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#setClip(int, int, int, int)
 	 */
 	@Override
-	public void setClip(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-
+	public void setClip(int x, int y, int width, int height)
+	{
+		int cl[] =
+		{ -1, x, y, -2, x, y + width, -2, x + height, y + width, -2, x + height, y };
+		mCurrClip = new Area(createShape(cl));
+		canvas.clipRect(x, y, x + width, y + height, Region.Op.REPLACE);
 	}
 
 	/*
@@ -517,9 +702,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#setClip(awt.java.awt.Shape)
 	 */
 	@Override
-	public void setClip(Shape clip) {
-		// TODO Auto-generated method stub
-
+	public void setClip(Shape clip)
+	{
+		mCurrClip = new Area(clip);
+		canvas.clipPath(getPath(clip), Region.Op.REPLACE);
 	}
 
 	/*
@@ -528,9 +714,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#setColor(awt.java.awt.Color)
 	 */
 	@Override
-	public void setColor(Color c) {
+	public void setColor(Color c)
+	{
 		this.currentPaint.setColor(c.getAndroidColorRepresentation());
-
 	}
 
 	/*
@@ -539,10 +725,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#setFont(awt.java.awt.Font)
 	 */
 	@Override
-	public void setFont(Font font) {
+	public void setFont(Font font)
+	{
 		this.font = font;
-		this.fm.setFont(font);
-
+		this.fontMetrics.setFont(font);
 	}
 
 	/*
@@ -551,9 +737,11 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#setPaintMode()
 	 */
 	@Override
-	public void setPaintMode() {
-		// TODO Auto-generated method stub
-
+	public void setPaintMode()
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+		currentPaint.setXfermode(null);
 	}
 
 	/*
@@ -562,9 +750,13 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics#setXORMode(awt.java.awt.Color)
 	 */
 	@Override
-	public void setXORMode(Color color) {
-		// TODO Auto-generated method stub
-
+	public void setXORMode(Color color)
+	{
+		if (currentPaint == null)
+		{
+			currentPaint = new Paint();
+		}
+		currentPaint.setXfermode(new PixelXorXfermode(color.getRGB()));
 	}
 
 	/*
@@ -573,9 +765,12 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#addRenderingHints(java.util.Map)
 	 */
 	@Override
-	public void addRenderingHints(Map<?, ?> hints) {
-		// TODO Auto-generated method stub
+	public void addRenderingHints(Map<?, ?> hints)
+	{
+		if (currentRenderingHints == null)
+			currentRenderingHints = (RenderingHints) hints;
 
+		currentRenderingHints.add((RenderingHints) hints);
 	}
 
 	/*
@@ -584,9 +779,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#clip(awt.java.awt.Shape)
 	 */
 	@Override
-	public void clip(Shape s) {
-		// TODO Auto-generated method stub
-
+	public void clip(Shape s)
+	{
+		canvas.clipPath(getPath(s));
 	}
 
 	/*
@@ -595,69 +790,86 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#draw(awt.java.awt.Shape)
 	 */
 	@Override
-	public void draw(Shape s) {
+	public void draw(Shape s)
+	{
+		if (currentPaint == null)
+		{
+			currentPaint = new Paint();
+		}
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.STROKE);
+		canvas.drawPath(getPath(s), currentPaint);
+		currentPaint.setStyle(tmp);
+	}
+
+	public void drawOld(Shape s)
+	{
 		paintShape(s, true);
 	}
-	
+
 	/**
 	 * paint a shape. currently only rectangle or general path is supported as a shape.
-	 * @param s				shape to be painted
-	 * @param setStroke		if true, than paint in stroke mode, else paint in fill mode.
+	 * 
+	 * @param s
+	 *            shape to be painted
+	 * @param setStroke
+	 *            if true, than paint in stroke mode, else paint in fill mode.
 	 */
-	public void paintShape( Shape s, boolean setStroke )
+	public void paintShape(Shape s, boolean setStroke)
 	{
-		if(s instanceof Rectangle2D.Double)
+		if (s instanceof Rectangle2D.Double)
 		{
 			Rectangle2D.Double r = (Rectangle2D.Double) s;
-			if( setStroke )
-				drawRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float)r.getHeight());
+			if (setStroke)
+				drawRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float) r.getHeight());
 			else
 				fillRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float) r.getHeight());
-		}
-		else
+		} else
 		{
 			GeneralPath path = (GeneralPath) s;
 			Path aPath = transformPath(path);
-			if( setStroke )
+			if (setStroke)
 				this.setStroke();
 			else
 				setFill();
-			
-			canvas.drawPath(aPath, getCurrentPaint());
+
+			canvas.drawPath(aPath, currentPaint);
 		}
 	}
 
-	public Path transformPath(GeneralPath path) {
+	public Path transformPath(GeneralPath path)
+	{
 		Path aPath = new Path();
 		aPath.reset();
 		PathIterator it = path.getPathIterator(null);
-		while (!it.isDone()) {
+		while (!it.isDone())
+		{
 			float coords[] = new float[6];
-			switch (it.currentSegment(coords)) {
-			case PathIterator.SEG_MOVETO:
-				// if (typeSize == 0) {
-				aPath.moveTo(coords[0], coords[1]);
-				break;
-			// }
-			// if (types[typeSize - 1] != PathIterator.SEG_CLOSE
-			// && points[pointSize - 2] == coords[0]
-			// && points[pointSize - 1] == coords[1]) {
-			// break;
-			// }
-			// NO BREAK;
-			case PathIterator.SEG_LINETO:
-				aPath.lineTo(coords[0], coords[1]);
-				break;
-			case PathIterator.SEG_QUADTO:
-				aPath.quadTo(coords[0], coords[1], coords[2], coords[3]);
-				break;
-			case PathIterator.SEG_CUBICTO:
-				aPath.cubicTo(coords[0], coords[1], coords[2], coords[3],
-						coords[4], coords[5]);
-				break;
-			case PathIterator.SEG_CLOSE:
-				aPath.close();
-				break;
+			switch (it.currentSegment(coords))
+			{
+				case PathIterator.SEG_MOVETO:
+					// if (typeSize == 0) {
+					aPath.moveTo(coords[0], coords[1]);
+					break;
+				// }
+				// if (types[typeSize - 1] != PathIterator.SEG_CLOSE
+				// && points[pointSize - 2] == coords[0]
+				// && points[pointSize - 1] == coords[1]) {
+				// break;
+				// }
+				// NO BREAK;
+				case PathIterator.SEG_LINETO:
+					aPath.lineTo(coords[0], coords[1]);
+					break;
+				case PathIterator.SEG_QUADTO:
+					aPath.quadTo(coords[0], coords[1], coords[2], coords[3]);
+					break;
+				case PathIterator.SEG_CUBICTO:
+					aPath.cubicTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+					break;
+				case PathIterator.SEG_CLOSE:
+					aPath.close();
+					break;
 			}
 			it.next();
 		}
@@ -667,80 +879,83 @@ public class AndroidGraphics2D implements Graphics2D {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#drawGlyphVector(awt.java.awt.font.GlyphVector,
-	 * float, float)
+	 * @see awt.java.awt.Graphics2D#drawGlyphVector(awt.java.awt.font.GlyphVector, float, float)
 	 */
 	@Override
-	public void drawGlyphVector(GlyphVector g, float x, float y) {
-		// TODO Auto-generated method stub
+	public void drawGlyphVector(GlyphVector g, float x, float y)
+	{
+		// TODO draw at x, y
+		// draw(g.getOutline());
+		/*
+		 * Matrix matrix = new Matrix(); matrix.setTranslate(x, y); Path pth = getPath(g.getOutline()); pth.transform(matrix); draw(pth);
+		 */
+
+		// TODO for Dritan: check if it is neccesary to implement this
+		// Path path = new Path();
+		// char[] c = ((AndroidGlyphVector)g).getGlyphs();
+		// mP.getTextPath(c, 0, c.length, x, y, path);
+		// mC.drawPath(path, mP);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see awt.java.awt.Graphics2D#drawImage(awt.java.awt.image.BufferedImage, awt.java.awt.image.BufferedImageOp, int, int)
+	 */
+	@Override
+	public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y)
+	{
+		// TODO for Dritan: this should be implemented
 
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics2D#drawImage(awt.java.awt.image.BufferedImage,
-	 * awt.java.awt.image.BufferedImageOp, int, int)
+	 * @see awt.java.awt.Graphics2D#drawImage(awt.java.awt.Image, awt.java.awt.geom.AffineTransform, awt.java.awt.image.ImageObserver)
 	 */
 	@Override
-	public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see awt.java.awt.Graphics2D#drawImage(awt.java.awt.Image,
-	 * awt.java.awt.geom.AffineTransform, awt.java.awt.image.ImageObserver)
-	 */
-	@Override
-	public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
-		// TODO Auto-generated method stub
+	public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs)
+	{
+		// TODO for Dritan: this should be implemented
 		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#drawRenderableImage(awt.java.awt.image.renderable
-	 * .RenderableImage, awt.java.awt.geom.AffineTransform)
+	 * @see awt.java.awt.Graphics2D#drawRenderableImage(awt.java.awt.image.renderable .RenderableImage, awt.java.awt.geom.AffineTransform)
 	 */
 	@Override
-	public void drawRenderableImage(RenderableImage img, AffineTransform xform) {
-		// TODO Auto-generated method stub
+	public void drawRenderableImage(RenderableImage img, AffineTransform xform)
+	{
+		// TODO for Dritan: this should be implemented
 
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#drawRenderedImage(awt.java.awt.image.RenderedImage
-	 * , awt.java.awt.geom.AffineTransform)
+	 * @see awt.java.awt.Graphics2D#drawRenderedImage(awt.java.awt.image.RenderedImage , awt.java.awt.geom.AffineTransform)
 	 */
 	@Override
-	public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
-		// TODO Auto-generated method stub
+	public void drawRenderedImage(RenderedImage img, AffineTransform xform)
+	{
+		// TODO for Dritan: this should be implemented
 
 	}
 
 	/*
-	 * (non-Javadoc) FIXME Dritan: String attributes are ignored. Fix this if
-	 * there is time or if it's neccessary
+	 * (non-Javadoc) FIXME Dritan: String attributes are ignored. Fix this if there is time or if it's neccessary
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator,
-	 * float, float)
+	 * @see awt.java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator, float, float)
 	 */
 	@Override
-	public void drawString(AttributedCharacterIterator iterator, float x,
-			float y) {
+	public void drawString(AttributedCharacterIterator iterator, float x, float y)
+	{
 		String myString = "";
-		for (char c = iterator.first(); c != CharacterIterator.DONE; c = iterator
-				.next()) {
+		for (char c = iterator.first(); c != CharacterIterator.DONE; c = iterator.next())
+		{
 			myString += c;
 		}
 		drawString(myString, x, y);
@@ -749,12 +964,11 @@ public class AndroidGraphics2D implements Graphics2D {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator,
-	 * int, int)
+	 * @see awt.java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator, int, int)
 	 */
 	@Override
-	public void drawString(AttributedCharacterIterator iterator, int x, int y) {
+	public void drawString(AttributedCharacterIterator iterator, int x, int y)
+	{
 		drawString(iterator, (float) x, (float) y);
 	}
 
@@ -764,8 +978,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#drawString(java.lang.String, float, float)
 	 */
 	@Override
-	public void drawString(String s, float x, float y) {
-		canvas.drawText(s, x, y, getCurrentPaint());
+	public void drawString(String s, float x, float y)
+	{
+		canvas.drawText(s, x, y, currentPaint);
 	}
 
 	/*
@@ -774,8 +989,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#drawString(java.lang.String, int, int)
 	 */
 	@Override
-	public void drawString(String str, int x, int y) {
-		canvas.drawText(str, x, y, getCurrentPaint());
+	public void drawString(String str, int x, int y)
+	{
+		canvas.drawText(str, x, y, currentPaint);
 	}
 
 	/*
@@ -784,7 +1000,19 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#fill(awt.java.awt.Shape)
 	 */
 	@Override
-	public void fill(Shape s) {
+	public void fill(Shape s)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
+
+		Paint.Style tmp = currentPaint.getStyle();
+		currentPaint.setStyle(Paint.Style.FILL);
+		canvas.drawPath(getPath(s), currentPaint);
+		currentPaint.setStyle(tmp);
+	}
+
+	public void fillOld(Shape s)
+	{
 		paintShape(s, false);
 	}
 
@@ -794,9 +1022,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getBackground()
 	 */
 	@Override
-	public Color getBackground() {
-		// TODO Auto-generated method stub
-		return null;
+	public Color getBackground()
+	{
+		return currentColor;
 	}
 
 	/*
@@ -805,9 +1033,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getComposite()
 	 */
 	@Override
-	public Composite getComposite() {
-		// TODO Auto-generated method stub
-		return null;
+	public Composite getComposite()
+	{
+		throw new RuntimeException("Composite not implemented!");
 	}
 
 	/*
@@ -816,8 +1044,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getDeviceConfiguration()
 	 */
 	@Override
-	public GraphicsConfiguration getDeviceConfiguration() {
-		// TODO Auto-generated method stub
+	public GraphicsConfiguration getDeviceConfiguration()
+	{
+		// TODO for Dritan: check if it is needed to implement this
 		return null;
 	}
 
@@ -827,8 +1056,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getFontRenderContext()
 	 */
 	@Override
-	public FontRenderContext getFontRenderContext() {
-		// TODO Auto-generated method stub
+	public FontRenderContext getFontRenderContext()
+	{
+		// TODO for Dritan: check if it is needed to implement this
 		return null;
 	}
 
@@ -838,12 +1068,13 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getPaint()
 	 */
 	@Override
-	public PPaint getPaint() {
-		// TODO Auto-generated method stub
-		return null;
+	public PPaint getPaint()
+	{
+		throw new RuntimeException("AWT Paint not implemented in Android!");
 	}
 
-	public Paint getCurrentPaint() {
+	public Paint getCurrentPaint()
+	{
 		return this.currentPaint;
 	}
 
@@ -862,18 +1093,20 @@ public class AndroidGraphics2D implements Graphics2D {
 	{
 		this.currentPaint.setStyle(Paint.Style.FILL);
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#getRenderingHint(awt.java.awt.RenderingHints.Key)
+	 * @see awt.java.awt.Graphics2D#getRenderingHint(awt.java.awt.RenderingHints.Key)
 	 */
 	@Override
-	public Object getRenderingHint(Key key) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object getRenderingHint(Key key)
+	{
+		if (currentRenderingHints == null)
+		{
+			return null;
+		}
+		return currentRenderingHints.get(key);
 	}
 
 	/*
@@ -882,9 +1115,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getRenderingHints()
 	 */
 	@Override
-	public RenderingHints getRenderingHints() {
-		// TODO Auto-generated method stub
-		return null;
+	public RenderingHints getRenderingHints()
+	{
+		return currentRenderingHints;
 	}
 
 	/*
@@ -893,8 +1126,11 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getStroke()
 	 */
 	@Override
-	public Stroke getStroke() {
-		// TODO Auto-generated method stub
+	public Stroke getStroke()
+	{
+		if (currentPaint != null)
+			return new BasicStroke(currentPaint.getStrokeWidth(), currentPaint.getStrokeCap().ordinal(), currentPaint.getStrokeJoin().ordinal());
+
 		return null;
 	}
 
@@ -904,21 +1140,20 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#getTransform()
 	 */
 	@Override
-	public AffineTransform getTransform() {
-		
+	public AffineTransform getTransform()
+	{
 		return afineTransform;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see awt.java.awt.Graphics2D#hit(awt.java.awt.Rectangle,
-	 * awt.java.awt.Shape, boolean)
+	 * @see awt.java.awt.Graphics2D#hit(awt.java.awt.Rectangle, awt.java.awt.Shape, boolean)
 	 */
 	@Override
-	public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hit(Rectangle rect, Shape s, boolean onStroke)
+	{
+		return s.intersects(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 	}
 
 	/*
@@ -927,9 +1162,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#rotate(double)
 	 */
 	@Override
-	public void rotate(double theta) {
-		// TODO Auto-generated method stub
-
+	public void rotate(double theta)
+	{
+		currentMatrix.preRotate((float) AndroidGraphics2D.getDegree((float) (RAD_360 - theta)));
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -938,9 +1174,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#rotate(double, double, double)
 	 */
 	@Override
-	public void rotate(double theta, double x, double y) {
-		// TODO Auto-generated method stub
-
+	public void rotate(double theta, double x, double y)
+	{
+		currentMatrix.preRotate((float) AndroidGraphics2D.getDegree((float) theta), (float) x, (float) y);
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -949,9 +1186,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#scale(double, double)
 	 */
 	@Override
-	public void scale(double sx, double sy) {
-		// TODO Auto-generated method stub
-
+	public void scale(double sx, double sy)
+	{
+		currentMatrix.setScale((float) sx, (float) sy);
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -960,9 +1198,12 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#setBackground(awt.java.awt.Color)
 	 */
 	@Override
-	public void setBackground(Color color) {
-		// TODO Auto-generated method stub
-
+	public void setBackground(Color color)
+	{
+		currentColor = color;
+		canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()));
+		// TODO don't limit to current clip
+		canvas.drawARGB(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
 	}
 
 	/*
@@ -971,9 +1212,9 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#setComposite(awt.java.awt.Composite)
 	 */
 	@Override
-	public void setComposite(Composite comp) {
-		// TODO Auto-generated method stub
-
+	public void setComposite(Composite comp)
+	{
+		throw new RuntimeException("Composite not implemented!");
 	}
 
 	/*
@@ -982,22 +1223,27 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#setPaint(awt.java.awt.Paint)
 	 */
 	@Override
-	public void setPaint(PPaint paint) {
+	public void setPaint(PPaint paint)
+	{
 		this.currentPaint.setColor(paint.getAndroidColorRepresentation());
-
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#setRenderingHint(awt.java.awt.RenderingHints.Key,
-	 * java.lang.Object)
+	 * @see awt.java.awt.Graphics2D#setRenderingHint(awt.java.awt.RenderingHints.Key, java.lang.Object)
 	 */
 	@Override
-	public void setRenderingHint(Key key, Object value) {
-		// TODO Auto-generated method stub
-
+	public void setRenderingHint(Key key, Object value)
+	{
+		if (currentRenderingHints == null)
+		{
+			currentRenderingHints = new RenderingHints(key, value);
+		} else
+		{
+			currentRenderingHints.put(key, value);
+		}
+		applyHints();
 	}
 
 	/*
@@ -1006,9 +1252,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#setRenderingHints(java.util.Map)
 	 */
 	@Override
-	public void setRenderingHints(Map<?, ?> hints) {
-		// TODO Auto-generated method stub
-
+	public void setRenderingHints(Map<?, ?> hints)
+	{
+		currentRenderingHints = (RenderingHints) hints;
+		applyHints();
 	}
 
 	/*
@@ -1017,21 +1264,57 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#setStroke(awt.java.awt.Stroke)
 	 */
 	@Override
-	public void setStroke(Stroke s) {
-		// TODO Auto-generated method stub
+	public void setStroke(Stroke s)
+	{
+		if (currentPaint == null)
+			currentPaint = new Paint();
 
+		BasicStroke bs = (BasicStroke) s;
+		currentPaint.setStyle(Paint.Style.STROKE);
+		currentPaint.setStrokeWidth(bs.getLineWidth());
+
+		int cap = bs.getEndCap();
+		if (cap == 0)
+		{
+			currentPaint.setStrokeCap(Paint.Cap.BUTT);
+		} else if (cap == 1)
+		{
+			currentPaint.setStrokeCap(Paint.Cap.ROUND);
+		} else if (cap == 2)
+		{
+			currentPaint.setStrokeCap(Paint.Cap.SQUARE);
+		}
+
+		int join = bs.getLineJoin();
+		if (join == 0)
+		{
+			currentPaint.setStrokeJoin(Paint.Join.MITER);
+		} else if (join == 1)
+		{
+			currentPaint.setStrokeJoin(Paint.Join.ROUND);
+		} else if (join == 2)
+		{
+			currentPaint.setStrokeJoin(Paint.Join.BEVEL);
+		}
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * awt.java.awt.Graphics2D#setTransform(awt.java.awt.geom.AffineTransform)
+	 * @see awt.java.awt.Graphics2D#setTransform(awt.java.awt.geom.AffineTransform)
 	 */
 	@Override
-	public void setTransform(AffineTransform Tx) {
-		// TODO Auto-generated method stub
-
+	public void setTransform(AffineTransform Tx)
+	{
+		currentMatrix.reset();
+		/*
+		 * if(Tx.isIdentity()) { mM = new Matrix(); }
+		 */
+		currentMatrix.setValues(createMatrix(Tx));
+		Matrix m = new Matrix();
+		m.setValues(getInverseMatrix());
+		canvas.concat(m);
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -1040,9 +1323,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#shear(double, double)
 	 */
 	@Override
-	public void shear(double shx, double shy) {
-		// TODO Auto-generated method stub
-
+	public void shear(double shx, double shy)
+	{
+		currentMatrix.setSkew((float) shx, (float) shy);
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -1051,9 +1335,11 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#transform(awt.java.awt.geom.AffineTransform)
 	 */
 	@Override
-	public void transform(AffineTransform Tx) {
-		// TODO Auto-generated method stub
-
+	public void transform(AffineTransform Tx)
+	{
+		Matrix m = new Matrix();
+		m.setValues(createMatrix(Tx));
+		canvas.concat(m);
 	}
 
 	/*
@@ -1062,9 +1348,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#translate(double, double)
 	 */
 	@Override
-	public void translate(double tx, double ty) {
-		// TODO Auto-generated method stub
-
+	public void translate(double tx, double ty)
+	{
+		currentMatrix.setTranslate((float) tx, (float) ty);
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -1073,9 +1360,10 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#translate(int, int)
 	 */
 	@Override
-	public void translate(int x, int y) {
-		// TODO Auto-generated method stub
-
+	public void translate(int x, int y)
+	{
+		currentMatrix.setTranslate((float) x, (float) y);
+		canvas.concat(currentMatrix);
 	}
 
 	/*
@@ -1084,9 +1372,33 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#fill3DRect(int, int, int, int, boolean)
 	 */
 	@Override
-	public void fill3DRect(int x, int y, int width, int height, boolean raised) {
-		// TODO Auto-generated method stub
+	public void fill3DRect(int x, int y, int width, int height, boolean raised)
+	{
+		Color color = getColor();
+		Color colorUp, colorDown;
+		if (raised)
+		{
+			colorUp = color.brighter();
+			colorDown = color.darker();
+			setColor(color);
+		} else
+		{
+			colorUp = color.darker();
+			colorDown = color.brighter();
+			setColor(colorUp);
+		}
 
+		width--;
+		height--;
+		fillRect(x + 1, y + 1, width - 1, height - 1);
+
+		setColor(colorUp);
+		fillRect(x, y, width, 1);
+		fillRect(x, y + 1, 1, height);
+
+		setColor(colorDown);
+		fillRect(x + width, y, 1, height);
+		fillRect(x + 1, y + height, width, 1);
 	}
 
 	/*
@@ -1095,9 +1407,169 @@ public class AndroidGraphics2D implements Graphics2D {
 	 * @see awt.java.awt.Graphics2D#draw3DRect(int, int, int, int, boolean)
 	 */
 	@Override
-	public void draw3DRect(int x, int y, int width, int height, boolean raised) {
-		// TODO Auto-generated method stub
+	public void draw3DRect(int x, int y, int width, int height, boolean raised)
+	{
+		Color color = getColor();
+		Color colorUp, colorDown;
+		if (raised)
+		{
+			colorUp = color.brighter();
+			colorDown = color.darker();
+		} else
+		{
+			colorUp = color.darker();
+			colorDown = color.brighter();
+		}
 
+		setColor(colorUp);
+		fillRect(x, y, width, 1);
+		fillRect(x, y + 1, 1, height);
+
+		setColor(colorDown);
+		fillRect(x + width, y, 1, height);
+		fillRect(x + 1, y + height, width, 1);
+	}
+
+	private Shape createShape(int[] arr)
+	{
+		Shape s = new GeneralPath();
+		for (int i = 0; i < arr.length; i++)
+		{
+			int type = arr[i];
+			switch (type)
+			{
+				case -1:
+					// MOVETO
+					((GeneralPath) s).moveTo(arr[++i], arr[++i]);
+					break;
+				case -2:
+					// LINETO
+					((GeneralPath) s).lineTo(arr[++i], arr[++i]);
+					break;
+				case -3:
+					// QUADTO
+					((GeneralPath) s).quadTo(arr[++i], arr[++i], arr[++i], arr[++i]);
+					break;
+				case -4:
+					// CUBICTO
+					((GeneralPath) s).curveTo(arr[++i], arr[++i], arr[++i], arr[++i], arr[++i], arr[++i]);
+					break;
+				case -5:
+					// CLOSE
+					return s;
+				default:
+					break;
+			}
+		}
+		return s;
+	}
+
+	private Path getPath(Shape s)
+	{
+		Path path = new Path();
+		PathIterator pi = s.getPathIterator(null);
+		while (pi.isDone() == false)
+		{
+			getCurrentSegment(pi, path);
+			pi.next();
+		}
+		return path;
+	}
+
+	private void getCurrentSegment(PathIterator pi, Path path)
+	{
+		float[] coordinates = new float[6];
+		int type = pi.currentSegment(coordinates);
+		switch (type)
+		{
+			case PathIterator.SEG_MOVETO:
+				path.moveTo(coordinates[0], coordinates[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				path.lineTo(coordinates[0], coordinates[1]);
+				break;
+			case PathIterator.SEG_QUADTO:
+				path.quadTo(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+				break;
+			case PathIterator.SEG_CUBICTO:
+				path.cubicTo(coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				path.close();
+				break;
+			default:
+				break;
+		}
+	}
+
+	public static float getDegree(float radian)
+	{
+		return (float) ((180 / Math.PI) * radian);
+	}
+
+	private void applyHints()
+	{
+		Object o;
+
+		// TODO do something like this:
+		/*
+		 * Set s = mRh.keySet(); Iterator it = s.iterator(); while(it.hasNext()) { o = it.next(); }
+		 */
+
+		// /////////////////////////////////////////////////////////////////////
+		// not supported in skia
+		/*
+		 * o = mRh.get(RenderingHints.KEY_ALPHA_INTERPOLATION); if (o.equals(RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT)) { } else if (o.equals(RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY))
+		 * { } else if (o.equals(RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED)) { }
+		 * 
+		 * o = mRh.get(RenderingHints.KEY_COLOR_RENDERING); if (o.equals(RenderingHints.VALUE_COLOR_RENDER_DEFAULT)) { } else if (o.equals(RenderingHints.VALUE_COLOR_RENDER_QUALITY)) { } else if
+		 * (o.equals(RenderingHints.VALUE_COLOR_RENDER_SPEED)) { }
+		 * 
+		 * o = mRh.get(RenderingHints.KEY_DITHERING); if (o.equals(RenderingHints.VALUE_DITHER_DEFAULT)) { } else if (o.equals(RenderingHints.VALUE_DITHER_DISABLE)) { } else if
+		 * (o.equals(RenderingHints.VALUE_DITHER_ENABLE)) { }
+		 * 
+		 * o = mRh.get(RenderingHints.KEY_FRACTIONALMETRICS); if (o.equals(RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT)) { } else if (o.equals(RenderingHints.VALUE_FRACTIONALMETRICS_OFF)) { } else
+		 * if (o.equals(RenderingHints.VALUE_FRACTIONALMETRICS_ON)) { }
+		 * 
+		 * o = mRh.get(RenderingHints.KEY_INTERPOLATION); if (o.equals(RenderingHints.VALUE_INTERPOLATION_BICUBIC)) { } else if (o.equals(RenderingHints.VALUE_INTERPOLATION_BILINEAR)) { } else if (o
+		 * .equals(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR)) { }
+		 * 
+		 * o = mRh.get(RenderingHints.KEY_RENDERING); if (o.equals(RenderingHints.VALUE_RENDER_DEFAULT)) { } else if (o.equals(RenderingHints.VALUE_RENDER_QUALITY)) { } else if
+		 * (o.equals(RenderingHints.VALUE_RENDER_SPEED)) { }
+		 * 
+		 * o = mRh.get(RenderingHints.KEY_STROKE_CONTROL); if (o.equals(RenderingHints.VALUE_STROKE_DEFAULT)) { } else if (o.equals(RenderingHints.VALUE_STROKE_NORMALIZE)) { } else if
+		 * (o.equals(RenderingHints.VALUE_STROKE_PURE)) { }
+		 */
+
+		o = currentRenderingHints.get(RenderingHints.KEY_ANTIALIASING);
+		if (o != null)
+		{
+			if (o.equals(RenderingHints.VALUE_ANTIALIAS_DEFAULT))
+			{
+				currentPaint.setAntiAlias(false);
+			} else if (o.equals(RenderingHints.VALUE_ANTIALIAS_OFF))
+			{
+				currentPaint.setAntiAlias(false);
+			} else if (o.equals(RenderingHints.VALUE_ANTIALIAS_ON))
+			{
+				currentPaint.setAntiAlias(true);
+			}
+		}
+
+		o = currentRenderingHints.get(RenderingHints.KEY_TEXT_ANTIALIASING);
+		if (o != null)
+		{
+			if (o.equals(RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT))
+			{
+				currentPaint.setAntiAlias(false);
+			} else if (o.equals(RenderingHints.VALUE_TEXT_ANTIALIAS_OFF))
+			{
+				currentPaint.setAntiAlias(false);
+			} else if (o.equals(RenderingHints.VALUE_TEXT_ANTIALIAS_ON))
+			{
+				currentPaint.setAntiAlias(true);
+			}
+		}
 	}
 
 }

@@ -752,16 +752,12 @@ public class PDisplay extends View
 	protected void setRenderingHints(AndroidGraphics2D g)
 	{
 		if (m_highQuality)
-		{
-			g.getCurrentPaint().setAntiAlias(true);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		} else
-		{
-			g.getCurrentPaint().setAntiAlias(false);
+		else
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY); // TODO for Dritan: Check this
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC); // TODO for Dritan: Check this
 
 	}
 
@@ -813,8 +809,8 @@ public class PDisplay extends View
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
 			damageReport();
 		}
-		AndroidGraphics2D g2D = new AndroidGraphics2D(g);
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g); // TODO for Dritan: Analyze why this is necessary
+		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this);
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g,this); // TODO for Dritan: Analyze why this is necessary
 
 		int width = getWidth();
 		int height = getHeight(); // TODO for Dritan: get screen height
