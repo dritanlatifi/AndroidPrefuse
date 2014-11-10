@@ -20,6 +20,7 @@ import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataShapeAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
+import prefuse.controls.PanControl;
 import prefuse.controls.ToolTipControl;
 import prefuse.controls.ZoomControl;
 import prefuse.controls.ZoomToFitControl;
@@ -152,7 +153,7 @@ public class MainActivity extends Activity
 		ToolTipControl ttc = new ToolTipControl("label");
 		display.addControlListener(ttc);
 		
-//		display.addControlListener(new PanControl());
+		display.addControlListener(new PanControl());
 		display.addControlListener(new ZoomControl());
 		display.addControlListener(new ZoomToFitControl());
 		

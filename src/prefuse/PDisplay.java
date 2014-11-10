@@ -810,7 +810,7 @@ public class PDisplay extends View
 			damageReport();
 		}
 		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this);
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g,this); // TODO for Dritan: Analyze why this is necessary
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this); // TODO for Dritan: Analyze why this is necessary
 
 		int width = getWidth();
 		int height = getHeight(); // TODO for Dritan: get screen height
@@ -1120,7 +1120,6 @@ public class PDisplay extends View
 		panx -= m_tmpPoint.getX();
 		pany -= m_tmpPoint.getY();
 		panAbs(panx, pany);
-
 	}
 
 	/**
@@ -1213,7 +1212,7 @@ public class PDisplay extends View
 		damageReport();
 		m_transform.translate(zx, zy);
 		m_transform.scale(scale, scale);
-		m_transform.translate(-zx, -zy);
+		//m_transform.translate(-zx, -zy);
 		try
 		{
 			m_itransform = m_transform.createInverse();
@@ -1499,7 +1498,7 @@ public class PDisplay extends View
 			}
 			// repaint();
 			postInvalidate(); // TODO for Dritan: see if this is a correct
-							// replacement for the repaint method
+								// replacement for the repaint method
 		}
 	} // end of inner class TransformActivity
 
@@ -1847,40 +1846,6 @@ public class PDisplay extends View
 		}
 	}
 
-	private void fireMouseDragged(MotionEvent event)
-	{
-		Object[] lstnrs = m_controls.getArray();
-		for (int i = 0; i < lstnrs.length; ++i)
-		{
-			Control ctrl = (Control) lstnrs[i];
-			if (ctrl.isEnabled())
-				try
-				{
-					ctrl.touchDragged(event);
-				} catch (Exception ex)
-				{
-					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
-				}
-		}
-	}
-
-	private void fireMouseMoved(MotionEvent event)
-	{
-		Object[] lstnrs = m_controls.getArray();
-		for (int i = 0; i < lstnrs.length; ++i)
-		{
-			Control ctrl = (Control) lstnrs[i];
-			if (ctrl.isEnabled())
-				try
-				{
-					ctrl.mouseMoved(event);
-				} catch (Exception ex)
-				{
-					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
-				}
-		}
-	}
-
 	// ------------------------------------------------------------------------
 	// Text Editing
 
@@ -2087,15 +2052,15 @@ public class PDisplay extends View
 				Control ctrl = (Control) lstnrs[i];
 				if (ctrl.isEnabled())
 					try
-				{
+					{
 						ctrl.itemEntered(item, event);
-				} catch (Exception ex)
-				{
-					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
-				}
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
 			}
 		}
-		
+
 		public void fireItemDoubleTaped(VisualItem item, MotionEvent event)
 		{
 			item.setHover(true);
@@ -2132,9 +2097,7 @@ public class PDisplay extends View
 			}
 		}
 
-		/* NON ITEM EVENTS */
-
-		public void fireTouchDragged(MotionEvent event)
+		private void fireItemDragged(VisualItem item, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
 			Object[] lstnrs = m_controls.getArray();
 			for (int i = 0; i < lstnrs.length; ++i)
@@ -2143,13 +2106,15 @@ public class PDisplay extends View
 				if (ctrl.isEnabled())
 					try
 					{
-						ctrl.touchDragged(event);
+						ctrl.itemDragged(item, e1, e2, distanceX, distanceY);
 					} catch (Exception ex)
 					{
 						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
 					}
 			}
 		}
+
+		/* NON ITEM EVENTS */
 
 		public void fireScale(ScaleGestureDetector scaleGestureDetector)
 		{
@@ -2193,15 +2158,15 @@ public class PDisplay extends View
 				Control ctrl = (Control) lstnrs[i];
 				if (ctrl.isEnabled())
 					try
-				{
+					{
 						ctrl.onSingleTapUp(event);
-				} catch (Exception ex)
-				{
-					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
-				}
+					} catch (Exception ex)
+					{
+						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
+					}
 			}
 		}
-		
+
 		public void fireDoubleTap(MotionEvent event)
 		{
 			Object[] lstnrs = m_controls.getArray();
@@ -2236,22 +2201,7 @@ public class PDisplay extends View
 			}
 		}
 
-		public void touchDragged(MotionEvent event)
-		{
-			synchronized (m_vis)
-			{
-				if (activeItem != null)
-				{
-					if (validityCheck())
-						fireItemDragged(activeItem, event);
-				} else
-				{
-					fireTouchDragged(event);
-				}
-			}
-		}
-
-		private void fireItemDragged(VisualItem item, MotionEvent event)
+		public void fireScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
 			Object[] lstnrs = m_controls.getArray();
 			for (int i = 0; i < lstnrs.length; ++i)
@@ -2260,7 +2210,7 @@ public class PDisplay extends View
 				if (ctrl.isEnabled())
 					try
 					{
-						ctrl.itemDragged(item, event);
+						ctrl.onScroll(e1, e2, distanceX, distanceY);
 					} catch (Exception ex)
 					{
 						s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
@@ -2360,7 +2310,16 @@ public class PDisplay extends View
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 		{
-			return true;
+			synchronized (m_vis)
+			{
+				Point p = new Point((int) e1.getX(), (int) e2.getY());
+				activeItem = findItem(p);
+				if (activeItem != null)
+					inputEC.fireItemDragged(activeItem, e1, e2, distanceX, distanceY);
+				else
+					inputEC.fireScroll(e1, e2, distanceX, distanceY);
+				return true;
+			}
 		}
 
 		@Override

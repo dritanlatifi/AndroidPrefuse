@@ -51,7 +51,7 @@ public class ControlAdapter implements Control
 	/**
 	 * @see prefuse.controls.Control#itemDragged(prefuse.visual.VisualItem, java.awt.event.MotionEvent)
 	 */
-	public void itemDragged(VisualItem item, MotionEvent e)
+	public void itemDragged(VisualItem item, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 	{
 	}
 
@@ -219,7 +219,7 @@ public class ControlAdapter implements Control
 	}
 
 	@Override
-	public boolean onFling(MotionEvent e, MotionEvent arg1, float arg2, float arg3)
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
 	{
 		// TODO Auto-generated method stub
 		return false;
@@ -232,7 +232,7 @@ public class ControlAdapter implements Control
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e, MotionEvent arg1, float arg2, float arg3)
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
 	{
 		// TODO Auto-generated method stub
 		return false;

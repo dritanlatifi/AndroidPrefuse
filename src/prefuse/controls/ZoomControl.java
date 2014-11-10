@@ -66,7 +66,7 @@ public class ZoomControl extends AbstractZoomControl
 		int dy = y - yLast;
 		double zoom = 1 + ((double) dy) / 100;
 		//zoom(display, down, scaleFactor, true); // TODO for Dritan: check if it is necessary or better to use scaleFactor instead of calculating it 
-		zoom(display, down, zoom, true);
+		zoom(display, down, scaleFactor, true);
 
 		yLast = y;
 		display.invalidate();

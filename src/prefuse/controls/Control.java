@@ -63,7 +63,7 @@ public interface Control extends EventListener, ScaleGestureDetector.OnScaleGest
 	/**
 	 * Invoked when a mouse button is pressed on a VisualItem and then dragged.
 	 */
-	public void itemDragged(VisualItem item, MotionEvent e);
+	public void itemDragged(VisualItem item, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY);
 
 	/**
 	 * Invoked when the mouse cursor has been moved onto a VisualItem but no buttons have been pushed.
