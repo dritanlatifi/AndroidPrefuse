@@ -3,6 +3,7 @@ package prefuse.controls;
 //import awt.java.awt.Cursor;
 //import awt.java.awt.event.MouseEvent;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import awt.java.awt.AndroidGraphics2D;
@@ -20,12 +21,8 @@ import prefuse.visual.VisualItem;
  */
 public class ZoomControl extends AbstractZoomControl
 {
-
-	private int yLast;
 	private Point2D down = new Point2D.Float();
 	private float scaleFactor = 1.0f;
-
-	// private int button = RIGHT_MOUSE_BUTTON;
 
 	/**
 	 * Create a new zoom control.
@@ -34,12 +31,12 @@ public class ZoomControl extends AbstractZoomControl
 	{
 		// do nothing
 	}
-
 	
 	@Override
 	public void onTouchDown(MotionEvent event)
 	{
-		down.setLocation(event.getX(), event.getY());
+		display.getAbsoluteCoordinate(new Point2D.Float(event.getX(), event.getY()), down);
+		Log.d("PZOOM", "event touch: ("+event.getX() + "," + event.getY() + ")");
 	}
 
 	@Override
@@ -52,23 +49,19 @@ public class ZoomControl extends AbstractZoomControl
 	public boolean onScale(ScaleGestureDetector detector)
 	{
 		scaleFactor *= detector.getScaleFactor();
-
 		// don't let the object get too small or too large.
-		scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f));
+		scaleFactor = Math.max(0.9f, Math.min(scaleFactor, 1.2f));
+		
+		int currentSpan = (int) detector.getCurrentSpan();
+		int previousSpan = (int) detector.getPreviousSpan();
+		
 		// if (UILib.isButtonPressed(e, button)) {
-		if (display.isTranformInProgress() || yLast == -1)
-		{
-			yLast = -1;
+		if (display.isTranformInProgress() || Math.abs(currentSpan - previousSpan ) < 10 ) // if some other transformation is in progress or the distance between to fingers is not changing (while the fingers remain on screen)
 			return true;
-		}
-
-		int y = (int) detector.getFocusY();
-		int dy = y - yLast;
-		double zoom = 1 + ((double) dy) / 100;
-		//zoom(display, down, scaleFactor, true); // TODO for Dritan: check if it is necessary or better to use scaleFactor instead of calculating it 
+		
+		display.getAbsoluteCoordinate(new Point2D.Float(detector.getFocusX(), detector.getFocusY()), down);
 		zoom(display, down, scaleFactor, true);
 
-		yLast = y;
 		display.invalidate();
 		return true;
 	}

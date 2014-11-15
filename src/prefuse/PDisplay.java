@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -1214,7 +1215,7 @@ public class PDisplay extends View
 		damageReport();
 		m_transform.translate(zx, zy);
 		m_transform.scale(scale, scale);
-		//m_transform.translate(-zx, -zy);
+		m_transform.translate(-zx, -zy);
 		try
 		{
 			m_itransform = m_transform.createInverse();
@@ -2362,6 +2363,7 @@ public class PDisplay extends View
 			}
 		}
 	};
+
 
 } // end of class Display
 
