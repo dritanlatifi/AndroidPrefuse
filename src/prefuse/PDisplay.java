@@ -1111,6 +1111,8 @@ public class PDisplay extends View
 	 */
 	public synchronized void pan(double dx, double dy)
 	{
+		dx *= -1;
+		dy *= -1;
 		m_tmpPoint.setLocation(dx, dy);
 		m_itransform.transform(m_tmpPoint, m_tmpPoint);
 		double panx = m_tmpPoint.getX();

@@ -61,7 +61,6 @@ public class AbstractZoomControl extends ControlAdapter {
         else
             display.zoom(p,zoom);
         display.invalidate();
-//        display.repaint(); //TODO for Dritan: Fix this 
         return status;
     }
     
