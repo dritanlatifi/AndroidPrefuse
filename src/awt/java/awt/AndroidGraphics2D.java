@@ -1164,6 +1164,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void rotate(double theta)
 	{
+		this.afineTransform.rotate(theta);
 		currentMatrix.preRotate((float) AndroidGraphics2D.getDegree((float) (RAD_360 - theta)));
 		canvas.concat(currentMatrix);
 	}
@@ -1176,6 +1177,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void rotate(double theta, double x, double y)
 	{
+		this.afineTransform.rotate(theta, x, y);
 		currentMatrix.preRotate((float) AndroidGraphics2D.getDegree((float) theta), (float) x, (float) y);
 		canvas.concat(currentMatrix);
 	}
@@ -1188,6 +1190,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void scale(double sx, double sy)
 	{
+		this.afineTransform.scale(sx, sy);
 		currentMatrix.setScale((float) sx, (float) sy);
 		canvas.concat(currentMatrix);
 	}
@@ -1306,15 +1309,24 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void setTransform(AffineTransform Tx)
 	{
-		currentMatrix.reset();
+		
 		/*
-		 * if(Tx.isIdentity()) { mM = new Matrix(); }
-		 */
+		 ORIGINAL CODE FROM ANDROID TODO for Dritan: Check it the original Code is necessary. 
+		 At the moment it throws an exception with the message matrix can not be changed (at reset and setValues). 
+		currentMatrix.reset();
+		
+		//  if(Tx.isIdentity()) { mM = new Matrix(); }
+		 
 		currentMatrix.setValues(createMatrix(Tx));
 		Matrix m = new Matrix();
 		m.setValues(getInverseMatrix());
 		canvas.concat(m);
 		canvas.concat(currentMatrix);
+		*/
+		this.afineTransform.setTransform(Tx);
+		Matrix m = new Matrix();
+		m.setValues(createMatrix(Tx));
+		canvas.concat(m);
 	}
 
 	/*
@@ -1325,6 +1337,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void shear(double shx, double shy)
 	{
+		this.afineTransform.shear(shx, shy);
 		currentMatrix.setSkew((float) shx, (float) shy);
 		canvas.concat(currentMatrix);
 	}
@@ -1337,6 +1350,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void transform(AffineTransform Tx)
 	{
+		this.afineTransform.concatenate(Tx);
 		Matrix m = new Matrix();
 		m.setValues(createMatrix(Tx));
 		canvas.concat(m);
@@ -1350,6 +1364,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void translate(double tx, double ty)
 	{
+		this.afineTransform.translate(tx, ty);
 		currentMatrix.setTranslate((float) tx, (float) ty);
 		canvas.concat(currentMatrix);
 	}
@@ -1362,6 +1377,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void translate(int x, int y)
 	{
+		this.afineTransform.translate(x, y);
 		currentMatrix.setTranslate((float) x, (float) y);
 		canvas.concat(currentMatrix);
 	}

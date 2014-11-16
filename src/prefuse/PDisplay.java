@@ -143,9 +143,9 @@ public class PDisplay extends View
 	protected int m_visibleCount = 0;
 
 	// transform variables
-	protected AffineTransform m_transform = new AffineTransform();
-	protected AffineTransform m_itransform = new AffineTransform();
-	protected TransformActivity m_transact = new TransformActivity();
+	protected AffineTransform m_transform = new AffineTransform( );
+	protected AffineTransform m_itransform = new AffineTransform( ) ;
+	protected TransformActivity m_transact = new TransformActivity(  );
 	protected Point2D m_tmpPoint = new Point2D.Double();
 
 	// frame count and debugging output
@@ -762,43 +762,6 @@ public class PDisplay extends View
 
 	}
 
-	/**
-	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-	 */
-	public void paintComponent(Graphics g)
-	{
-		// if (m_offscreen == null) {
-		// m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
-		// damageReport();
-		// }
-		// AndroidGraphics2D g2D = (AndroidGraphics2D) g;
-		// AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics();
-		//
-		// // Why not fire a pre-paint event here?
-		// // Pre-paint events are fired by the clearRegion method
-		//
-		// // paint the visualization
-		// paintDisplay(buf_g2D, getSize());
-		// paintBufferToScreen(g2D);
-		//
-		// // fire post-paint events to any painters
-		// firePostPaint(g2D);
-		//
-		// buf_g2D.dispose();
-		//
-		// // compute frame rate
-		// nframes++;
-		// if (mark < 0) {
-		// mark = System.currentTimeMillis();
-		// nframes = 0;
-		// } else if (nframes == sampleInterval) {
-		// long t = System.currentTimeMillis();
-		// frameRate = (1000.0 * nframes) / (t - mark);
-		// mark = t;
-		// nframes = 0;
-		// }
-	}
-
 	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas g)
@@ -812,7 +775,6 @@ public class PDisplay extends View
 		}
 		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this);
 		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this); // TODO for Dritan: Analyze why this is necessary
-
 		int width = getWidth();
 		int height = getHeight(); // TODO for Dritan: get screen height
 		// Why not fire a pre-paint event here?
@@ -954,7 +916,6 @@ public class PDisplay extends View
 
 				// sort the rendering queue
 				m_queue.sortRenderQueue();
-
 				// render each visual item
 				for (int i = 0; i < m_queue.rsize; ++i)
 				{
