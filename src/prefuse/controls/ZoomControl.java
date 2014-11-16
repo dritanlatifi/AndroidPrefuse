@@ -56,7 +56,7 @@ public class ZoomControl extends AbstractZoomControl
 		int previousSpan = (int) detector.getPreviousSpan();
 		
 		// if (UILib.isButtonPressed(e, button)) {
-		if (display.isTranformInProgress() || Math.abs(currentSpan - previousSpan ) < 10 ) // if some other transformation is in progress or the distance between to fingers is not changing (while the fingers remain on screen)
+		if (display.isTranformInProgress() || Math.abs(currentSpan - previousSpan ) < 5 ) // if some other transformation is in progress or the distance between to fingers is not changing (while the fingers remain on screen)
 			return true;
 		
 		display.getAbsoluteCoordinate(new Point2D.Float(detector.getFocusX(), detector.getFocusY()), down);

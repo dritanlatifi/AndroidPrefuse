@@ -40,6 +40,8 @@ import prefuse.visual.sort.ItemSorter;
 
 public class MainActivity extends Activity
 {
+	Visualization vis;
+	PDisplay display;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -54,6 +56,18 @@ public class MainActivity extends Activity
 		setContentView(createVisualizationV6(generateTable()));
 	}
 
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    display.setDamageRedraw(true);
+	}
+	
+	@Override
+	protected void onResume() {
+	    super.onPause();
+	    display.setDamageRedraw(true);
+	}
+	
 	/**
 	 * Phase 6 from the example http://www.ifs.tuwien.ac.at/~rind/w/doku.php/java/prefuse-scatterplot without user interaction and tooltip control
 	 * 
@@ -63,8 +77,8 @@ public class MainActivity extends Activity
 
 	private View createVisualizationV6(Table data)
 	{
-		final Visualization vis = new Visualization();
-		final PDisplay display = new PDisplay(this, vis);
+		vis = new Visualization();
+		display = new PDisplay(this, vis);
 
 		final Rectangle2D boundsData = new Rectangle2D.Double();
 		final Rectangle2D boundsLabelsX = new Rectangle2D.Double();
