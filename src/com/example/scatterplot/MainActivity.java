@@ -79,7 +79,7 @@ public class MainActivity extends Activity
 	{
 		vis = new Visualization();
 		display = new PDisplay(this, vis);
-
+		display.disableHardwareAcceleration(); // disable hardware accelaration , otherwise some drawing code do not work. e.g. antialiasing on drawing with Path
 		final Rectangle2D boundsData = new Rectangle2D.Double();
 		final Rectangle2D boundsLabelsX = new Rectangle2D.Double();
 		final Rectangle2D boundsLabelsY = new Rectangle2D.Double();

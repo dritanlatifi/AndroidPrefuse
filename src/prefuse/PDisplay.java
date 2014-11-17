@@ -762,6 +762,15 @@ public class PDisplay extends View
 
 	}
 
+	/**
+	 * disable hardware accelaration , otherwise some drawing code do not work. e.g. antialiasing on drawing with Path
+	 * for more information see http://developer.android.com/guide/topics/graphics/hardware-accel.html
+	 */
+	public void disableHardwareAcceleration()
+	{
+		setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+	}
+	
 	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas g)
@@ -773,16 +782,16 @@ public class PDisplay extends View
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
 			damageReport();
 		}
-		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this);
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this); // TODO for Dritan: Analyze why this is necessary
+		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this); // TODO for Dritan: Analyze is this necessary
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this); 
 		int width = getWidth();
-		int height = getHeight(); // TODO for Dritan: get screen height
+		int height = getHeight(); 
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
 
 		// paint the visualization
-		paintDisplay(buf_g2D, new Dimension(width, height)); // TODO for Dritan: Analyze why this is necessary
-		paintBufferToScreen(g2D); // TODO for Dritan: Analyze why this is necessary
+		paintDisplay(buf_g2D, new Dimension(width, height)); 
+//		paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
 
 		// fire post-paint events to any painters
 		firePostPaint(g2D);
