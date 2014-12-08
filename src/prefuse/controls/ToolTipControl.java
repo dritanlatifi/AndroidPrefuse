@@ -1,8 +1,6 @@
 package prefuse.controls;
 
-import android.view.Display;
 import android.view.MotionEvent;
-import prefuse.PDisplay;
 import prefuse.visual.VisualItem;
 import android.widget.Toast;
 

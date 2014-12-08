@@ -150,7 +150,7 @@ public class MainActivity extends Activity
 		// STEP 4: set up a display and controls
 
 		display.setHighQuality(true);
-		display.setSize(700, 450); // TODO for Dritan: this method is still not implemented
+		
 
 		// show data items in front of axis labels
 		display.setItemSorter(new ItemSorter()

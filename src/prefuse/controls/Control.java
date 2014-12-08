@@ -144,15 +144,6 @@ public interface Control extends EventListener, ScaleGestureDetector.OnScaleGest
 	 */
 	public void onTouchDown(MotionEvent e);
 
-	/**
-	 * Invoked when a mouse button has been released on the Display but NOT on a VisualItem.
-	 */
-	public void touchReleased(MotionEvent e);
-
-	/**
-	 * Invoked when the mouse button has been clicked (pressed and released) on the Display, but NOT on a VisualItem.
-	 */
-	public void mouseClicked(MotionEvent e);
 
 	/**
 	 * Invoked when a user drags the finger with touch on display (but NOT a VisualItem) and then dragged.

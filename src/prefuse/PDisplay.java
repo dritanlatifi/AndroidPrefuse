@@ -14,6 +14,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import awt.java.awt.Color;
 import awt.java.awt.Dimension;
@@ -99,21 +100,15 @@ public class PDisplay extends View
 	private ScaleGestureDetector mScaleGestureDetector;
 	private GestureDetectorCompat mGestureDetector;
 
-	enum TouchActions
-	{
-		// user not touching the screen
-		NONE
-		// Pinch or Zoom action in progress , 2 fingers in play
-		, ZOOM
-		// single finger drag in progress
-		, DRAG
-	}
+	/**
+	 * Preferred width of the screen, if not set android will calculate the needed size
+	 */
+	protected int preferredWidth = 0;
 
-	private boolean touchDown = false;
-
-	TouchActions touchMode = TouchActions.NONE;
-	float oldDist = 0.0f;
-	float newDist = 0.0f;
+	/**
+	 * Preferred width of the screen. if not set android will calculate the needed size
+	 */
+	protected int preferredHeight = 0;
 
 	private static final Logger s_logger = Logger.getLogger(PDisplay.class.getName());
 
@@ -143,9 +138,9 @@ public class PDisplay extends View
 	protected int m_visibleCount = 0;
 
 	// transform variables
-	protected AffineTransform m_transform = new AffineTransform( );
-	protected AffineTransform m_itransform = new AffineTransform( ) ;
-	protected TransformActivity m_transact = new TransformActivity(  );
+	protected AffineTransform m_transform = new AffineTransform();
+	protected AffineTransform m_itransform = new AffineTransform();
+	protected TransformActivity m_transact = new TransformActivity();
 	protected Point2D m_tmpPoint = new Point2D.Double();
 
 	// frame count and debugging output
@@ -252,7 +247,9 @@ public class PDisplay extends View
 	}
 
 	/**
-	 * Set the size of the Display. TODO for Dritan: on android size of View cannot be set TODO for Dritan: implement this
+	 * Set the preferred size of the Display. 
+	 * Note: The size of the view is specified from the layout manager. i.e. the view must fit in a layout. As result at most of the time 
+	 * this method does not affect the size of the view. Only if for the View is specified MeasureSpec.UNSPECIFIED has this method an effect on the view size 
 	 * 
 	 * @incomplete
 	 * @param width
@@ -263,9 +260,77 @@ public class PDisplay extends View
 	 */
 	public void setSize(int width, int height)
 	{
-		// m_offscreen = null;
-		// setPreferredSize(new Dimension(width, height));
-		// super.setSize(width, height);
+		m_offscreen = null;
+		this.preferredWidth = width;
+		this.preferredHeight = height;
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		if (preferredHeight != 0 && preferredWidth != 0)
+			setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
+	}
+
+	/**
+	 * Determines the width of this view
+	 * 
+	 * @param measureSpec
+	 *            A measureSpec packed into an int
+	 * @return The width of the view, honoring constraints from measureSpec
+	 */
+	private int measureWidth(int measureSpec)
+	{
+		int result = 0;
+		int specMode = MeasureSpec.getMode(measureSpec);
+		int specSize = MeasureSpec.getSize(measureSpec);
+
+		if (specMode == MeasureSpec.EXACTLY)
+		{
+			// We were told how big to be
+			result = specSize;
+		} else
+		{
+			// Measure the text
+			result = preferredWidth + getPaddingLeft() + getPaddingRight();
+			if (specMode == MeasureSpec.AT_MOST)
+			{
+				// Respect AT_MOST value if that was what is called for by measureSpec
+				result = Math.min(result, specSize);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Determines the height of this view
+	 * 
+	 * @param measureSpec
+	 *            A measureSpec packed into an int
+	 * @return The height of the view, honoring constraints from measureSpec
+	 */
+	private int measureHeight(int measureSpec)
+	{
+		int result = 0;
+		int specMode = MeasureSpec.getMode(measureSpec);
+		int specSize = MeasureSpec.getSize(measureSpec);
+
+		if (specMode == MeasureSpec.EXACTLY)
+		{
+			// We were told how big to be
+			result = specSize;
+		} else
+		{
+			// Measure the text (beware: ascent is a negative number)
+			result = preferredHeight + getPaddingTop() + getPaddingBottom();
+			if (specMode == MeasureSpec.AT_MOST)
+			{
+				// Respect AT_MOST value if that was what is called for by measureSpec
+				result = Math.min(result, specSize);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -763,14 +828,14 @@ public class PDisplay extends View
 	}
 
 	/**
-	 * disable hardware accelaration , otherwise some drawing code do not work. e.g. antialiasing on drawing with Path
-	 * for more information see http://developer.android.com/guide/topics/graphics/hardware-accel.html
+	 * disable hardware accelaration , otherwise some drawing code do not work. e.g. antialiasing on drawing with Path for more information see
+	 * http://developer.android.com/guide/topics/graphics/hardware-accel.html
 	 */
 	public void disableHardwareAcceleration()
 	{
 		setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 	}
-	
+
 	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas g)
@@ -783,15 +848,15 @@ public class PDisplay extends View
 			damageReport();
 		}
 		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this); // TODO for Dritan: Analyze is this necessary
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this); 
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this);
 		int width = getWidth();
-		int height = getHeight(); 
+		int height = getHeight();
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
 
 		// paint the visualization
-		paintDisplay(buf_g2D, new Dimension(width, height)); 
-//		paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
+		paintDisplay(buf_g2D, new Dimension(width, height));
+		// paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
 
 		// fire post-paint events to any painters
 		firePostPaint(g2D);
@@ -1666,29 +1731,6 @@ public class PDisplay extends View
 		return false;
 	}
 
-	public void touchReleased(MotionEvent event)
-	{
-		synchronized (m_vis)
-		{
-			if (activeItem != null)
-			{
-				if (validityCheck())
-					fireItemReleased(activeItem, event);
-			} else
-			{
-				fireTouchReleased(event);
-			}
-			if (activeItem != null && isOffComponent(event))
-			{
-				// mouse was dragged off of the component,
-				// then released, so register an exit
-				fireItemExited(activeItem, event);
-				activeItem = null;
-			}
-			touchDown = false;
-		}
-	}
-
 	private void fireItemExited(VisualItem item, MotionEvent event)
 	{
 		if (item.isValid())
@@ -1778,40 +1820,6 @@ public class PDisplay extends View
 				try
 				{
 					ctrl.itemReleased(item, event);
-				} catch (Exception ex)
-				{
-					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
-				}
-		}
-	}
-
-	private void fireTouchReleased(MotionEvent event)
-	{
-		Object[] lstnrs = m_controls.getArray();
-		for (int i = 0; i < lstnrs.length; ++i)
-		{
-			Control ctrl = (Control) lstnrs[i];
-			if (ctrl.isEnabled())
-				try
-				{
-					ctrl.touchReleased(event);
-				} catch (Exception ex)
-				{
-					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
-				}
-		}
-	}
-
-	private void fireMouseClicked(MotionEvent event)
-	{
-		Object[] lstnrs = m_controls.getArray();
-		for (int i = 0; i < lstnrs.length; ++i)
-		{
-			Control ctrl = (Control) lstnrs[i];
-			if (ctrl.isEnabled())
-				try
-				{
-					ctrl.mouseClicked(event);
 				} catch (Exception ex)
 				{
 					s_logger.warning("Exception thrown by Control: " + ex + "\n" + StringLib.getStackTrace(ex));
@@ -2333,7 +2341,6 @@ public class PDisplay extends View
 			}
 		}
 	};
-
 
 } // end of class Display
 
