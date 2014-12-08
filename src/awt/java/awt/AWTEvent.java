@@ -326,14 +326,6 @@ public abstract class AWTEvent extends EventObject {
          */
         String name = ""; //$NON-NLS-1$
 
-        if (source instanceof Component && (source != null)) {
-            Component comp = (Component)getSource();
-            name = comp.getName();
-            if (name == null) {
-                name = ""; //$NON-NLS-1$
-            }
-        }
-
         return (getClass().getName() + "[" + paramString() + "]" //$NON-NLS-1$ //$NON-NLS-2$
                 + " on " + (name.length() > 0 ? name : source)); //$NON-NLS-1$
     }

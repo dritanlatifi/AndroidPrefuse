@@ -1,6 +1,5 @@
 package prefuse.util;
 
-import awt.java.awt.event.ComponentEvent;
 import awt.java.awt.event.ComponentListener;
 
 import prefuse.data.Tuple;
@@ -42,33 +41,5 @@ public abstract class UpdateListener
         update(tset);
     }
     
-    /**
-     * @see java.awt.event.ComponentListener#componentResized(java.awt.event.ComponentEvent)
-     */
-    public void componentResized(ComponentEvent e) {
-        update(e.getSource());
-    }
-
-    /**
-     * Does nothing.
-     * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
-     */
-    public void componentHidden(ComponentEvent e) {
-        // do nothing
-    }
-    /**
-     * Does nothing.
-     * @see java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent)
-     */
-    public void componentMoved(ComponentEvent e) {
-        // do nothing
-    }
-    /**
-     * Does nothing.
-     * @see java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent)
-     */
-    public void componentShown(ComponentEvent e) {
-        // do nothing
-    }
 
 } // end of abstract class UpdateListener

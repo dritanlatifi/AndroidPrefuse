@@ -1,9 +1,6 @@
 package prefuse.render;
 
-import awt.java.awt.Component;
 import awt.java.awt.Image;
-//import awt.java.awt.MediaTracker;
-//import awt.java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +23,8 @@ import prefuse.util.io.IOLib;
  * 
  * @author alan newberger
  * @author <a href="http://jheer.org">jeffrey heer</a>
+ * 
+ * TODO for Dritan: this class incomplete. The use of MediaTracker is not up to date. Use instead ImageIO.read(File/URL/InputStream) => see http://stackoverflow.com/questions/7045214/mediatracker-how-to-use-it-what-are-the-benefits-or-is-there-an-alterative  
  */
 public class ImageFactory {
     
@@ -43,8 +42,6 @@ public class ImageFactory {
         };
     protected Map loadMap = new HashMap(50);
 
-    protected final Component component = new Component() {};
-//    protected final MediaTracker tracker = new MediaTracker(component);
     protected int nextTrackerID = 0;
 
     /**

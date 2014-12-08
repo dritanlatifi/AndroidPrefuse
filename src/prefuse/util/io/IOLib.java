@@ -1,25 +1,12 @@
 package prefuse.util.io;
 
-import awt.java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-//import javax.swing.JFileChooser;
-
-import prefuse.data.Graph;
-import prefuse.data.Table;
-import prefuse.data.io.CSVTableReader;
-import prefuse.data.io.DelimitedTextTableReader;
-import prefuse.data.io.GraphMLReader;
-import prefuse.data.io.GraphReader;
-import prefuse.data.io.TableReader;
-import prefuse.data.io.TreeMLReader;
-import prefuse.util.StringLib;
 import prefuse.util.collections.ByteArrayList;
 
 /**
@@ -240,110 +227,5 @@ public class IOLib {
     }
     
     // ------------------------------------------------------------------------
-    
-    /**
-     * Present a file chooser dialog for loading a Table data set.
-     * @param c user interface component from which the request is being made
-     * @return a newly loaded Table, or null if not found or action canceled
-     */
-    public static Table getTableFile(Component c) {
-//        JFileChooser jfc = new JFileChooser();
-//        jfc.setDialogType(JFileChooser.OPEN_DIALOG);
-//        jfc.setDialogTitle("Open Table File");
-//        jfc.setAcceptAllFileFilterUsed(false);
-//        
-//        SimpleFileFilter ff;
-//        
-//        // TODO: have this generate automatically
-//        // tie into PrefuseConfig??
-//        
-//        // CSV
-//        ff = new SimpleFileFilter("csv",
-//                "Comma Separated Values (CSV) File (*.csv)",
-//                new CSVTableReader());
-//        ff.addExtension("gz");
-//        jfc.setFileFilter(ff);
-//
-//        // Pipe-Delimited
-//        ff = new SimpleFileFilter("txt",
-//                "Pipe-Delimited Text File (*.txt)",
-//                new DelimitedTextTableReader("|"));
-//        ff.addExtension("gz");
-//        jfc.setFileFilter(ff);
-//
-//        // Tab-Delimited
-//        ff = new SimpleFileFilter("txt",
-//                "Tab-Delimited Text File (*.txt)",
-//                new DelimitedTextTableReader());
-//        ff.addExtension("gz");
-//        jfc.setFileFilter(ff);
-//        
-//        int retval = jfc.showOpenDialog(c);
-//        if (retval != JFileChooser.APPROVE_OPTION)
-//            return null;
-//        
-//        File f = jfc.getSelectedFile();
-//        ff = (SimpleFileFilter)jfc.getFileFilter();
-//        TableReader tr = (TableReader)ff.getUserData();
-//        
-//        try {
-//            return tr.readTable(streamFromString(f.getAbsolutePath()));
-//        } catch ( Exception e ) {
-//            Logger.getLogger(IOLib.class.getName()).warning(
-//                e.getMessage() + "\n" + StringLib.getStackTrace(e));
-//            return null;
-//        }
-    	return null;
-    }
-    
-    /**
-     * Present a file chooser dialog for loading a Graph or Tree data set.
-     * @param c user interface component from which the request is being made
-     * @return a newly loaded Graph, or null if not found or action canceled
-     */
-    public static Graph getGraphFile(Component c) {
-//        JFileChooser jfc = new JFileChooser();
-//        jfc.setDialogType(JFileChooser.OPEN_DIALOG);
-//        jfc.setDialogTitle("Open Graph or Tree File");
-//        jfc.setAcceptAllFileFilterUsed(false);
-//        
-//        SimpleFileFilter ff;
-//        
-//        // TODO: have this generate automatically
-//        // tie into PrefuseConfig??
-//
-//        // TreeML
-//        ff = new SimpleFileFilter("xml",
-//                "TreeML File (*.xml, *.treeml)",
-//                new TreeMLReader());
-//        ff.addExtension("treeml");
-//        ff.addExtension("gz");
-//        jfc.setFileFilter(ff);
-//        
-//        // GraphML
-//        ff = new SimpleFileFilter("xml",
-//                "GraphML File (*.xml, *.graphml)",
-//                new GraphMLReader());
-//        ff.addExtension("graphml");
-//        ff.addExtension("gz");
-//        jfc.setFileFilter(ff);
-//        
-//        int retval = jfc.showOpenDialog(c);
-//        if (retval != JFileChooser.APPROVE_OPTION)
-//            return null;
-//        
-//        File f = jfc.getSelectedFile();
-//        ff = (SimpleFileFilter)jfc.getFileFilter();
-//        GraphReader gr = (GraphReader)ff.getUserData();
-//        
-//        try {
-//            return gr.readGraph(streamFromString(f.getAbsolutePath()));
-//        } catch ( Exception e ) {
-//            Logger.getLogger(IOLib.class.getName()).warning(
-//                e.getMessage() + "\n" + StringLib.getStackTrace(e));
-//            return null;
-//        }
-    	return null;
-    }
-    
+   
 } // end of class IOLib

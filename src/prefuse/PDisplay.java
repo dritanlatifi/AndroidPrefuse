@@ -350,21 +350,11 @@ public class PDisplay extends View
 	 * Invalidates this component. Overridden to ensure that an internal damage report is generated. TODO for Dritan: see if the invalidate method from android.View is the same as
 	 * java.awt.Component#invalidate => i.e. see if call of damageReport is necessary
 	 * 
-	 * @see java.awt.Component#invalidate()
 	 */
 	public void invalidate()
 	{
 		damageReport();
 		super.invalidate();
-	}
-
-	/**
-	 * @see java.awt.Component#setBounds(int, int, int, int) TODO for Dritan: on android size of View cannot be set
-	 */
-	public void setBounds(int x, int y, int w, int h)
-	{
-		m_offscreen = null;
-		// super.setBounds(x, y, w, h);
 	}
 
 	/**
