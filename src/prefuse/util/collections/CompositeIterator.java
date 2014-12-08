@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class CompositeIterator implements Iterator {
+public class CompositeIterator<T> implements Iterator<Object> {
 
     private Iterator[] m_iters;
     private int m_cur;

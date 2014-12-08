@@ -54,8 +54,8 @@ import java.util.RandomAccess;
  * @since 1.5
  * @author Doug Lea
  */
-public class CopyOnWriteArrayList
-    implements List, RandomAccess, Cloneable, java.io.Serializable {
+public class CopyOnWriteArrayList<T>
+    implements List<Object>, RandomAccess, Cloneable, java.io.Serializable {
     private static final long serialVersionUID = 8673264195747942595L;
 
     /** The array, accessed only via getArray/setArray. */

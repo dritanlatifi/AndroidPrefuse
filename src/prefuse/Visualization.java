@@ -172,9 +172,9 @@ public class Visualization {
     
     // visual abstraction
     // filtered tables and groups
-    private Map m_visual;
-    private Map m_source;
-    private Map m_focus;
+    private Map<String, VisualTupleSet> m_visual;
+    private Map<String, TupleSet> m_source;
+    private Map<String, TupleSet> m_focus;
     
     // actions
     private ActivityMap m_actions;
@@ -183,7 +183,7 @@ public class Visualization {
     private RendererFactory m_renderers;
     
     // displays
-    private ArrayList m_displays;
+    private ArrayList<PDisplay> m_displays;
     
     // ------------------------------------------------------------------------
     // Constructor
@@ -194,10 +194,10 @@ public class Visualization {
     public Visualization() {
         m_actions = new ActivityMap();
         m_renderers = new DefaultRendererFactory();
-        m_visual = new LinkedHashMap();
-        m_source = new HashMap();
-        m_focus = new HashMap();
-        m_displays = new ArrayList();
+        m_visual = new LinkedHashMap<String, VisualTupleSet>();
+        m_source = new HashMap<String, TupleSet>();
+        m_focus = new HashMap<String, TupleSet>();
+        m_displays = new ArrayList<PDisplay>();
         
         addFocusGroup(Visualization.FOCUS_ITEMS,    new DefaultTupleSet());
         addFocusGroup(Visualization.SELECTED_ITEMS, new DefaultTupleSet());
@@ -462,8 +462,8 @@ public class Visualization {
      */
     public synchronized VisualTree addTree(String group, Schema nodeSchema) {
         Schema edgeSchema = PrefuseLib.getVisualItemSchema();
-        edgeSchema.addColumn(Tree.DEFAULT_SOURCE_KEY, int.class, new Integer(-1));
-        edgeSchema.addColumn(Tree.DEFAULT_TARGET_KEY, int.class, new Integer(-1));
+        edgeSchema.addColumn(Tree.DEFAULT_SOURCE_KEY, int.class, Integer.valueOf(-1));
+        edgeSchema.addColumn(Tree.DEFAULT_TARGET_KEY, int.class, Integer.valueOf(-1));
          
         return addTree(group, nodeSchema, edgeSchema);
     }
@@ -734,10 +734,10 @@ public class Visualization {
         TupleSet ts = getFocusGroup(group);
         if ( ts != null ) {
             // invalidate the item to reflect group membership change
-            for ( Iterator items = ts.tuples(ValidatedPredicate.TRUE);
+            for ( Iterator<VisualItem> items = ts.tuples(ValidatedPredicate.TRUE);
                   items.hasNext(); )
             {
-                ((VisualItem)items.next()).setValidated(false);
+                (items.next()).setValidated(false);
             }
             ts.clear(); // trigger group removal callback
             m_focus.remove(group);
@@ -753,8 +753,8 @@ public class Visualization {
         // remove group members from focus sets and invalidate them
         TupleSet[] focus = new TupleSet[m_focus.size()];
         m_focus.values().toArray(focus);
-        for ( Iterator items = ts.tuples(); items.hasNext(); ) {
-            VisualItem item = (VisualItem)items.next();
+        for ( Iterator<VisualItem> items = ts.tuples(); items.hasNext(); ) {
+            VisualItem item = items.next();
             for ( int j=0; j<focus.length; ++j ) {
                 focus[j].removeTuple(item);
             }
@@ -763,8 +763,8 @@ public class Visualization {
         // remove data
         if ( ts instanceof CompositeTupleSet ) {
             CompositeTupleSet cts = (CompositeTupleSet)ts;
-            for ( Iterator names = cts.setNames(); names.hasNext(); ) {
-                String name = (String)names.next();
+            for ( Iterator<String> names = cts.setNames(); names.hasNext(); ) {
+                String name = names.next();
                 String subgroup = PrefuseLib.getGroupName(group,name); 
                 m_visual.remove(subgroup);
                 m_source.remove(subgroup);
@@ -804,7 +804,7 @@ public class Visualization {
      * data set
      */
     public TupleSet getSourceData(String group) {
-        return (TupleSet)m_source.get(group);
+        return m_source.get(group);
     }
     
     /**
@@ -813,7 +813,7 @@ public class Visualization {
      * data set
      */
     public TupleSet getSourceData(VisualTupleSet ts) {
-        return (TupleSet)m_source.get(ts.getGroup());
+        return m_source.get(ts.getGroup());
     }
     
     /**
@@ -951,7 +951,7 @@ public class Visualization {
      * @return the requested data group, or null if not found
      */
     public VisualTupleSet getVisualGroup(String group) {
-        return (VisualTupleSet)m_visual.get(group);
+        return m_visual.get(group);
     }
     
     /**
@@ -961,7 +961,7 @@ public class Visualization {
      * @return the requested data group, or null if not found
      */
     public TupleSet getFocusGroup(String group) {
-        return (TupleSet)m_focus.get(group);
+        return m_focus.get(group);
     }
     
     /**
@@ -1043,7 +1043,7 @@ public class Visualization {
      * @param group the visual data group name
      * @return an iterator over all items in the specified group.
      */
-    public Iterator items(String group) {
+    public Iterator<VisualItem> items(String group) {
         return items(group, (Predicate)null);
     }
     
@@ -1058,7 +1058,7 @@ public class Visualization {
      * parse error occurs, an empty iterator is returned.
      * @return a filtered iterator over VisualItems
      */
-    public Iterator items(String group, String expr) {
+    public Iterator<VisualItem> items(String group, String expr) {
         Expression e = ExpressionParser.parse(expr);
         if ( !(e instanceof Predicate) || ExpressionParser.getError()!=null )
             return Collections.EMPTY_LIST.iterator();
@@ -1073,7 +1073,7 @@ public class Visualization {
      * the iteration.
      * @return a filtered iterator over VisualItems
      */
-    public Iterator items(String group, Predicate filter) {
+    public Iterator<VisualItem> items(String group, Predicate filter) {
         if ( ALL_ITEMS.equals(group) )
             return items(filter);
 
@@ -1373,7 +1373,7 @@ public class Visualization {
      * @return the Display at the given index
      */
     public PDisplay getDisplay(int idx) {
-        return (PDisplay)m_displays.get(idx);
+        return m_displays.get(idx);
     }
     
     /**

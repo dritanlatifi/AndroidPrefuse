@@ -22,7 +22,7 @@ public class ColorAnimator extends ItemAction {
         VisualItem.STROKECOLOR, VisualItem.FILLCOLOR, 
         VisualItem.TEXTCOLOR };
     
-    private CopyOnWriteArrayList m_colorFields;
+    private CopyOnWriteArrayList<String> m_colorFields;
     
     /**
      * Create a new ColorAnimator that processes all data groups.
@@ -73,7 +73,7 @@ public class ColorAnimator extends ItemAction {
         }
         
         if ( m_colorFields == null )
-            m_colorFields = new CopyOnWriteArrayList();
+            m_colorFields = new CopyOnWriteArrayList<String>();
         else
             m_colorFields.clear();
         

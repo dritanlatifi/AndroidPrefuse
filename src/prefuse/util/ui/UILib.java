@@ -1,7 +1,6 @@
 package prefuse.util.ui;
 
 import awt.java.awt.Color;
-import awt.java.awt.Component;
 import awt.java.awt.ComponentOrientation;
 //import awt.java.awt.Container;
 import awt.java.awt.Font;

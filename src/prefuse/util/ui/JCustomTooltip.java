@@ -1,7 +1,6 @@
 package prefuse.util.ui;
 
 //import awt.java.awt.BorderLayout;
-import awt.java.awt.Component;
 import awt.java.awt.Dimension;
 import awt.java.awt.Graphics;
 import awt.java.awt.Insets;

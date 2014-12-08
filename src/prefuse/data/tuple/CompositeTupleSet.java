@@ -32,7 +32,7 @@ public class CompositeTupleSet extends AbstractTupleSet {
     private static final Logger s_logger
         = Logger.getLogger(CompositeTupleSet.class.getName());
     
-    private Map m_map;   // map names to tuple sets
+    private Map<String, TupleSet> m_map;   // map names to tuple sets
     private Set m_sets;  // support quick reverse lookup
     private int m_count; // count of total tuples
     private Listener m_lstnr;
@@ -99,7 +99,7 @@ public class CompositeTupleSet extends AbstractTupleSet {
      * Get an iterator over the names of all the TupleSets in this composite.
      * @return the iterator over contained set names.
      */
-    public Iterator setNames() {
+    public Iterator<String> setNames() {
         return m_map.keySet().iterator();
     }
 

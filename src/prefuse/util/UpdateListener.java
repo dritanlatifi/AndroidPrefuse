@@ -1,6 +1,5 @@
 package prefuse.util;
 
-import awt.java.awt.event.ComponentListener;
 
 import prefuse.data.Tuple;
 import prefuse.data.event.ExpressionListener;
@@ -18,7 +17,7 @@ import prefuse.data.tuple.TupleSet;
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
 public abstract class UpdateListener 
-    implements ExpressionListener, TupleSetListener, ComponentListener
+    implements ExpressionListener, TupleSetListener 
 {
     /**
      * Generic update routine triggerred by any of the other callbacks.

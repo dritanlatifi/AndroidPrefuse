@@ -117,9 +117,9 @@ public class PDisplay extends View
 	protected AndPredicate m_predicate = new AndPredicate();
 
 	// listeners
-	protected CopyOnWriteArrayList m_controls = new CopyOnWriteArrayList();
-	protected CopyOnWriteArrayList m_painters;
-	protected CopyOnWriteArrayList m_bounders;
+	protected CopyOnWriteArrayList<Control> m_controls = new CopyOnWriteArrayList<Control>();
+	protected CopyOnWriteArrayList<PaintListener> m_painters;
+	protected CopyOnWriteArrayList<ItemBoundsListener> m_bounders;
 
 	// display
 	protected BufferedImage m_offscreen;
@@ -665,7 +665,7 @@ public class PDisplay extends View
 	 */
 	protected BufferedImage getNewOffscreenBuffer(int width, int height)
 	{
-		BufferedImage img = null;
+//		BufferedImage img = null;
 		// if (!GraphicsEnvironment.isHeadless()) {
 		// try {
 		// img = (BufferedImage) createImage(width, height);
@@ -965,10 +965,10 @@ public class PDisplay extends View
 
 				// fill the rendering and picking queues
 				m_queue.clear(); // clear the queue
-				Iterator items = m_vis.items(m_predicate);
+				Iterator<VisualItem> items = m_vis.items(m_predicate);
 				for (m_visibleCount = 0; items.hasNext(); ++m_visibleCount)
 				{
-					VisualItem item = (VisualItem) items.next();
+					VisualItem item =  items.next();
 					Rectangle2D bounds = item.getBounds();
 					m_bounds.union(bounds); // add to item bounds
 
@@ -1542,7 +1542,7 @@ public class PDisplay extends View
 	public void addPaintListener(PaintListener pl)
 	{
 		if (m_painters == null)
-			m_painters = new CopyOnWriteArrayList();
+			m_painters = new CopyOnWriteArrayList<PaintListener>();
 		m_painters.add(pl);
 	}
 
@@ -1617,7 +1617,7 @@ public class PDisplay extends View
 	public void addItemBoundsListener(ItemBoundsListener ibl)
 	{
 		if (m_bounders == null)
-			m_bounders = new CopyOnWriteArrayList();
+			m_bounders = new CopyOnWriteArrayList<ItemBoundsListener>();
 		m_bounders.add(ibl);
 	}
 
