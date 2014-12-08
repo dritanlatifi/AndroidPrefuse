@@ -8,25 +8,27 @@ import java.util.NoSuchElementException;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class CompositeIterator<T> implements Iterator<Object> {
+public class CompositeIterator<T> implements Iterator<T> {
 
-    private Iterator[] m_iters;
+    private Iterator<T>[] m_iters;
     private int m_cur;
     
-    public CompositeIterator(int size) {
+    @SuppressWarnings("unchecked")
+	public CompositeIterator(int size) {
         m_iters = new Iterator[size];
     }
     
-    public CompositeIterator(Iterator iter1, Iterator iter2) {
+    @SuppressWarnings("unchecked")
+	public CompositeIterator(Iterator<T> iter1, Iterator<T> iter2) {
         this(new Iterator[] {iter1, iter2});
     }
     
-    public CompositeIterator(Iterator[] iters) {
+    public CompositeIterator(Iterator<T>[] iters) {
         m_iters = iters;
         m_cur = 0;
     }
 
-    public void setIterator(int idx, Iterator iter) {
+    public void setIterator(int idx, Iterator<T> iter) {
         m_iters[idx] = iter;
     }
     
@@ -41,7 +43,7 @@ public class CompositeIterator<T> implements Iterator<Object> {
     /**
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public T next() {
         if ( hasNext() ) {
             return m_iters[m_cur].next();
         } else {

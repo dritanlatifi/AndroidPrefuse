@@ -55,7 +55,7 @@ import java.util.RandomAccess;
  * @author Doug Lea
  */
 public class CopyOnWriteArrayList<T>
-    implements List<Object>, RandomAccess, Cloneable, java.io.Serializable {
+    implements List<T>, RandomAccess, Cloneable, java.io.Serializable {
     private static final long serialVersionUID = 8673264195747942595L;
 
     /** The array, accessed only via getArray/setArray. */
@@ -68,7 +68,8 @@ public class CopyOnWriteArrayList<T>
      * not the author of this comment, you probably shouldn't use it at all.
      * @return this lists internal array
      */
-    public Object[]  getArray()    { return array; }
+    @SuppressWarnings("unchecked")
+	public T[]  getArray()    { return (T[]) array; }
     
     void      setArray(Object[] a) { array = a; }
 
@@ -87,10 +88,10 @@ public class CopyOnWriteArrayList<T>
      * @param c the collection of initially held elements
      * @throws NullPointerException if the specified collection is null
      */
-    public CopyOnWriteArrayList(Collection c) {
+    public CopyOnWriteArrayList(Collection<T> c) {
         Object[] elements = new Object[c.size()];
         int size = 0;
-        for (Iterator itr = c.iterator(); itr.hasNext(); ) {
+        for (Iterator<T> itr = c.iterator(); itr.hasNext(); ) {
             Object e = itr.next();
             elements[size++] = e;
         }
@@ -341,16 +342,17 @@ public class CopyOnWriteArrayList<T>
      *         this list
      * @throws NullPointerException if the specified array is null
      */
-    public Object[] toArray(Object a[]) {
+    @SuppressWarnings("unchecked")
+	public T[] toArray(Object a[]) {
         Object[] elements = getArray();
         int len = elements.length;
         if (a.length < len)
-            return copyOf(elements, len, a.getClass());
+            return (T[]) copyOf(elements, len, a.getClass());
         else {
             System.arraycopy(elements, 0, a, 0, len);
             if (a.length > len)
                 a[len] = null;
-            return a;
+            return (T[]) a;
         }
     }
 
@@ -361,7 +363,7 @@ public class CopyOnWriteArrayList<T>
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
-    public Object get(int index) {
+    public T get(int index) {
         return (getArray()[index]);
     }
 
@@ -371,10 +373,10 @@ public class CopyOnWriteArrayList<T>
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
-    public synchronized Object set(int index, Object element) {
-        Object[] elements = getArray();
+    public synchronized T set(int index, T element) {
+        T[] elements = getArray();
         int len = elements.length;
-        Object oldValue = elements[index];
+        T oldValue = elements[index];
 
         if (oldValue != element) {
             Object[] newElements = copyOf(elements, len);
@@ -435,10 +437,10 @@ public class CopyOnWriteArrayList<T>
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
-    public synchronized Object remove(int index) {
-        Object[] elements = getArray();
+	public synchronized T remove(int index) {
+        T[] elements = getArray();
         int len = elements.length;
-        Object oldValue = elements[index];
+        T oldValue = elements[index];
         int numMoved = len - index - 1;
         if (numMoved == 0)
             setArray(copyOf(elements, len - 1));
@@ -560,10 +562,10 @@ public class CopyOnWriteArrayList<T>
      * @throws NullPointerException if the specified collection is null
      * @see #contains(Object)
      */
-    public boolean containsAll(Collection c) {
-        Object[] elements = getArray();
+    public boolean containsAll(Collection<?> c) {
+        T[] elements = getArray();
         int len = elements.length;
-        for (Iterator itr = c.iterator(); itr.hasNext(); ) {
+        for (Iterator<?> itr = c.iterator(); itr.hasNext(); ) {
             Object e = itr.next();
             if (indexOf(e, elements, 0, len) < 0)
                 return false;
@@ -585,7 +587,7 @@ public class CopyOnWriteArrayList<T>
      *         or if the specified collection is null
      * @see #remove(Object)
      */
-    public synchronized boolean removeAll(Collection c) {
+    public synchronized boolean removeAll(Collection<?> c) {
         Object[] elements = getArray();
         int len = elements.length;
         if (len != 0) {
@@ -619,7 +621,7 @@ public class CopyOnWriteArrayList<T>
      *         or if the specified collection is null
      * @see #remove(Object)
      */
-    public synchronized boolean retainAll(Collection c) {
+    public synchronized boolean retainAll(Collection<?> c) {
         Object[] elements = getArray();
         int len = elements.length;
         if (len != 0) {
@@ -650,7 +652,7 @@ public class CopyOnWriteArrayList<T>
      * @throws NullPointerException if the specified collection is null
      * @see #addIfAbsent(Object)
      */
-    public int addAllAbsent(Collection c) {
+    public int addAllAbsent(Collection<T> c) {
         int numNew = c.size();
         if (numNew == 0)
             return 0;
@@ -660,7 +662,7 @@ public class CopyOnWriteArrayList<T>
 
             Object[] temp = new Object[numNew];
             int added = 0;
-            for (Iterator itr = c.iterator(); itr.hasNext(); ) {
+            for (Iterator<T> itr = c.iterator(); itr.hasNext(); ) {
                 Object e = itr.next();
                 if (indexOf(e, elements, 0, len) < 0 &&
                     indexOf(e, temp, 0, added) < 0)
@@ -694,7 +696,7 @@ public class CopyOnWriteArrayList<T>
      * @throws NullPointerException if the specified collection is null
      * @see #add(Object)
      */
-    public boolean addAll(Collection c) {
+    public boolean addAll(Collection<? extends T> c) {
         int numNew = c.size();
         if (numNew == 0)
             return false;
@@ -703,7 +705,7 @@ public class CopyOnWriteArrayList<T>
             int len = elements.length;
             Object[] newElements = new Object[len + numNew];
             System.arraycopy(elements, 0, newElements, 0, len);
-            for (Iterator itr = c.iterator(); itr.hasNext(); ) {
+            for (Iterator<?> itr = c.iterator(); itr.hasNext(); ) {
                 Object e = itr.next();
                 newElements[len++] = e;
             }
@@ -728,7 +730,7 @@ public class CopyOnWriteArrayList<T>
      * @throws NullPointerException if the specified collection is null
      * @see #add(int,Object)
      */
-    public boolean addAll(int index, Collection c) {
+    public boolean addAll(int index, Collection<? extends T> c) {
         int numNew = c.size();
         synchronized (this) {
             Object[] elements = getArray();
@@ -749,7 +751,7 @@ public class CopyOnWriteArrayList<T>
                                  newElements, index + numNew,
                                  numMoved);
             }
-            for (Iterator itr = c.iterator(); itr.hasNext(); ) {
+            for (Iterator<?> itr = c.iterator(); itr.hasNext(); ) {
                 Object e = itr.next();
                 newElements[index++] = e;
             }
@@ -840,12 +842,13 @@ public class CopyOnWriteArrayList<T>
         if (!(o instanceof List))
             return false;
 
-        List l2 = (List)(o);
+        @SuppressWarnings("unchecked")
+		List<T> l2 = (List<T>)(o);
         if (size() != l2.size())
             return false;
 
-        ListIterator e1 = listIterator();
-        ListIterator e2 = l2.listIterator();
+        ListIterator<T> e1 = listIterator();
+        ListIterator<T> e2 = l2.listIterator();
         while (e1.hasNext()) {
             if (!eq(e1.next(), e2.next()))
                 return false;
@@ -881,7 +884,8 @@ public class CopyOnWriteArrayList<T>
      *
      * @return an iterator over the elements in this list in proper sequence
      */
-    public Iterator iterator() {
+    @SuppressWarnings("unchecked")
+	public Iterator<T> iterator() {
         return new COWIterator(getArray(), 0);
     }
 
@@ -893,7 +897,8 @@ public class CopyOnWriteArrayList<T>
      * traversing the iterator. The iterator does <em>NOT</em> support the
      * <tt>remove</tt>, <tt>set</tt> or <tt>add</tt> methods.
      */
-    public ListIterator listIterator() {
+    @SuppressWarnings("unchecked")
+	public ListIterator<T> listIterator() {
         return new COWIterator(getArray(), 0);
     }
 
@@ -906,7 +911,8 @@ public class CopyOnWriteArrayList<T>
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
-    public ListIterator listIterator(final int index) {
+    @SuppressWarnings("unchecked")
+	public ListIterator<T> listIterator(final int index) {
         Object[] elements = getArray();
         int len = elements.length;
         if (index < 0 || index > len)
@@ -915,7 +921,8 @@ public class CopyOnWriteArrayList<T>
         return new COWIterator(getArray(), index);
     }
 
-    private static class COWIterator implements ListIterator {
+    @SuppressWarnings("rawtypes")
+	private static class COWIterator implements ListIterator {
         /** Snapshot of the array **/
         private final Object[] snapshot;
         /** Index of element to be returned by subsequent call to next.  */
@@ -1006,7 +1013,8 @@ public class CopyOnWriteArrayList<T>
      * @return a view of the specified range within this list
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
-    public synchronized List subList(int fromIndex, int toIndex) {
+    @SuppressWarnings("unchecked")
+	public synchronized List<T> subList(int fromIndex, int toIndex) {
         Object[] elements = getArray();
         int len = elements.length;
         if (fromIndex < 0 || toIndex > len  || fromIndex > toIndex)
@@ -1030,7 +1038,8 @@ public class CopyOnWriteArrayList<T>
      * AbstractList are already so slow on COW sublists that
      * adding a bit more space/time doesn't seem even noticeable.
      */
-    private static class COWSubList extends AbstractList {
+    @SuppressWarnings("rawtypes")
+	private static class COWSubList extends AbstractList {
         private final CopyOnWriteArrayList l;
         private final int offset;
         private int size;
@@ -1058,7 +1067,8 @@ public class CopyOnWriteArrayList<T>
                                                     ",Size: " + size);
         }
 
-        public Object set(int index, Object element) {
+        @SuppressWarnings("unchecked")
+		public Object set(int index, Object element) {
             synchronized (l) {
                 rangeCheck(index);
                 checkForComodification();
@@ -1144,7 +1154,8 @@ public class CopyOnWriteArrayList<T>
     }
 
 
-    private static class COWSubListIterator implements ListIterator {
+    @SuppressWarnings("rawtypes")
+	private static class COWSubListIterator implements ListIterator {
         private final ListIterator i;
         private final int offset;
         private final int size;
@@ -1214,7 +1225,8 @@ public class CopyOnWriteArrayList<T>
 
     // Temporary emulations of anticipated new j.u.Arrays functions
 
-    private static Object[] copyOfRange(Object[] original, int from, int to,
+    @SuppressWarnings("rawtypes")
+	private static Object[] copyOfRange(Object[] original, int from, int to,
                                         Class newType) {
         int newLength = to - from;
         if (newLength < 0)
@@ -1226,7 +1238,8 @@ public class CopyOnWriteArrayList<T>
         return copy;
     }
 
-    private static Object[] copyOf(Object[] original, int newLength,
+    @SuppressWarnings("rawtypes")
+	private static Object[] copyOf(Object[] original, int newLength,
                                    Class newType) {
         Object[] copy = (Object[]) java.lang.reflect.Array.newInstance
             (newType.getComponentType(), newLength);

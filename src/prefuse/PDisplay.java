@@ -9,12 +9,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import awt.java.awt.Color;
 import awt.java.awt.Dimension;
@@ -1740,14 +1738,17 @@ public class PDisplay extends View
 		}
 	}
 
+	/**
+	 * TODO for Dritan: Check if the implementation is correct. See if and how is it possible to catch Events over different views
+	 * @param event
+	 * @return
+	 */
 	private boolean isOffComponent(MotionEvent event)
 	{
 		float x = event.getX(), y = event.getY();
 		return (x < 0 || x > getWidth() || y < 0 || y > getHeight());
 	}
 
-	// --------------------------------------------------------------------
-	// Fire Event Notifications
 
 	private void fireItemMoved(VisualItem item, MotionEvent event)
 	{

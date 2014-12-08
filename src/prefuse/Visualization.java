@@ -784,12 +784,12 @@ public class Visualization {
      */
     public synchronized void reset() {
         // first clear out all the focus groups
-        Iterator iter = m_focus.entrySet().iterator();
-        while ( iter.hasNext() ) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            TupleSet ts = (TupleSet)entry.getValue();
-            ts.clear();
-        }
+		for (Map.Entry<String, TupleSet> entry : m_focus.entrySet())
+		{
+			TupleSet ts = entry.getValue();
+			ts.clear();
+		}
+        
         // finally clear out all map entries
         m_visual.clear();
         m_source.clear();
@@ -971,7 +971,7 @@ public class Visualization {
      * @param group the visual data group to invalidate
      */
     public void invalidate(String group) {
-        Iterator items = items(group, ValidatedPredicate.TRUE);
+        Iterator<VisualItem> items = items(group, ValidatedPredicate.TRUE);
         while ( items.hasNext() ) {
             VisualItem item = (VisualItem)items.next();
             item.setValidated(false);
@@ -991,7 +991,7 @@ public class Visualization {
      * Get an iterator over all visible items.
      * @return an iterator over all visible items.
      */
-    public Iterator visibleItems() {
+    public Iterator<VisualItem> visibleItems() {
         return items(VisiblePredicate.TRUE);
     }
     
@@ -1000,7 +1000,7 @@ public class Visualization {
      * @param group the visual data group name
      * @return an iterator over all visible items in the specified group
      */
-    public Iterator visibleItems(String group) {
+    public Iterator<VisualItem> visibleItems(String group) {
         return items(group, VisiblePredicate.TRUE);
     }
     
@@ -1008,7 +1008,7 @@ public class Visualization {
      * Get an iterator over all items, visible or not.
      * @return an iterator over all items, visible or not.
      */
-    public Iterator items() {
+    public Iterator<VisualItem> items() {
         return items((Predicate)null);
     }
     
@@ -1019,18 +1019,18 @@ public class Visualization {
      * in the iteration
      * @return a filtered iterator over VisualItems
      */
-    public Iterator items(Predicate filter) {
+    public Iterator<VisualItem> items(Predicate filter) {
         int size = m_visual.size();
         if ( size == 0 ) {
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.<VisualItem>emptyList().iterator() ;
         } else if ( size == 1 ) {
-            Iterator it = m_visual.keySet().iterator();
-            return items((String)it.next(), filter);
+            Iterator<String> it = m_visual.keySet().iterator();
+            return items(it.next(), filter);
         } else {
-            CompositeIterator iter = new CompositeIterator(m_visual.size());
-            Iterator it = m_visual.keySet().iterator();
+            CompositeIterator<VisualItem> iter = new CompositeIterator<VisualItem>(m_visual.size());
+            Iterator<String> it = m_visual.keySet().iterator();
             for ( int i=0; it.hasNext(); ) {
-                String group = (String)it.next();
+                String group = it.next();
                 if ( !PrefuseLib.isChildGroup(group) )
                     iter.setIterator(i++, items(group, filter));
             }
@@ -1061,7 +1061,7 @@ public class Visualization {
     public Iterator<VisualItem> items(String group, String expr) {
         Expression e = ExpressionParser.parse(expr);
         if ( !(e instanceof Predicate) || ExpressionParser.getError()!=null )
-            return Collections.EMPTY_LIST.iterator();
+            return Collections.<VisualItem>emptyList().iterator() ;
         return items(group, (Predicate)e);
     }
     
@@ -1078,7 +1078,7 @@ public class Visualization {
             return items(filter);
 
         TupleSet t = getGroup(group);
-        return ( t==null ? Collections.EMPTY_LIST.iterator() 
+        return ( t==null ? Collections.<VisualItem>emptyList().iterator() 
                          : t.tuples(filter) );
     }
     
@@ -1094,9 +1094,9 @@ public class Visualization {
      * @param val the value to set
      */
     public void setValue(String group, Predicate p, String field, Object val) {
-        Iterator items = items(group, p);
+        Iterator<VisualItem> items = items(group, p);
         while ( items.hasNext() ) {
-            VisualItem item = (VisualItem)items.next();
+            VisualItem item = items.next();
             item.set(field, val);
         }
     }
@@ -1109,9 +1109,9 @@ public class Visualization {
      * @param value the visibility value to set
      */
     public void setVisible(String group, Predicate p, boolean value) {
-        Iterator items = items(group, p);
+        Iterator<VisualItem> items = items(group, p);
         while ( items.hasNext() ) {
-            VisualItem item = (VisualItem)items.next();
+            VisualItem item = items.next();
             item.setVisible(value);
         }
     }
@@ -1124,9 +1124,9 @@ public class Visualization {
      * @param value the interactivity value to set
      */
     public void setInteractive(String group, Predicate p, boolean value) {
-        Iterator items = items(group, p);
+        Iterator<VisualItem> items = items(group, p);
         while ( items.hasNext() ) {
-            VisualItem item = (VisualItem)items.next();
+            VisualItem item = items.next();
             item.setInteractive(value);
         }
     }
@@ -1306,14 +1306,12 @@ public class Visualization {
      * visualization to be repainted.
      */
     public synchronized void repaint() {
-        Iterator items = items(ValidatedPredicate.FALSE);
+        Iterator<VisualItem> items = items(ValidatedPredicate.FALSE);
         while ( items.hasNext() ) {
-            ((VisualItem)items.next()).validateBounds();
+            items.next().validateBounds();
         }
         for ( int i=0; i<m_displays.size(); ++i ) {
         	getDisplay(i).postInvalidate();
-//          getDisplay(i).invalidate(); // TODO for Dritan: see if invalidate replaces the repaint method
-
         }
     }
     
@@ -1334,13 +1332,14 @@ public class Visualization {
      * bounding box
      */
     public Rectangle2D getBounds(String group, Rectangle2D r) {
-        Iterator iter = visibleItems(group);
+        Iterator<VisualItem> iter = visibleItems(group);
+        
         if ( iter.hasNext() ) {
-            VisualItem item = (VisualItem)iter.next();
+            VisualItem item = iter.next();
             r.setRect(item.getBounds());
         }
         while ( iter.hasNext() ) {
-            VisualItem item = (VisualItem)iter.next();
+            VisualItem item = iter.next();
             Rectangle2D.union(item.getBounds(), r, r);
         }
         return r;
