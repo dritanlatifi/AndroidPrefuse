@@ -14,7 +14,7 @@ import prefuse.data.expression.Predicate;
 public class FilterIterator implements Iterator {
     
     private Predicate predicate;
-    private Iterator tuples;
+    private Iterator<Tuple> tuples;
     private Tuple next;
     
     /**

@@ -39,8 +39,8 @@ public class ActivityManager extends Thread {
     
     private static ActivityManager s_instance;
     
-    private ArrayList m_activities;
-    private ArrayList m_tmp;
+    private ArrayList<PActivity> m_activities;
+    private ArrayList<PActivity> m_tmp;
     private long      m_nextTime;
     private boolean   m_run;
     
@@ -60,8 +60,8 @@ public class ActivityManager extends Thread {
      */
     private ActivityManager() {
         super("prefuse_ActivityManager");
-        m_activities = new ArrayList();
-        m_tmp = new ArrayList();
+        m_activities = new ArrayList<PActivity>();
+        m_tmp = new ArrayList<PActivity>();
         m_nextTime = Long.MAX_VALUE;
         
         int priority = PrefuseConfig.getInt("activity.threadPriority");
@@ -174,7 +174,7 @@ public class ActivityManager extends Thread {
      */
     private synchronized void _stop() {
         while ( m_activities.size() > 0 ) {
-            PActivity a = (PActivity)m_activities.get(m_activities.size()-1);
+            PActivity a = m_activities.get(m_activities.size()-1);
             a.cancel();
         }
         _setRunning(false);
@@ -342,7 +342,7 @@ public class ActivityManager extends Thread {
                     // copy content of activities, as new activities might
                     // be added while we process the current ones
                     for ( int i=0; i<m_activities.size(); i++ ) {
-                        PActivity a = (PActivity)m_activities.get(i);
+                        PActivity a = m_activities.get(i);
                         m_tmp.add(a);
                         
                         // remove activities that won't be run again
@@ -361,7 +361,7 @@ public class ActivityManager extends Thread {
                 for ( int i=0; i<m_tmp.size(); i++ ) {
                     // run the activity - the activity will check for
                     // itself if it should perform any action or not
-                    PActivity a = (PActivity)m_tmp.get(i);
+                    PActivity a = m_tmp.get(i);
                     long s = a.runActivity(currentTime);
                     // compute minimum time for next activity cycle
                     t = (s<0 ? t : t<0 ? s : Math.min(t,s));

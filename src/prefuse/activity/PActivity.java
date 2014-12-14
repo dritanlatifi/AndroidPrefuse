@@ -26,7 +26,7 @@ public abstract class PActivity {
     private boolean m_isRunning = false;
     private boolean m_isScheduled = false;
     
-    private CopyOnWriteArrayList m_listeners;
+    private CopyOnWriteArrayList<ActivityListener> m_listeners;
     
     /**
      * Creates a new Activity.
@@ -246,7 +246,7 @@ public abstract class PActivity {
      */
     public void addActivityListener(ActivityListener l) {
         if ( m_listeners == null )
-            m_listeners = new CopyOnWriteArrayList();
+            m_listeners = new CopyOnWriteArrayList<ActivityListener>();
         if ( !m_listeners.contains(l) )
             m_listeners.add(l);
     }
@@ -265,42 +265,32 @@ public abstract class PActivity {
 
     protected void fireActivityScheduled() {
         if ( m_listeners == null ) return;
-        Object[] a = m_listeners.getArray();
-        for ( int i=0; i<a.length; ++i ) {
-            ((ActivityListener)a[i]).activityScheduled(this);
-        }
+        for(ActivityListener a : m_listeners)
+        	a.activityScheduled(this);
     }
     
     protected void fireActivityStarted() {
         if ( m_listeners == null ) return;
-        Object[] a = m_listeners.getArray();
-        for ( int i=0; i<a.length; ++i ) {
-            ((ActivityListener)a[i]).activityStarted(this);
-        }
+        for(ActivityListener a : m_listeners)
+        	a.activityStarted(this);
     }
     
     protected void fireActivityStepped() {
         if ( m_listeners == null ) return;
-        Object[] a = m_listeners.getArray();
-        for ( int i=0; i<a.length; ++i ) {
-            ((ActivityListener)a[i]).activityStepped(this);
-        }
+        for(ActivityListener a : m_listeners)
+        	a.activityStepped(this);
     }
     
     protected void fireActivityFinished() {
         if ( m_listeners == null ) return;
-        Object[] a = m_listeners.getArray();
-        for ( int i=0; i<a.length; ++i ) {
-            ((ActivityListener)a[i]).activityFinished(this);
-        }
+        for(ActivityListener a : m_listeners)
+        	a.activityFinished(this);        
     }
     
     protected void fireActivityCancelled() {
         if ( m_listeners == null ) return;
-        Object[] a = m_listeners.getArray();
-        for ( int i=0; i<a.length; ++i ) {
-            ((ActivityListener)a[i]).activityCancelled(this);
-        }
+        for(ActivityListener a : m_listeners)
+        	a.activityCancelled(this);          
     }
     
     // ------------------------------------------------------------------------

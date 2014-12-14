@@ -26,6 +26,7 @@ import prefuse.util.collections.IntIterator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+
 public class FilterIteratorFactory {
 
     private static final int OPTIMIZATION_THRESHOLD

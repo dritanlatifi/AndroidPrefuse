@@ -110,19 +110,19 @@ public class GraphLib {
     public static Graph getHoneycomb(int levels) {
         Graph g = new Graph();
         g.getNodeTable().addColumns(LABEL_SCHEMA);
-        ArrayList layer1 = halfcomb(g, levels);
-        ArrayList layer2 = halfcomb(g, levels);
+        ArrayList<Node> layer1 = halfcomb(g, levels);
+        ArrayList<Node> layer2 = halfcomb(g, levels);
         for ( int i=0; i<(levels<<1); ++i ) {
-            Node n1 = (Node)layer1.get(i);
-            Node n2 = (Node)layer2.get(i);
+            Node n1 = layer1.get(i);
+            Node n2 = layer2.get(i);
             g.addEdge(n1, n2);
         }
         return g;
     }
     
-    private static ArrayList halfcomb(Graph g, int levels) {
-        ArrayList top   = new ArrayList();
-        ArrayList layer = new ArrayList();
+    private static ArrayList<Node> halfcomb(Graph g, int levels) {
+        ArrayList<Node> top   = new ArrayList<Node>();
+        ArrayList<Node> layer = new ArrayList<Node>();
         
         int label = 0;
         
@@ -134,7 +134,7 @@ public class GraphLib {
         for ( int i=0; i<levels; ++i ) {
             Node n = null;
             for ( int j=0; j<top.size(); ++j ) {
-                Node p = (Node)top.get(j);
+                Node p = top.get(j);
                 if ( n == null ) {
                     n = g.addNode();
                     n.setString(LABEL, String.valueOf(label++));
@@ -151,7 +151,7 @@ public class GraphLib {
             }
             top.clear();
             for ( int j=0; j<layer.size(); ++j ) {
-                Node p = (Node)layer.get(j);
+                Node p = layer.get(j);
                 n = g.addNode();
                 n.setString(LABEL, String.valueOf(label++));
                 top.add(n);

@@ -86,19 +86,20 @@ import prefuse.util.collections.IntIterator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings(value ={ "rawtypes" })
 public class Table extends AbstractTupleSet implements ColumnListener {
     
     /** Listeners for changes to this table */
-    protected CopyOnWriteArrayList m_listeners;
+    protected CopyOnWriteArrayList<TableListener> m_listeners;
     
     /** Locally stored data columns */
-    protected ArrayList m_columns;
+    protected ArrayList<Column> m_columns;
     /** Column names for locally store data columns */
-    protected ArrayList m_names;
+    protected ArrayList<String> m_names;
     
     /** Mapping between column names and column entries
      * containing column, metadata, and index references */ 
-    protected HashMap m_entries;
+    protected HashMap<String, ColumnEntry> m_entries;
     
     /** Manager for valid row indices */
     protected RowManager m_rows;
@@ -144,11 +145,11 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @param tupleType the class of the Tuple instances to use
      */
     protected Table(int nrows, int ncols, Class tupleType) {
-        m_listeners = new CopyOnWriteArrayList();
-        m_columns = new ArrayList(ncols);
-        m_names = new ArrayList(ncols);
+        m_listeners = new CopyOnWriteArrayList<TableListener>();
+        m_columns = new ArrayList<Column>(ncols);
+        m_names = new ArrayList<String>(ncols);
         m_rows = new RowManager(this);
-        m_entries = new HashMap(ncols+5);        
+        m_entries = new HashMap<String, ColumnEntry>(ncols+5);        
         m_tuples = new TupleManager(this, null, tupleType);
 
         if ( nrows > 0 )
@@ -377,9 +378,9 @@ public class Table extends AbstractTupleSet implements ColumnListener {
         int maxrow = m_rows.getMaximumRow() + 1;
         
         // update columns
-        Iterator cols = getColumns();
+        Iterator<Column> cols = getColumns();
         while ( cols.hasNext() ) {
-            Column c = (Column)cols.next();
+            Column c = cols.next();
             c.setMaximumRow(maxrow);
         }
     }
@@ -405,8 +406,8 @@ public class Table extends AbstractTupleSet implements ColumnListener {
             // listeners can determine that the row is invalid
             m_rows.releaseRow(row);
             // now clear column values
-            for ( Iterator cols = getColumns(); cols.hasNext(); ) {
-                Column c = (Column)cols.next();
+            for ( Iterator<Column> cols = getColumns(); cols.hasNext(); ) {
+                Column c = cols.next();
                 c.revertToDefault(row);
             }
             return true;
@@ -451,7 +452,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @return the data field name of the column
      */
     public String getColumnName(int col) {
-        return (String)m_names.get(col);
+        return m_names.get(col);
     }
 
     /**
@@ -460,7 +461,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @return the column number of the column, or -1 if the name is not found
      */
     public int getColumnNumber(String field) {
-        ColumnEntry e = (ColumnEntry)m_entries.get(field);
+        ColumnEntry e = m_entries.get(field);
         return ( e==null ? -1 : e.colnum );
     }
 
@@ -480,7 +481,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      */
     public Column getColumn(int col) {
         m_lastCol = col;
-        return (Column)m_columns.get(col);
+        return m_columns.get(col);
     }
     
     /**
@@ -489,7 +490,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @return the Column instance
      */
     public Column getColumn(String field) {
-        ColumnEntry e = (ColumnEntry)m_entries.get(field);
+        ColumnEntry e = m_entries.get(field);
         return ( e != null ? e.column : null );
     }
     
@@ -584,7 +585,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
                 new ColumnMetadata(this, name));
         
         // add entry, dispose of an overridden entry if needed
-        ColumnEntry oldEntry = (ColumnEntry)m_entries.put(name, entry);
+        ColumnEntry oldEntry = m_entries.put(name, entry);
         if ( oldEntry != null ) oldEntry.dispose();
         
         invalidateSchema();
@@ -608,9 +609,9 @@ public class Table extends AbstractTupleSet implements ColumnListener {
             throw new IllegalArgumentException("Column index is not legal.");
         }
         
-        String name = (String)m_names.get(idx);
-        ((ColumnEntry)m_entries.get(name)).dispose();
-        Column col = (Column)m_columns.remove(idx);
+        String name = m_names.get(idx);
+        (m_entries.get(name)).dispose();
+        Column col = m_columns.remove(idx);
         m_entries.remove(name);
         m_names.remove(idx);
         renumberColumns();
@@ -657,10 +658,10 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * Internal method that re-numbers columns upon column removal.
      */
     protected void renumberColumns() {
-        Iterator iter = m_names.iterator();
+        Iterator<String> iter = m_names.iterator();
         for ( int idx=0; iter.hasNext(); ++idx ) {
-            String name = (String)iter.next();
-            ColumnEntry e = (ColumnEntry)m_entries.get(name);
+            String name = iter.next();
+            ColumnEntry e = m_entries.get(name);
             e.colnum = idx;
         }
     }
@@ -669,7 +670,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * Internal method that returns an iterator over columns
      * @return an iterator over columns
      */
-    protected Iterator getColumns() {
+    protected Iterator<Column> getColumns() {
         return m_columns.iterator();
     }
 
@@ -677,7 +678,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * Internal method that returns an iterator over column names
      * @return an iterator over column name
      */
-    protected Iterator getColumnNames() {
+    protected Iterator<String> getColumnNames() {
         return m_names.iterator();
     }
     
@@ -690,7 +691,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @return the columns' associated ColumnMetadata instance
      */
     public ColumnMetadata getMetadata(String field) {
-        ColumnEntry e = (ColumnEntry)m_entries.get(field);
+        ColumnEntry e = m_entries.get(field);
         if ( e == null ) {
             throw new IllegalArgumentException("Unknown column name: "+field);
         }
@@ -710,7 +711,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @return the index over the specified data column
      */
     public Index index(String field) {
-        ColumnEntry e = (ColumnEntry)m_entries.get(field);
+        ColumnEntry e = m_entries.get(field);
         if ( e == null ) {
             throw new IllegalArgumentException("Unknown column name: "+field);
         } else if ( e.index != null ) {
@@ -732,7 +733,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * been created
      */
     public Index getIndex(String field) {
-        ColumnEntry e = (ColumnEntry)m_entries.get(field);
+        ColumnEntry e = m_entries.get(field);
         if ( e == null ) {
             throw new IllegalArgumentException("Unknown column name: "+field);
         }
@@ -765,7 +766,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * such index was found
      */
     public boolean removeIndex(String field) {
-        ColumnEntry e = (ColumnEntry)m_entries.get(field);
+        ColumnEntry e = m_entries.get(field);
         if ( e == null ) {
             throw new IllegalArgumentException("Unknown column name: "+field);
         }
@@ -1786,9 +1787,9 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      */
     public Table select(Predicate filter, Sort sort) {
         Table t = getSchema().instantiate();
-        Iterator tuples = tuples(filter, sort);
+        Iterator tuples = tuples(filter, sort); 
         while ( tuples.hasNext() ) {
-            t.addTuple((Tuple)tuples.next());
+            t.addTuple((Tuple) tuples.next());
         }
         return t;
     }
@@ -2117,11 +2118,8 @@ public class Table extends AbstractTupleSet implements ColumnListener {
         
         if ( !m_listeners.isEmpty() ) {
             // fire event to all table listeners
-            Object[] lstnrs = m_listeners.getArray();
-            for ( int i=0; i<lstnrs.length; ++i ) {
-                ((TableListener)lstnrs[i]).tableChanged(
-                        this, row0, row1, col, type);
-            }
+            for (TableListener lstnr : m_listeners)
+            	lstnr.tableChanged(this, row0, row1, col, type);
         }
     }
     

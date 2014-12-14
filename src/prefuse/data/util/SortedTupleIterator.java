@@ -54,7 +54,7 @@ public class SortedTupleIterator implements Iterator {
         
         // populate tuple list
         while ( iter.hasNext() ) {
-            Tuple t = (Tuple)iter.next();
+        	Tuple t = (Tuple) iter.next();
             m_tuples.add(t);
         }
         // sort tuple list

@@ -45,7 +45,7 @@ public class CascadedTable extends Table {
     /** Cascaded parent table */ 
     protected Table      m_parent;
     /** List of included parent column names */
-    protected ArrayList  m_pnames;
+    protected ArrayList<String>  m_pnames;
     
     /** ColumnProjection determining which columns of the parent table
      * are included in this table. */
@@ -119,7 +119,7 @@ public class CascadedTable extends Table {
     {
         super(0, 0, tupleType);
         m_parent = parent;
-        m_pnames = new ArrayList();
+        m_pnames = new ArrayList<String>();
         m_rows = new CascadedRowManager(this);
         m_listener = new Listener();
         
@@ -143,7 +143,7 @@ public class CascadedTable extends Table {
      */
     protected CascadedTable(Class tupleType) {
         super(0, 0, tupleType);
-        m_pnames = new ArrayList();
+        m_pnames = new ArrayList<String>();
     }
     
     // ------------------------------------------------------------------------

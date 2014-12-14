@@ -18,6 +18,7 @@ import prefuse.util.collections.IntIterator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+
 public class TupleManager {
 
     protected Graph        m_graph;

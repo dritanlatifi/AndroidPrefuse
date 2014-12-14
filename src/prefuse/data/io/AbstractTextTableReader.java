@@ -73,7 +73,7 @@ public abstract class AbstractTextTableReader extends AbstractTableReader {
         }
         
         final TypeInferencer di = new TypeInferencer(m_pfactory);
-        final ArrayList headers = getColumnNames();
+        final ArrayList<String> headers = getColumnNames();
         final int[] dim = new int[] { 0, 0 };
         
         TableReadListener scanner = new TableReadListener() {
@@ -179,8 +179,8 @@ public abstract class AbstractTextTableReader extends AbstractTableReader {
      * a custom mechanism.
      * @return an ArrayList of String instances indicating the column names
      */
-    protected ArrayList getColumnNames() {
-    	return new ArrayList();
+    protected ArrayList<String> getColumnNames() {
+    	return new ArrayList<String>();
     }
     
     /**

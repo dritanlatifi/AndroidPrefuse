@@ -27,6 +27,7 @@ import prefuse.util.collections.CopyOnWriteArrayList;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings(value ={ "rawtypes" })
 public abstract class AbstractTupleSet implements TupleSet {
     
     /**
@@ -47,7 +48,8 @@ public abstract class AbstractTupleSet implements TupleSet {
         if ( sort == null ) {
             return tuples(filter);
         } else {
-            Comparator c = sort.getComparator(this);
+            @SuppressWarnings("unchecked")
+			Comparator c = sort.getComparator(this);
             return new SortedTupleIterator(tuples(filter),getTupleCount(),c);
         }
     }
@@ -55,14 +57,14 @@ public abstract class AbstractTupleSet implements TupleSet {
     
     // -- TupleSet Methods ----------------------------------------------------
     
-    private CopyOnWriteArrayList m_tupleListeners;
+    private CopyOnWriteArrayList<TupleSetListener> m_tupleListeners;
     
     /**
      * @see prefuse.data.tuple.TupleSet#addTupleSetListener(prefuse.data.event.TupleSetListener)
      */
     public void addTupleSetListener(TupleSetListener tsl) {
         if ( m_tupleListeners == null )
-            m_tupleListeners = new CopyOnWriteArrayList();
+            m_tupleListeners = new CopyOnWriteArrayList<TupleSetListener>();
         if ( !m_tupleListeners.contains(tsl) )
             m_tupleListeners.add(tsl);
     }
@@ -203,7 +205,7 @@ public abstract class AbstractTupleSet implements TupleSet {
     
     // -- Client Properties ---------------------------------------------------
     
-    private HashMap m_props;
+    private HashMap<String, Object> m_props;
     private PropertyChangeSupport m_propSupport;
     
     /**
@@ -260,7 +262,7 @@ public abstract class AbstractTupleSet implements TupleSet {
             prev = m_props.remove(key);
         } else {
             if ( m_props == null )
-                m_props = new HashMap(2);
+                m_props = new HashMap<String, Object>(2);
             prev = m_props.put(key, value);
         }
         if ( m_propSupport != null )
