@@ -14,11 +14,11 @@ import prefuse.util.collections.LiteralComparator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class TupleComparator implements Comparator {
+public class TupleComparator implements Comparator<Tuple> {
 
     private String m_field;
     private int m_col;
-    private Comparator m_cmp;
+    private Comparator<Object> m_cmp;
     private Class m_type;
     private int m_rev;
     
@@ -80,8 +80,9 @@ public class TupleComparator implements Comparator {
      * a ClassCastException will be thrown.
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Object o1, Object o2) {
-        Tuple t1 = (Tuple)o1, t2 = (Tuple)o2;
+    @SuppressWarnings("unchecked")
+	public int compare(Tuple o1, Tuple o2) {
+        Tuple t1 = o1, t2 = o2;
         int c = 0;
         
         if ( m_col == -1 ) {
@@ -101,7 +102,7 @@ public class TupleComparator implements Comparator {
                 c = ((LiteralComparator)m_cmp).compare(
                         t1.getBoolean(m_field), t2.getBoolean(m_field));
             } else if ( !m_type.isPrimitive() ) {
-                c = m_cmp.compare(t1.get(m_field), t2.get(m_field));
+                c = m_cmp.compare( t1.get(m_field), t2.get(m_field));
             } else {
                 throw new IllegalStateException(
                         "Unsupported type: " + m_type.getName());
@@ -123,7 +124,7 @@ public class TupleComparator implements Comparator {
                 c = ((LiteralComparator)m_cmp).compare(
                         t1.getBoolean(m_col), t2.getBoolean(m_col));
             } else if ( !m_type.isPrimitive() ) {
-                c = m_cmp.compare(t1.get(m_col), t2.get(m_col));
+                c = m_cmp.compare( t1.get(m_col), t2.get(m_col));
             } else {
                 throw new IllegalStateException(
                         "Unsupported type: " + m_type.getName());

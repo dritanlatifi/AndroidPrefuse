@@ -1787,9 +1787,9 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      */
     public Table select(Predicate filter, Sort sort) {
         Table t = getSchema().instantiate();
-        Iterator tuples = tuples(filter, sort); 
+        Iterator<Tuple> tuples = tuples(filter, sort); 
         while ( tuples.hasNext() ) {
-            t.addTuple((Tuple) tuples.next());
+            t.addTuple(tuples.next());
         }
         return t;
     }
@@ -1829,7 +1829,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @return an iterator over the table tuples
      * @see prefuse.data.tuple.TupleSet#tuples()
      */
-    public Iterator tuples() {
+    public Iterator<Tuple> tuples() {
         return m_tuples.iterator(rows());
     }
     
@@ -1837,7 +1837,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * Get an iterator over the tuples in this table in reverse order.
      * @return an iterator over the table tuples in reverse order
      */
-    public Iterator tuplesReversed() {
+    public Iterator<Tuple> tuplesReversed() {
         return m_tuples.iterator(rows(true));
     }
     
@@ -1846,7 +1846,7 @@ public class Table extends AbstractTupleSet implements ColumnListener {
      * @param rows an iterator over the table rows to visit
      * @return an iterator over the selected table tuples
      */
-    public Iterator tuples(IntIterator rows) {
+    public Iterator<Tuple> tuples(IntIterator rows) {
         return m_tuples.iterator(rows);
     }
     

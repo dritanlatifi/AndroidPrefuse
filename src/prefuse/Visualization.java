@@ -734,11 +734,12 @@ public class Visualization {
         TupleSet ts = getFocusGroup(group);
         if ( ts != null ) {
             // invalidate the item to reflect group membership change
-            for ( Iterator<VisualItem> items = ts.tuples(ValidatedPredicate.TRUE);
-                  items.hasNext(); )
-            {
-                (items.next()).setValidated(false);
-            }
+        	Iterator<Tuple> items = ts.tuples(ValidatedPredicate.TRUE);
+        	while (items.hasNext())
+        	{
+        		( (VisualItem)  items.next()) .setValidated(false);
+        	}
+            
             ts.clear(); // trigger group removal callback
             m_focus.remove(group);
             return true;
@@ -753,8 +754,8 @@ public class Visualization {
         // remove group members from focus sets and invalidate them
         TupleSet[] focus = new TupleSet[m_focus.size()];
         m_focus.values().toArray(focus);
-        for ( Iterator<VisualItem> items = ts.tuples(); items.hasNext(); ) {
-            VisualItem item = items.next();
+        for ( Iterator<Tuple> items = ts.tuples(); items.hasNext(); ) {
+            VisualItem item = (VisualItem) items.next();
             for ( int j=0; j<focus.length; ++j ) {
                 focus[j].removeTuple(item);
             }
@@ -1073,12 +1074,13 @@ public class Visualization {
      * the iteration.
      * @return a filtered iterator over VisualItems
      */
-    public Iterator<VisualItem> items(String group, Predicate filter) {
+    @SuppressWarnings("unchecked")
+	public Iterator<VisualItem> items(String group, Predicate filter) {
         if ( ALL_ITEMS.equals(group) )
             return items(filter);
 
         TupleSet t = getGroup(group);
-        return ( t==null ? Collections.<VisualItem>emptyList().iterator() 
+        return (Iterator<VisualItem>) ( t==null ? Collections.<VisualItem>emptyList().iterator() 
                          : t.tuples(filter) );
     }
     

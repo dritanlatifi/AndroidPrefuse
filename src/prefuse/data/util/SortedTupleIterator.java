@@ -14,11 +14,11 @@ import prefuse.data.Tuple;
  * Iterator that provides a sorted iteration over a set of tuples.
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class SortedTupleIterator implements Iterator {
+public class SortedTupleIterator implements Iterator<Tuple> {
 
-    private ArrayList m_tuples;
-    private Comparator m_cmp;
-    private Iterator m_iter;
+    private ArrayList<Tuple> m_tuples;
+    private Comparator<Tuple> m_cmp;
+    private Iterator<Tuple> m_iter;
     
     /**
      * Create a new SortedTupleIterator that sorts tuples in the given
@@ -26,7 +26,7 @@ public class SortedTupleIterator implements Iterator {
      * @param iter the source iterator of tuples
      * @param c the comparator to use for sorting
      */
-    public SortedTupleIterator(Iterator iter, Comparator c) {
+    public SortedTupleIterator(Iterator<Tuple> iter, Comparator<Tuple> c) {
         this(iter, 128, c);
     }
     
@@ -37,8 +37,8 @@ public class SortedTupleIterator implements Iterator {
      * @param size the expected number of tuples in the iterator
      * @param c the comparator to use for sorting
      */
-    public SortedTupleIterator(Iterator iter, int size, Comparator c) {
-        m_tuples = new ArrayList(size);
+    public SortedTupleIterator(Iterator<Tuple> iter, int size, Comparator<Tuple> c) {
+        m_tuples = new ArrayList<Tuple>(size);
         init(iter, c);
     }
     
@@ -48,7 +48,7 @@ public class SortedTupleIterator implements Iterator {
      * @param iter the source iterator of tuples
      * @param c the comparator to use for sorting
      */
-    public void init(Iterator iter, Comparator c) {
+    public void init(Iterator<Tuple> iter, Comparator<Tuple> c) {
         m_tuples.clear();
         m_cmp = c;
         
@@ -73,7 +73,7 @@ public class SortedTupleIterator implements Iterator {
     /**
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public Tuple next() {
         return m_iter.next();
     }
 

@@ -18,12 +18,12 @@ import prefuse.util.collections.IntIterator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-
+@SuppressWarnings("rawtypes")
 public class TupleManager {
 
     protected Graph        m_graph;
     protected Table        m_table;
-    protected Class        m_tupleType;
+	protected Class        m_tupleType;
     
     private   TableTuple[] m_tuples;
     
@@ -136,8 +136,8 @@ public class TupleManager {
      * @param rows an iterator over table rows
      * @return an iterator over the tuples indicated by the input row iterator
      */
-    public Iterator iterator(IntIterator rows) {
-        return new TupleManagerIterator(this, rows);
+    public Iterator<Tuple> iterator(IntIterator rows) {
+        return new TupleManagerIterator<Tuple>(this, rows);
     }
     
     // ------------------------------------------------------------------------
@@ -146,7 +146,7 @@ public class TupleManager {
     /**
      * Iterator instance for iterating over tuples managed in a TupleManager.
      */
-    public static class TupleManagerIterator implements Iterator {
+    public static class TupleManagerIterator<T> implements Iterator<T> {
 
         private TupleManager m_tuples;
         private IntIterator  m_rows;
@@ -171,8 +171,10 @@ public class TupleManager {
         /**
          * @see java.util.Iterator#next()
          */
-        public Object next() {
-            return m_tuples.getTuple(m_rows.nextInt());
+        @SuppressWarnings("unchecked")
+		public T next() {
+        	int row = m_rows.nextInt();
+            return (T) m_tuples.getTuple(row);
         }
 
         /**

@@ -8,7 +8,7 @@ import java.util.Comparator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class CompositeComparator implements Comparator {
+public class CompositeComparator<T> implements Comparator<T> {
 
     private static final int INCREMENT = 2;
     private Comparator[] m_cmp;
@@ -58,7 +58,7 @@ public class CompositeComparator implements Comparator {
      * Adds an additional comparator to this composite.
      * @param c the Comparator to add
      */
-    public void add(Comparator c) {
+    public void add(Comparator<T> c) {
         if ( c == null ) return;
         if ( m_cmp.length == m_size ) {
             Comparator[] cmp = new Comparator[m_size+INCREMENT];
@@ -74,7 +74,7 @@ public class CompositeComparator implements Comparator {
      * @return true if the comparator was successfully removed,
      * false otherwise
      */
-    public boolean remove(Comparator c) {
+    public boolean remove(Comparator<T> c) {
         for ( int i=0; i<m_size; ++i ) {
             if ( m_cmp[i].equals(c) ) {
                 System.arraycopy(m_cmp, i+1, m_cmp, i, m_size-i);

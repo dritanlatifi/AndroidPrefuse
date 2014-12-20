@@ -137,7 +137,7 @@ public class Sort {
      * @return a Comparator instance for sorting tuples from the given
      * set using the sorting criteria given in this specification
      */
-    public Comparator getComparator(TupleSet ts) {
+    public Comparator<Tuple> getComparator(TupleSet ts) {
         // get the schema, so we can lookup column value types        
         Schema s = null;
         if ( ts instanceof Table ) {
@@ -146,15 +146,14 @@ public class Sort {
         } else {
         	// if non-table tuple set is empty, we punt
         	if ( ts.getTupleCount() == 0 )
-        		return new NullComparator();
+        		return new NullComparator<Tuple>();
         	// otherwise, use the schema of the first tuple in the set
             s = ((Tuple)ts.tuples().next()).getSchema();
         }
         // create the comparator
-        CompositeComparator cc = new CompositeComparator(m_fields.length);
+        CompositeComparator<Tuple> cc = new CompositeComparator<Tuple>(m_fields.length);
         for ( int i=0; i<m_fields.length; ++i ) {
-            cc.add(new TupleComparator(m_fields[i],
-                       s.getColumnType(m_fields[i]), m_ascend[i]));
+            cc.add(new TupleComparator(m_fields[i], s.getColumnType(m_fields[i]), m_ascend[i]));
         }
         return cc;
     }

@@ -12,6 +12,7 @@ import java.util.Date;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public interface Tuple {
 
     /**
@@ -50,7 +51,7 @@ public interface Tuple {
      * @return the data type of the field, a Class instance indicating the
      * top-level type of data values in this field.
      */
-    public Class getColumnType(String field);
+	public Class getColumnType(String field);
     
     /**
      * Returns the data type of the given column as a Java Class instance.
