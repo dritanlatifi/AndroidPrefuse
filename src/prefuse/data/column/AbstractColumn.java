@@ -17,14 +17,14 @@ import prefuse.util.collections.CopyOnWriteArrayList;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public abstract class AbstractColumn implements Column {
-
-    protected final Class  m_columnType;
+	protected final Class  m_columnType;
     protected DataParser   m_parser;
     protected Object       m_defaultValue;
     protected boolean      m_readOnly;
     
-    protected CopyOnWriteArrayList m_listeners;
+    protected CopyOnWriteArrayList<ColumnListener> m_listeners;
     
     /**
      * Create a new AbstractColumn of type Object.
@@ -54,7 +54,7 @@ public abstract class AbstractColumn implements Column {
         
         setDefaultValue(defaultValue);
         m_readOnly = false;
-        m_listeners = new CopyOnWriteArrayList();
+        m_listeners = new CopyOnWriteArrayList<ColumnListener>();
     }
     
     // ------------------------------------------------------------------------
@@ -254,7 +254,7 @@ public abstract class AbstractColumn implements Column {
         if ( type == null ) return false;
         
         if ( m_columnType.isPrimitive() ) {
-            boolean primTypes = type.isAssignableFrom(m_columnType) || 
+			boolean primTypes = type.isAssignableFrom(m_columnType) || 
                     (TypeLib.isNumericType(m_columnType) 
                      && TypeLib.isNumericType(type));
              
@@ -333,7 +333,7 @@ public abstract class AbstractColumn implements Column {
      */
     public void setInt(int val, int row) throws DataTypeException {
         if ( canSetInt() ) {
-            set(new Integer(val), row);
+            set(Integer.valueOf(val), row);
         } else {
             throw new DataTypeException(int.class);
         }
@@ -383,7 +383,7 @@ public abstract class AbstractColumn implements Column {
      */
     public void setLong(long val, int row) throws DataTypeException {
         if ( canSetLong() ) {
-            set(new Long(val), row);
+            set(Long.valueOf(val), row);
         } else {
             throw new DataTypeException(long.class);
         }
@@ -433,7 +433,7 @@ public abstract class AbstractColumn implements Column {
      */
     public void setFloat(float val, int row) throws DataTypeException {
         if ( canSetFloat() ) {
-            set(new Float(val), row);
+            set(Float.valueOf(val), row);
         } else {
             throw new DataTypeException(float.class);
         }
@@ -483,7 +483,7 @@ public abstract class AbstractColumn implements Column {
      */
     public void setDouble(double val, int row) throws DataTypeException {
         if ( canSetDouble() ) {
-            set(new Double(val), row);
+            set(Double.valueOf(val), row);
         } else {
             throw new DataTypeException(double.class);
         }
@@ -533,7 +533,7 @@ public abstract class AbstractColumn implements Column {
      */
     public void setBoolean(boolean val, int row) throws DataTypeException {
         if ( canSetBoolean() ) {
-            set(new Boolean(val), row);
+            set(Boolean.valueOf(val), row);
         } else {
             throw new DataTypeException(boolean.class);
         }

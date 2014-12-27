@@ -12,8 +12,8 @@ import java.util.Iterator;
  */
 public class ForceSimulator {
 
-    private ArrayList items;
-    private ArrayList springs;
+    private ArrayList<ForceItem> items;
+    private ArrayList<Spring> springs;
     private Force[] iforces;
     private Force[] sforces;
     private int iflen, sflen;
@@ -38,8 +38,8 @@ public class ForceSimulator {
         sforces = new Force[5];
         iflen = 0;
         sflen = 0;
-        items = new ArrayList();
-        springs = new ArrayList();
+        items = new ArrayList<ForceItem>();
+        springs = new ArrayList<Spring>();
     }
 
     /**
@@ -82,10 +82,10 @@ public class ForceSimulator {
      */
     public void clear() {
         items.clear();
-        Iterator siter = springs.iterator();
+        Iterator<Spring> siter = springs.iterator();
         Spring.SpringFactory f = Spring.getFactory();
         while ( siter.hasNext() )
-            f.reclaim((Spring)siter.next());
+            f.reclaim(siter.next());
         springs.clear();
     }
     
@@ -145,7 +145,7 @@ public class ForceSimulator {
      * Get an iterator over all registered ForceItems.
      * @return an iterator over the ForceItems.
      */
-    public Iterator getItems() {
+    public Iterator<ForceItem> getItems() {
         return items.iterator();
     }
     
@@ -190,7 +190,7 @@ public class ForceSimulator {
      * Get an iterator over all registered Springs.
      * @return an iterator over the Springs.
      */
-    public Iterator getSprings() {
+    public Iterator<Spring> getSprings() {
         return springs.iterator();
     }
     
@@ -211,16 +211,16 @@ public class ForceSimulator {
             iforces[i].init(this);
         for ( int i = 0; i < sflen; i++ )
             sforces[i].init(this);
-        Iterator itemIter = items.iterator();
+        Iterator<ForceItem> itemIter = items.iterator();
         while ( itemIter.hasNext() ) {
-            ForceItem item = (ForceItem)itemIter.next();
+            ForceItem item = itemIter.next();
             item.force[0] = 0.0f; item.force[1] = 0.0f;
             for ( int i = 0; i < iflen; i++ )
                 iforces[i].getForce(item);
         }
-        Iterator springIter = springs.iterator();
+        Iterator<Spring> springIter = springs.iterator();
         while ( springIter.hasNext() ) {
-            Spring s = (Spring)springIter.next();
+            Spring s = springIter.next();
             for ( int i = 0; i < sflen; i++ ) {
                 sforces[i].getForce(s);
             }

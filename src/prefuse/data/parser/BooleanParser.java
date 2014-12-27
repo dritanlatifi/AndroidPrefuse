@@ -18,7 +18,8 @@ public class BooleanParser implements DataParser {
      * Returns boolean.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return boolean.class;
     }
     

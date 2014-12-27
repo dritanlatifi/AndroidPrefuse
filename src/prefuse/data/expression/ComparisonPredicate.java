@@ -72,6 +72,7 @@ public class ComparisonPredicate extends BinaryExpression implements Predicate {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
+    @SuppressWarnings("rawtypes")
     public Class getType(Schema s) {
         return boolean.class;
     }
@@ -79,6 +80,7 @@ public class ComparisonPredicate extends BinaryExpression implements Predicate {
     /**
      * @see prefuse.data.expression.Expression#getBoolean(prefuse.data.Tuple)
      */
+    @SuppressWarnings("rawtypes")
     public boolean getBoolean(Tuple t) {
         Class lType = m_left.getType(t.getSchema());
         Class rType = m_right.getType(t.getSchema());

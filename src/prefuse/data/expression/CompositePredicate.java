@@ -11,7 +11,7 @@ import java.util.Iterator;
  */
 public abstract class CompositePredicate extends AbstractPredicate {
 
-    protected ArrayList m_clauses = new ArrayList(2);
+    protected ArrayList<Predicate> m_clauses = new ArrayList<Predicate>(2);
     
     /**
      * Create a new, empty CompositePredicate.
@@ -141,10 +141,10 @@ public abstract class CompositePredicate extends AbstractPredicate {
      */
     public void visit(ExpressionVisitor v) {
         v.visitExpression(this);
-        Iterator iter = m_clauses.iterator();
+        Iterator<Predicate> iter = m_clauses.iterator();
         while ( iter.hasNext() ) {
             v.down();
-            ((Expression)iter.next()).visit(v);
+            (iter.next()).visit(v);
             v.up();
         }
     }
@@ -155,9 +155,9 @@ public abstract class CompositePredicate extends AbstractPredicate {
      * @see prefuse.data.expression.AbstractExpression#addChildListeners()
      */
     protected void addChildListeners() {
-        Iterator iter = m_clauses.iterator();
+        Iterator<Predicate> iter = m_clauses.iterator();
         while ( iter.hasNext() ) {
-            ((Expression)iter.next()).addExpressionListener(this);
+            (iter.next()).addExpressionListener(this);
         }
     }
     
@@ -165,9 +165,9 @@ public abstract class CompositePredicate extends AbstractPredicate {
      * @see prefuse.data.expression.AbstractExpression#removeChildListeners()
      */
     protected void removeChildListeners() {
-        Iterator iter = m_clauses.iterator();
+        Iterator<Predicate> iter = m_clauses.iterator();
         while ( iter.hasNext() ) {
-            ((Expression)iter.next()).removeExpressionListener(this);
+            (iter.next()).removeExpressionListener(this);
         }
     }
     
@@ -186,7 +186,7 @@ public abstract class CompositePredicate extends AbstractPredicate {
         StringBuffer sbuf = new StringBuffer();
         sbuf.append('(');
 
-        Iterator iter = m_clauses.iterator();
+        Iterator<Predicate> iter = m_clauses.iterator();
         while ( iter.hasNext() ) {
             sbuf.append(iter.next().toString());
             if ( iter.hasNext() ) {

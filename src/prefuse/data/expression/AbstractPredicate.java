@@ -16,7 +16,8 @@ public abstract class AbstractPredicate extends AbstractExpression
      * Returns boolean.class.
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+    @SuppressWarnings("rawtypes")
+	public Class getType(Schema s) {
         return boolean.class;
     }
 

@@ -510,6 +510,7 @@ public class DataLib {
      * @return the inferred data type
      * @throws IllegalArgumentException if incompatible types are used
      */
+    @SuppressWarnings("rawtypes")
     public static Class inferType(TupleSet tuples, String field) {
         if ( tuples instanceof Table ) {
             return ((Table)tuples).getColumnType(field);

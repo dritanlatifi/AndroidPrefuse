@@ -10,6 +10,7 @@ import prefuse.util.TypeLib;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class ArithmeticExpression extends BinaryExpression {
 
     /** Indicates an addition operation. */
@@ -25,7 +26,7 @@ public class ArithmeticExpression extends BinaryExpression {
     /** Indicates a modulo operation. */
     public static final int MOD = 5;
 
-    private Class m_type;    
+	private Class m_type;    
     
     /**
      * Create a new ArithmeticExpression.
@@ -60,13 +61,13 @@ public class ArithmeticExpression extends BinaryExpression {
     public Object get(Tuple t) {
         Class type = getType(t.getSchema());
         if ( int.class == type || byte.class == type ) {
-            return new Integer(getInt(t));
+            return Integer.valueOf(getInt(t));
         } else if ( long.class == type ) {
-            return new Long(getInt(t));
+            return Long.valueOf(getInt(t));
         } else if ( float.class == type ) {
-            return new Float(getFloat(t));
+            return Float.valueOf(getFloat(t));
         } else if ( double.class == type ) {
-            return new Double(getDouble(t));
+            return Double.valueOf(getDouble(t));
         } else {
             throw new IllegalStateException();
         }

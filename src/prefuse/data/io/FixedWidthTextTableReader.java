@@ -89,8 +89,8 @@ public class FixedWidthTextTableReader extends AbstractTextTableReader {
     /**
      * @see prefuse.data.io.AbstractTextTableReader#getColumnNames()
      */
-    protected ArrayList getColumnNames() {
-    	ArrayList names = new ArrayList();
+    protected ArrayList<String> getColumnNames() {
+    	ArrayList<String> names = new ArrayList<String>();
     	for (int i=0; i<m_schema.getColumnCount(); ++i) {
     		names.add(m_schema.getColumnName(i));
     	}

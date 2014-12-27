@@ -8,11 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import prefuse.data.Graph;
+import prefuse.data.Node;
 import prefuse.data.Schema;
 import prefuse.data.tuple.TupleSet;
 import prefuse.data.util.TreeNodeIterator;
 import prefuse.visual.NodeItem;
-import prefuse.visual.VisualItem;
 
 
 /**
@@ -48,15 +48,15 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
         AREA_SCHEMA.addColumn(AREA, double.class);
     }
     
-    private static Comparator s_cmp = new Comparator() {
-        public int compare(Object o1, Object o2) {
-            double s1 = ((VisualItem)o1).getDouble(AREA);
-            double s2 = ((VisualItem)o2).getDouble(AREA);
+    private static Comparator<NodeItem> s_cmp = new Comparator<NodeItem>() {
+        public int compare(NodeItem o1, NodeItem o2) {
+            double s1 = o1.getDouble(AREA);
+            double s2 = o2.getDouble(AREA);
             return ( s1>s2 ? 1 : (s1<s2 ? -1 : 0));
         }
     };
-    private ArrayList m_kids = new ArrayList();
-    private ArrayList m_row  = new ArrayList();
+    private ArrayList<NodeItem> m_kids = new ArrayList<NodeItem>();
+    private ArrayList<NodeItem> m_row  = new ArrayList<NodeItem>();
     private Rectangle2D m_r  = new Rectangle2D.Double();
     
     private double m_frame; // space between parents border and children
@@ -132,15 +132,13 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
      * Compute the pixel areas of nodes based on their size values.
      */
     private void computeAreas(NodeItem root) {
-        int leafCount = 0;
-        
         // ensure area data column exists
         Graph g = (Graph)m_vis.getGroup(m_group);
         TupleSet nodes = g.getNodes();
         nodes.addColumns(AREA_SCHEMA);
         
         // reset all sizes to zero
-        Iterator iter = new TreeNodeIterator(root);
+        Iterator<Node> iter = new TreeNodeIterator(root);
         while ( iter.hasNext() ) {
             NodeItem n = (NodeItem)iter.next();
             n.setDouble(AREA, 0);
@@ -153,12 +151,10 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
             double area = 0;
             if ( n.getChildCount() == 0 ) {
             	area = n.getSize();
-            	++leafCount;
             } else if ( n.isExpanded() ) {
             	NodeItem c = (NodeItem)n.getFirstChild();
             	for (; c!=null; c = (NodeItem)c.getNextSibling()) {
             		area += c.getDouble(AREA);
-            		++leafCount;
             	}
             }
             n.setDouble(AREA, area);
@@ -181,7 +177,7 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
      */
     private void layout(NodeItem p, Rectangle2D r) {
         // create sorted list of children
-        Iterator childIter = p.children();
+        Iterator<NodeItem> childIter = p.children();
         while ( childIter.hasNext() )
             m_kids.add(childIter.next());
         Collections.sort(m_kids, s_cmp);
@@ -216,15 +212,15 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
         
         // compute renormalization factor
         double s = 0;
-        Iterator childIter = n.children();
+        Iterator<NodeItem> childIter = n.children();
         while ( childIter.hasNext() )
-            s += ((NodeItem)childIter.next()).getDouble(AREA);
+            s += childIter.next().getDouble(AREA);
         double t = A/s;
         
         // re-normalize children areas
         childIter = n.children();
         while ( childIter.hasNext() ) {
-            NodeItem c = (NodeItem)childIter.next();
+            NodeItem c = childIter.next();
             c.setDouble(AREA, c.getDouble(AREA)*t);
         }
         
@@ -234,13 +230,13 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
         return;
     }
     
-    private void squarify(List c, List row, double w, Rectangle2D r) {
+    private void squarify(List<NodeItem> c, List<NodeItem> row, double w, Rectangle2D r) {
         double worst = Double.MAX_VALUE, nworst;
         int len;
         
         while ( (len=c.size()) > 0 ) {
             // add item to the row list, ignore if negative area
-            VisualItem item = (VisualItem) c.get(len-1);
+        	NodeItem item =  c.get(len-1);
             double a = item.getDouble(AREA);
             if (a <= 0.0) {
                 c.remove(len-1);
@@ -266,11 +262,11 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
         }
     }
 
-    private double worst(List rlist, double w) {
+    private double worst(List<NodeItem> rlist, double w) {
         double rmax = Double.MIN_VALUE, rmin = Double.MAX_VALUE, s = 0.0;
-        Iterator iter = rlist.iterator();
+        Iterator<NodeItem> iter = rlist.iterator();
         while ( iter.hasNext() ) {
-            double r = ((VisualItem)iter.next()).getDouble(AREA);
+            double r = iter.next().getDouble(AREA);
             rmin = Math.min(rmin, r);
             rmax = Math.max(rmax, r);
             s += r;
@@ -279,11 +275,11 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
         return Math.max(w*rmax/s, s/(w*rmin));
     }
     
-    private Rectangle2D layoutRow(List row, double w, Rectangle2D r) {        
+    private Rectangle2D layoutRow(List<NodeItem> row, double w, Rectangle2D r) {        
         double s = 0; // sum of row areas
-        Iterator rowIter = row.iterator();
+        Iterator<NodeItem> rowIter = row.iterator();
         while ( rowIter.hasNext() )
-            s += ((VisualItem)rowIter.next()).getDouble(AREA);
+            s += rowIter.next().getDouble(AREA);
         double x = r.getX(), y = r.getY(), d = 0;
         double h = w==0 ? 0 : s/w;
         boolean horiz = (w == r.getWidth());
@@ -291,7 +287,7 @@ public class SquarifiedTreeMapLayout extends TreeLayout {
         // set node positions and dimensions
         rowIter = row.iterator();
         while ( rowIter.hasNext() ) {
-            NodeItem n = (NodeItem)rowIter.next();
+            NodeItem n = rowIter.next();
             NodeItem p = (NodeItem)n.getParent();
             if ( horiz ) {
                 setX(n, p, x+d);

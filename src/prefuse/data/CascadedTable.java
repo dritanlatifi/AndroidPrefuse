@@ -114,7 +114,8 @@ public class CascadedTable extends Table {
      * parent table to include in this one.
      * @param tupleType the class type of the Tuple instances to use
      */
-    protected CascadedTable(Table parent, Predicate rowFilter, 
+    @SuppressWarnings("rawtypes")
+	protected CascadedTable(Table parent, Predicate rowFilter, 
             ColumnProjection colFilter, Class tupleType)
     {
         super(0, 0, tupleType);
@@ -141,6 +142,7 @@ public class CascadedTable extends Table {
      * Create a CascadedTable without a backing parent table.
      * @param tupleType the class type of the Tuple instances to use
      */
+    @SuppressWarnings("rawtypes")
     protected CascadedTable(Class tupleType) {
         super(0, 0, tupleType);
         m_pnames = new ArrayList<String>();
@@ -176,9 +178,9 @@ public class CascadedTable extends Table {
         
         m_pnames.clear();
 
-        Iterator pcols = m_parent.getColumnNames();
+        Iterator<String> pcols = m_parent.getColumnNames();
         for ( int i=0, j=m_columns.size(); pcols.hasNext(); ++i ) {
-            String name = (String)pcols.next();
+            String name = pcols.next();
             Column col  = m_parent.getColumn(i);
             
             if ( m_colFilter.include(col, name) && !m_names.contains(name) ) {
@@ -225,9 +227,9 @@ public class CascadedTable extends Table {
             }
         }
         
-        Iterator ptuples = m_parent.tuples(m_rowFilter);
+        Iterator<Tuple> ptuples = m_parent.tuples(m_rowFilter);
         while ( ptuples.hasNext() ) {
-            Tuple pt = (Tuple)ptuples.next();
+            Tuple pt = ptuples.next();
             int prow = pt.getRow();
             if ( rowman.getChildRow(prow) == -1 )
                 addCascadedRow(prow);
@@ -454,11 +456,11 @@ public class CascadedTable extends Table {
     /**
      * @see prefuse.data.Table#getColumnNames()
      */
-    protected Iterator getColumnNames() {
+    protected Iterator<String> getColumnNames() {
         if ( m_parent == null ) {
             return m_names.iterator();
         } else {
-            return new CompositeIterator(m_names.iterator(),
+            return new CompositeIterator<String>(m_names.iterator(),
                                          m_pnames.iterator());
         }
     }

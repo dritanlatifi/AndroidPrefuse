@@ -17,7 +17,8 @@ public class ConstantColumn extends AbstractColumn {
      * @param type the data type of this column
      * @param defaultValue the default value used for all rows
      */
-    public ConstantColumn(Class type, Object defaultValue) {
+    @SuppressWarnings("rawtypes")
+	public ConstantColumn(Class type, Object defaultValue) {
         super(type, defaultValue);
     }
     
@@ -58,6 +59,7 @@ public class ConstantColumn extends AbstractColumn {
      * Returns false.
      * @see prefuse.data.column.Column#canSet(java.lang.Class)
      */
+    @SuppressWarnings("rawtypes")
     public boolean canSet(Class type) {
         return false;
     }    

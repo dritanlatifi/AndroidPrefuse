@@ -18,8 +18,12 @@ import swing.javax.swing.event.SwingListDataListener;
  */
 public class ListModel extends SwingDefaultListSelectionModel implements MutableComboBoxModel
 {
-    private ArrayList m_items = new ArrayList();
-    private CopyOnWriteArrayList m_lstnrs = new CopyOnWriteArrayList();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ArrayList<Object> m_items = new ArrayList<Object>();
+    private CopyOnWriteArrayList<SwingListDataListener> m_lstnrs = new CopyOnWriteArrayList<SwingListDataListener>();
     
     /**
      * Create an empty ListModel.

@@ -11,7 +11,8 @@ public class ByteParser implements DataParser {
      * Returns int.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return byte.class;
     }
     

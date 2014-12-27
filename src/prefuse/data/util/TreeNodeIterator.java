@@ -14,9 +14,9 @@ import prefuse.data.Node;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class TreeNodeIterator implements Iterator {
+public class TreeNodeIterator implements Iterator<Node> {
 
-    private ArrayList m_stack;
+    private ArrayList<Node> m_stack;
     private Node m_root;
     private boolean m_preorder = true;
     
@@ -37,7 +37,7 @@ public class TreeNodeIterator implements Iterator {
     public TreeNodeIterator(Node root, boolean preorder) {
     	m_preorder = preorder;
     	m_root = root;
-    	m_stack = new ArrayList();
+    	m_stack = new ArrayList<Node>();
     	m_stack.add(root);
     	
     	if (!preorder) {
@@ -57,10 +57,10 @@ public class TreeNodeIterator implements Iterator {
     /**
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public Node next() {
     	Node c, x = null;
     	if (m_preorder) {
-    		x = (Node)m_stack.get(m_stack.size()-1);
+    		x = m_stack.get(m_stack.size()-1);
 	    	if ( (c=x.getChild(0)) != null ) {
 	    		m_stack.add(c);
 	    	} else if ( (c=x.getNextSibling()) != null ) {
@@ -68,7 +68,7 @@ public class TreeNodeIterator implements Iterator {
 	    	} else {
 	    		m_stack.remove(m_stack.size()-1);
 	    		while (!m_stack.isEmpty()) {
-		    		c = (Node)m_stack.remove(m_stack.size()-1);
+		    		c = m_stack.remove(m_stack.size()-1);
 		    		if ( c == m_root ) {
 		    			break;
 		    		} else if ( (c=c.getNextSibling()) != null ) {
@@ -77,7 +77,7 @@ public class TreeNodeIterator implements Iterator {
 	    		}
 	    	}
     	} else {
-    		x = (Node)m_stack.remove(m_stack.size()-1);
+    		x = m_stack.remove(m_stack.size()-1);
     		if ( x != m_root && (c=x.getNextSibling()) != null ) {
     			for (; c != null; c=c.getChild(0)) {
     				m_stack.add(c);

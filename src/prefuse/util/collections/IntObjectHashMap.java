@@ -506,7 +506,7 @@ public class IntObjectHashMap extends AbstractHashMap implements Cloneable {
      *
      * @param list the list to be filled, can have any size.
      */
-    public void values(ArrayList list) {
+    public void values(ArrayList<Object> list) {
         Object[] val = values;
         byte[] stat = state;
 

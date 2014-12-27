@@ -337,11 +337,11 @@ public class NBodyForce extends AbstractForce {
      */
     public static final class QuadTreeNodeFactory {
         private int maxNodes = 50000;
-        private ArrayList nodes = new ArrayList();
+        private ArrayList<QuadTreeNode> nodes = new ArrayList<QuadTreeNode>();
         
         public QuadTreeNode getQuadTreeNode() {
             if ( nodes.size() > 0 ) {
-                return (QuadTreeNode)nodes.remove(nodes.size()-1);
+                return nodes.remove(nodes.size()-1);
             } else {
                 return new QuadTreeNode();
             }

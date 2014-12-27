@@ -226,8 +226,8 @@ public class CompositeTupleSet extends AbstractTupleSet {
     /**
      * @see prefuse.data.tuple.TupleSet#tuples()
      */
-    public Iterator tuples() {
-        CompositeIterator ci = new CompositeIterator(m_map.size());
+    public Iterator<Tuple> tuples() {
+        CompositeIterator<Tuple> ci = new CompositeIterator<Tuple>(m_map.size());
         Iterator<Entry<String, TupleSet>> it = m_map.entrySet().iterator();
         for ( int i=0; it.hasNext(); ++i )  {
             Entry<String, TupleSet> entry = it.next();
@@ -240,8 +240,8 @@ public class CompositeTupleSet extends AbstractTupleSet {
     /**
      * @see prefuse.data.tuple.TupleSet#tuples(prefuse.data.expression.Predicate)
      */
-    public Iterator tuples(Predicate filter) {
-        CompositeIterator ci = new CompositeIterator(m_map.size());
+    public Iterator<Tuple> tuples(Predicate filter) {
+        CompositeIterator<Tuple> ci = new CompositeIterator<Tuple>(m_map.size());
         Iterator<Entry<String, TupleSet>> it = m_map.entrySet().iterator();
         for ( int i=0; it.hasNext(); ++i )  {
         	Entry<String, TupleSet> entry = it.next();
@@ -266,7 +266,8 @@ public class CompositeTupleSet extends AbstractTupleSet {
      * {@link TupleSet#isAddColumnSupported()}.
      * @see prefuse.data.tuple.TupleSet#addColumn(java.lang.String, java.lang.Class, java.lang.Object)
      */
-    public void addColumn(String name, Class type, Object defaultValue) {
+    @SuppressWarnings("rawtypes")
+	public void addColumn(String name, Class type, Object defaultValue) {
     	Iterator<Entry<String, TupleSet>> it = m_map.entrySet().iterator();
         while ( it.hasNext() ) {
         	Entry<String, TupleSet> entry = it.next();
@@ -288,6 +289,7 @@ public class CompositeTupleSet extends AbstractTupleSet {
      * {@link TupleSet#isAddColumnSupported()}.
      * @see prefuse.data.tuple.TupleSet#addColumn(java.lang.String, java.lang.Class)
      */
+    @SuppressWarnings("rawtypes")
     public void addColumn(String name, Class type) {
     	Iterator<Entry<String, TupleSet>> it = m_map.entrySet().iterator();
         while ( it.hasNext() ) {

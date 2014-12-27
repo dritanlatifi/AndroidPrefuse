@@ -14,7 +14,7 @@ import java.util.Iterator;
 //public class SimpleFileFilter extends FileFilter {
 public class SimpleFileFilter {
     
-    private ArrayList exts = new ArrayList();
+    private ArrayList<String> exts = new ArrayList<String>();
     private String desc;
     private Object data;
     
@@ -59,8 +59,8 @@ public class SimpleFileFilter {
         String extension = IOLib.getExtension(f);
         if ( extension == null ) return false;
 
-        for ( Iterator iter = exts.iterator(); iter.hasNext(); ) {
-            String ext = (String)iter.next();
+        for ( Iterator<String> iter = exts.iterator(); iter.hasNext(); ) {
+            String ext = iter.next();
             if ( ext.equalsIgnoreCase(extension) )
                 return true;
         }

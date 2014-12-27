@@ -18,7 +18,7 @@ import prefuse.data.Table;
 public class CompositeSQLDataHandler implements SQLDataHandler {
 
     private SQLDataHandler m_default;
-    private HashMap m_overrides;
+    private HashMap<String, SQLDataHandler> m_overrides;
     
     // ------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ public class CompositeSQLDataHandler implements SQLDataHandler {
      */
     public void addHandler(String columnName, SQLDataHandler handler) {
         if ( m_overrides == null )
-            m_overrides = new HashMap(3);
+            m_overrides = new HashMap<String, SQLDataHandler>(3);
         m_overrides.put(columnName, handler);
     }
     
@@ -89,7 +89,9 @@ public class CompositeSQLDataHandler implements SQLDataHandler {
     /**
      * @see prefuse.data.io.sql.SQLDataHandler#getDataType(java.lang.String, int)
      */
-    public Class getDataType(String columnName, int sqlType) {
+    
+    @SuppressWarnings("rawtypes")
+	public Class getDataType(String columnName, int sqlType) {
         SQLDataHandler handler = m_default;
         if ( m_overrides != null && m_overrides.size() > 0 ) {
             SQLDataHandler h = (SQLDataHandler)m_overrides.get(columnName);

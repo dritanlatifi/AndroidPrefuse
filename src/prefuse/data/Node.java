@@ -2,6 +2,8 @@ package prefuse.data;
 
 import java.util.Iterator;
 
+import prefuse.visual.NodeItem;
+
 
 /**
  * Tuple sub-interface that represents a node in a graph or tree structure.
@@ -163,7 +165,7 @@ public interface Node extends Tuple {
      * Get an iterator over this node's tree children.
      * @return an iterator over this node's children
      */
-    public Iterator children();
+    public Iterator<NodeItem> children();
     
     /**
      * Get an iterator over the edges from this node to its tree children.

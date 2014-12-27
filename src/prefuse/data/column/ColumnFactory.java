@@ -12,6 +12,7 @@ import prefuse.data.expression.Expression;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class ColumnFactory {
     
     /**

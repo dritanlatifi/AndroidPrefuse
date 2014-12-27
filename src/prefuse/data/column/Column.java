@@ -12,6 +12,7 @@ import prefuse.data.parser.DataParser;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public interface Column {
     
     // ------------------------------------------------------------------------

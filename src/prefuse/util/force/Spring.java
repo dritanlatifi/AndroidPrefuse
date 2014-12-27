@@ -49,14 +49,14 @@ public class Spring {
      */
     public static final class SpringFactory {
         private int maxSprings = 10000;
-        private ArrayList springs = new ArrayList();
+        private ArrayList<Spring> springs = new ArrayList<Spring>();
         
         /**
          * Get a Spring instance and set it to the given parameters.
          */
         public Spring getSpring(ForceItem f1, ForceItem f2, float k, float length) {
             if ( springs.size() > 0 ) {
-                Spring s = (Spring)springs.remove(springs.size()-1);
+                Spring s = springs.remove(springs.size()-1);
                 s.item1 = f1;
                 s.item2 = f2;
                 s.coeff = k;

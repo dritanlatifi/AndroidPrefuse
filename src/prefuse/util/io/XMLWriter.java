@@ -28,7 +28,7 @@ public class XMLWriter {
     private PrintWriter m_out;
     private int m_bias = 0;
     private int m_tab;
-    private ArrayList m_tagStack = new ArrayList();
+    private ArrayList<String> m_tagStack = new ArrayList<String>();
     
     /**
      * Create a new XMLWriter.
@@ -231,7 +231,7 @@ public class XMLWriter {
      * @param close true to close the tag, false to leave it
      * open and adjust the spacing
      */
-    protected void tag(String tag, ArrayList names, ArrayList values,
+    protected void tag(String tag, ArrayList<String> names, ArrayList<String> values,
             int nattr, boolean close)
     {
         spacing();
@@ -239,10 +239,10 @@ public class XMLWriter {
         m_out.print(tag);
         for ( int i=0; i<nattr; ++i ) {
             m_out.print(' ');
-            m_out.print((String)names.get(i));
+            m_out.print(names.get(i));
             m_out.print('=');
             m_out.print('\"');
-            escapeString((String)values.get(i));
+            escapeString(values.get(i));
             m_out.print('\"');
         }
         if ( close ) m_out.print('/');
@@ -262,7 +262,7 @@ public class XMLWriter {
      * @param values the values of the attributes
      * @param nattr the number of attributes
      */
-    public void tag(String tag, ArrayList names, ArrayList values, int nattr)
+    public void tag(String tag, ArrayList<String> names, ArrayList<String> values, int nattr)
     {
         tag(tag, names, values, nattr, true);
     }
@@ -275,7 +275,7 @@ public class XMLWriter {
      * @param values the values of the attributes
      * @param nattr the number of attributes
      */
-    public void start(String tag, ArrayList names, ArrayList values, int nattr)
+    public void start(String tag, ArrayList<String> names, ArrayList<String> values, int nattr)
     {
         tag(tag, names, values, nattr, false);
     }
