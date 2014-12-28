@@ -130,7 +130,7 @@ public class JToggleGroup {
 //                tb = new JRadioButton(label);
 //                m_group.add(tb);
 //            }
-//            tb.putClientProperty("idx", new Integer(i));
+//            tb.putClientProperty("idx", Integer.valueOf(i));
 //            tb.addActionListener(m_lstnr);
 //            add(tb);
 //        }

@@ -23,7 +23,7 @@ public class DoubleColumn extends AbstractColumn {
     }
     
     /**
-     * Create a new DoubleColumn. 
+     * Create a Double.valueOfColumn. 
      * @param nrows the initial size of the column
      */
     public DoubleColumn(int nrows) {
@@ -31,13 +31,13 @@ public class DoubleColumn extends AbstractColumn {
     }
     
     /**
-     * Create a new DoubleColumn. 
+     * Create a Double.valueOfColumn. 
      * @param nrows the initial size of the column
      * @param capacity the initial capacity of the column
      * @param defaultValue the default value for the column
      */
     public DoubleColumn(int nrows, int capacity, double defaultValue) {
-        super(double.class, new Double(defaultValue));
+        super(double.class, Double.valueOf(defaultValue));
         if ( capacity < nrows ) {
             throw new IllegalArgumentException(
                 "Capacity value can not be less than the row count.");
@@ -79,7 +79,7 @@ public class DoubleColumn extends AbstractColumn {
      * @see prefuse.data.column.Column#get(int)
      */
     public Object get(int row) {
-        return new Double(getDouble(row));
+        return Double.valueOf(getDouble(row));
     }
 
     /**

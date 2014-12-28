@@ -495,13 +495,13 @@ class NativeImageFormat {
         // Form an ArrayList containing offset for each band
         ArrayList<Integer> offsetsLst = new ArrayList<Integer>();
         for (int k=0; k < sm.getNumBands(); k++) {
-            offsetsLst.add(new Integer(sm.getBitOffsets()[k]/(bytes*8)));
+            offsetsLst.add(Integer.valueOf(sm.getBitOffsets()[k]/(bytes*8)));
         }
 
         // Add offsets for unused space
         for (int i=0; i<pixelSize/bytes; i++) {
-            if (offsetsLst.indexOf(new Integer(i)) < 0)
-                offsetsLst.add(new Integer(i));
+            if (offsetsLst.indexOf(Integer.valueOf(i)) < 0)
+                offsetsLst.add(Integer.valueOf(i));
         }
 
         int offsets[] = new int[pixelSize/bytes];

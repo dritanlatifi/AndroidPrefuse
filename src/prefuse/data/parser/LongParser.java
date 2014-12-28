@@ -14,7 +14,8 @@ public class LongParser implements DataParser {
      * Returns long.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return long.class;
     }
     
@@ -45,7 +46,7 @@ public class LongParser implements DataParser {
      * @see prefuse.data.parser.DataParser#parse(java.lang.String)
      */
     public Object parse(String text) throws DataParseException {
-        return new Long(parseLong(text));
+        return Long.valueOf(parseLong(text));
     }
     
     /**

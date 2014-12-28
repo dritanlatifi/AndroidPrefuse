@@ -39,7 +39,7 @@ public interface Expression {
      * Returns the type that this expression evaluates to when tuples
      * with the given Schema are provided as input.
      */
-    public Class getType(Schema s);
+    public Class<?> getType(Schema s);
     
     /**
      * Passes the visitor through this expression and any sub expressions

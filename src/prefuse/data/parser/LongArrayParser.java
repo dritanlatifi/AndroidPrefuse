@@ -15,7 +15,8 @@ public class LongArrayParser implements DataParser {
      * Returns long[].class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return long[].class;
     }
     

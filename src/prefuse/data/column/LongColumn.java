@@ -23,7 +23,7 @@ public class LongColumn extends AbstractColumn {
     }
 
     /**
-     * Create a new LongColumn. 
+     * Create a Long.valueOfColumn. 
      * @param nrows the initial size of the column
      */
     public LongColumn(int nrows) {
@@ -31,13 +31,13 @@ public class LongColumn extends AbstractColumn {
     }
     
     /**
-     * Create a new LongColumn. 
+     * Create a Long.valueOfColumn. 
      * @param nrows the initial size of the column
      * @param capacity the initial capacity of the column
      * @param defaultValue the default value for the column
      */
     public LongColumn(int nrows, int capacity, long defaultValue) {
-        super(long.class, new Long(defaultValue));
+        super(long.class, Long.valueOf(defaultValue));
         if ( capacity < nrows ) {
             throw new IllegalArgumentException(
                 "Capacity value can not be less than the row count.");
@@ -79,7 +79,7 @@ public class LongColumn extends AbstractColumn {
      * @see prefuse.data.column.Column#get(int)
      */
     public Object get(int row) {
-        return new Long(getLong(row));
+        return Long.valueOf(getLong(row));
     }
 
     /**

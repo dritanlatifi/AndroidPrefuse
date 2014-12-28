@@ -14,7 +14,12 @@ import swing.javax.swing.SwingDefaultBoundedRangeModel;
 public class NumberRangeModel extends SwingDefaultBoundedRangeModel
     implements ValuedRangeModel
 {
-    protected Class m_type;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("rawtypes")
+	protected Class m_type;
     protected Number m_min, m_max, m_lo, m_hi;
     
     // ------------------------------------------------------------------------
@@ -27,8 +32,8 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public NumberRangeModel(int lo, int hi, int min, int max) {
-        this(new Integer(lo), new Integer(hi), 
-             new Integer(min),  new Integer(hi));
+        this(Integer.valueOf(lo), Integer.valueOf(hi), 
+             Integer.valueOf(min),  Integer.valueOf(hi));
     }
     
     /**
@@ -39,7 +44,7 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public NumberRangeModel(long lo, long hi, long min, long max) {
-        this(new Long(lo), new Long(hi), new Long(min), new Long(max));
+        this(Long.valueOf(lo), Long.valueOf(hi), Long.valueOf(min), Long.valueOf(max));
     }
     
     /**
@@ -50,7 +55,7 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public NumberRangeModel(float lo, float hi, float min, float max) {
-        this(new Float(lo), new Float(hi), new Float(min), new Float(max));
+        this(Float.valueOf(lo), Float.valueOf(hi), Float.valueOf(min), Float.valueOf(max));
     }
     
     /**
@@ -61,7 +66,7 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public NumberRangeModel(double lo, double hi, double min, double max) {
-        this(new Double(lo), new Double(hi), new Double(min), new Double(max));
+        this(Double.valueOf(lo), Double.valueOf(hi), Double.valueOf(min), Double.valueOf(max));
     }
     
     /**
@@ -158,8 +163,8 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public void setValueRange(double lo, double hi, double min, double max) {
-        m_lo = new Double(lo);   m_hi = new Double(hi);
-        m_min = new Double(min); m_max = new Double(max);
+        m_lo = Double.valueOf(lo);   m_hi = Double.valueOf(hi);
+        m_min = Double.valueOf(min); m_max = Double.valueOf(max);
         updateRange();
     }
     
@@ -171,8 +176,8 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public void setValueRange(int lo, int hi, int min, int max) {
-        m_lo = new Integer(lo);   m_hi = new Integer(hi);
-        m_min = new Integer(min); m_max = new Integer(max);
+        m_lo = Integer.valueOf(lo);   m_hi = Integer.valueOf(hi);
+        m_min = Integer.valueOf(min); m_max = Integer.valueOf(max);
         updateRange();
     }
     
@@ -184,8 +189,8 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
      * @param max the maximum value allowed for ranges
      */
     public void setValueRange(long lo, long hi, long min, long max) {
-        m_lo = new Long(lo);   m_hi = new Long(hi);
-        m_min = new Long(min); m_max = new Long(max);
+        m_lo = Long.valueOf(lo);   m_hi = Long.valueOf(hi);
+        m_min = Long.valueOf(min); m_max = Long.valueOf(max);
         updateRange();
     }
     
@@ -260,14 +265,14 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
             double f = (val-min)/(double)(max-min);
             double m = m_min.doubleValue();
             double v = m + f*(m_max.doubleValue()-m);
-            return (m_type==float.class ? (Number)new Float((float)v) 
-                                        : new Double(v));
+            return (m_type==float.class ? (Number)Float.valueOf((float)v) 
+                                        : Double.valueOf(v));
         } else if ( m_type == long.class ) {
             long m = m_min.longValue();
             long v = m + (val-min)*(m_max.longValue()-m)/(max-min);
-            return new Long(v);
+            return Long.valueOf(v);
         } else {
-            return new Integer(val);
+            return Integer.valueOf(val);
         }
     }
     

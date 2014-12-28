@@ -175,8 +175,8 @@ public class Graph extends CompositeTupleSet {
     public Graph(Table nodes, boolean directed, String nodeKey,
             String sourceKey, String targetKey) {
         Table edges = new Table();
-        edges.addColumn(sourceKey, int.class, new Integer(-1));
-        edges.addColumn(targetKey, int.class, new Integer(-1));
+        edges.addColumn(sourceKey, int.class, Integer.valueOf(-1));
+        edges.addColumn(targetKey, int.class, Integer.valueOf(-1));
         init(nodes, edges, directed, nodeKey, sourceKey, targetKey);
     }
     
@@ -1037,7 +1037,7 @@ public class Graph extends CompositeTupleSet {
      * Get an iterator over all nodes in the graph.
      * @return an iterator over Node instances
      */
-    public Iterator nodes() {
+    public Iterator<Tuple> nodes() {
         return m_nodeTuples.iterator(nodeRows());
     }
 
@@ -1072,7 +1072,7 @@ public class Graph extends CompositeTupleSet {
      * Get an iterator over all edges in the graph.
      * @return an iterator over Edge instances
      */
-    public Iterator edges() {
+    public Iterator<Tuple> edges() {
         return m_edgeTuples.iterator(edgeRows());
     }
     
@@ -1403,7 +1403,7 @@ public class Graph extends CompositeTupleSet {
     /** Schema used for the internal graph linkage table */
     protected static final Schema LINKS_SCHEMA = new Schema();
     static {
-        Integer defaultValue = new Integer(0);
+        Integer defaultValue = Integer.valueOf(0);
         LINKS_SCHEMA.addColumn(INDEGREE,  int.class, defaultValue);
         LINKS_SCHEMA.addColumn(OUTDEGREE, int.class, defaultValue);
         LINKS_SCHEMA.addColumn(INLINKS,   int[].class);

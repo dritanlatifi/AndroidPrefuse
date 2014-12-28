@@ -66,7 +66,8 @@ public class FixedWidthTextTableWriter extends AbstractTableWriter {
     /**
      * @see prefuse.data.io.TableWriter#writeTable(prefuse.data.Table, java.io.OutputStream)
      */
-    public void writeTable(Table table, OutputStream os) throws DataIOException {
+    @SuppressWarnings("rawtypes")
+	public void writeTable(Table table, OutputStream os) throws DataIOException {
         try {            
             // get print stream
             PrintStream out = new PrintStream(new BufferedOutputStream(os));

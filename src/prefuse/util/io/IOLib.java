@@ -65,7 +65,8 @@ public class IOLib {
      * @return a URL object, or null if the location string could not be
      * resolved
      */
-    public static URL urlFromString(String location, Class referrer,
+    @SuppressWarnings("rawtypes")
+	public static URL urlFromString(String location, Class referrer,
                                     boolean includeFileSystem)
     {
         URL url = null;

@@ -14,6 +14,7 @@ public class FloatParser implements DataParser {
      * Returns float.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
+	@SuppressWarnings("rawtypes")
     public Class getType() {
         return float.class;
     }
@@ -45,7 +46,7 @@ public class FloatParser implements DataParser {
      * @see prefuse.data.parser.DataParser#parse(java.lang.String)
      */
     public Object parse(String text) throws DataParseException {
-        return new Float(parseFloat(text));
+        return Float.valueOf(parseFloat(text));
     }
     
     /**

@@ -69,7 +69,7 @@ public class JForcePanel {
 //        JValueSlider s = new JValueSlider(name,min,max,value);
 //        s.setBackground(Color.WHITE);
 //        s.putClientProperty("force", f);
-//        s.putClientProperty("param", new Integer(param));
+//        s.putClientProperty("param", Integer.valueOf(param));
 //        s.setPreferredSize(new Dimension(300,30));
 //        s.setMaximumSize(new Dimension(300,30));
 //        return s;

@@ -13,7 +13,8 @@ public interface DataParser {
      * Get the data type for the values parsed by this parser.
      * @return the parsed data type for this parser as a Java Class instance
      */
-    public Class getType();
+    @SuppressWarnings("rawtypes")
+	public Class getType();
     
     
     /**

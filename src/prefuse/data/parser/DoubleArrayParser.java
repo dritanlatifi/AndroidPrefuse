@@ -15,7 +15,7 @@ public class DoubleArrayParser implements DataParser {
      * Returns double[].class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    public Class<double[]> getType() {
         return double[].class;
     }
     

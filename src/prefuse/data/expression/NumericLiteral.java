@@ -12,7 +12,8 @@ import prefuse.util.TypeLib;
 public class NumericLiteral extends Literal {
 
     private final Number m_number;
-    private final Class  m_type;
+    @SuppressWarnings("rawtypes")
+	private final Class  m_type;
     
     // ------------------------------------------------------------------------
     // Constructors
@@ -22,7 +23,7 @@ public class NumericLiteral extends Literal {
      * @param x the literal numeric value
      */
     public NumericLiteral(int x) {
-        m_number = new Integer(x);
+        m_number = Integer.valueOf(x);
         m_type = int.class;
     }
 
@@ -31,7 +32,7 @@ public class NumericLiteral extends Literal {
      * @param x the literal numeric value
      */
     public NumericLiteral(long x) {
-        m_number = new Long(x);
+        m_number = Long.valueOf(x);
         m_type = long.class;
     }
     
@@ -40,7 +41,7 @@ public class NumericLiteral extends Literal {
      * @param x the literal numeric value
      */
     public NumericLiteral(float x) {
-        m_number = new Float(x);
+        m_number = Float.valueOf(x);
         m_type = float.class;
     }
     
@@ -49,7 +50,7 @@ public class NumericLiteral extends Literal {
      * @param x the literal numeric value
      */
     public NumericLiteral(double x) {
-        m_number = new Double(x);
+        m_number = Double.valueOf(x);
         m_type = double.class;
     }
     
@@ -73,7 +74,8 @@ public class NumericLiteral extends Literal {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return m_type;
     }
 

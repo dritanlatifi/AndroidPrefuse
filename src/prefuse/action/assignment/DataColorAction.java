@@ -225,7 +225,7 @@ public class DataColorAction extends ColorAction {
         m_olist = values;
         m_omap = new HashMap();
         for ( int i=0; i<values.length; ++i ) {
-            m_omap.put(values[i], new Integer(i));
+            m_omap.put(values[i], Integer.valueOf(i));
         }
     }
     

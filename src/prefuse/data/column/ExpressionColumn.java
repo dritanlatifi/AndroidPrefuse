@@ -147,7 +147,8 @@ public class ExpressionColumn extends AbstractColumn {
     /**
      * @see prefuse.data.column.AbstractColumn#canSet(java.lang.Class)
      */
-    public boolean canSet(Class type) {
+    @SuppressWarnings("rawtypes")
+	public boolean canSet(Class type) {
         return false;
     }
     
@@ -160,7 +161,7 @@ public class ExpressionColumn extends AbstractColumn {
             return m_cache.get(row);
         }
         Object val = m_expr.get(m_table.getTuple(row));
-        Class type = val==null ? Object.class : val.getClass();
+        Class<? extends Object> type = val==null ? Object.class : val.getClass();
         if ( m_cache.canSet(type) ) {
             m_cache.set(val, row);
             m_valid.set(row);
@@ -279,7 +280,7 @@ public class ExpressionColumn extends AbstractColumn {
                 // invalidate the cache index
                 invalidateCache(start, end);
                 // fire change event including previous value
-                Class type = getColumnType();
+                Class<?> type = getColumnType();
                 if ( int.class == type ) {
                     fireColumnEvent(start, m_cache.getInt(start));
                 } else if ( long.class == type ) {

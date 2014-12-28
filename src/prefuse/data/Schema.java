@@ -112,7 +112,7 @@ public class Schema implements Cloneable {
     protected void initLookup() {
         m_lookup = new HashMap();
         for ( int i=0; i<m_names.length; ++i ) {
-            m_lookup.put(m_names[i], new Integer(i));
+            m_lookup.put(m_names[i], Integer.valueOf(i));
         }
     }
     
@@ -198,7 +198,7 @@ public class Schema implements Cloneable {
         m_dflts[m_size] = defaultValue;
         
         if ( m_lookup != null )
-            m_lookup.put(name, new Integer(m_size));
+            m_lookup.put(name, Integer.valueOf(m_size));
         
         ++m_size;
     }
@@ -342,7 +342,7 @@ public class Schema implements Cloneable {
      * @param val the new default value
      */
     public void setDefault(String field, int val) {
-        setDefault(field, new Integer(val));
+        setDefault(field, Integer.valueOf(val));
     }
     
     /**
@@ -351,7 +351,7 @@ public class Schema implements Cloneable {
      * @param val the new default value
      */
     public void setDefault(String field, long val) {
-        setDefault(field, new Long(val));
+        setDefault(field, Long.valueOf(val));
     }
     
     /**
@@ -360,7 +360,7 @@ public class Schema implements Cloneable {
      * @param val the new default value
      */
     public void setDefault(String field, float val) {
-        setDefault(field, new Float(val));
+        setDefault(field, Float.valueOf(val));
     }
     
     /**
@@ -369,7 +369,7 @@ public class Schema implements Cloneable {
      * @param val the new default value
      */
     public void setDefault(String field, double val) {
-        setDefault(field, new Double(val));
+        setDefault(field, Double.valueOf(val));
     }
     
     /**
@@ -400,7 +400,7 @@ public class Schema implements Cloneable {
      * @param val the new default value for all three implicated columns
      */
     public void setInterpolatedDefault(String field, int val) {
-        setInterpolatedDefault(field, new Integer(val));
+        setInterpolatedDefault(field, Integer.valueOf(val));
     }
     
     /**
@@ -410,7 +410,7 @@ public class Schema implements Cloneable {
      * @param val the new default value for all three implicated columns
      */
     public void setInterpolatedDefault(String field, long val) {
-        setInterpolatedDefault(field, new Long(val));
+        setInterpolatedDefault(field, Long.valueOf(val));
     }
     
     /**
@@ -420,7 +420,7 @@ public class Schema implements Cloneable {
      * @param val the new default value for all three implicated columns
      */
     public void setInterpolatedDefault(String field, float val) {
-        setInterpolatedDefault(field, new Float(val));
+        setInterpolatedDefault(field, Float.valueOf(val));
     }
     
     /**
@@ -430,7 +430,7 @@ public class Schema implements Cloneable {
      * @param val the new default value for all three implicated columns
      */
     public void setInterpolatedDefault(String field, double val) {
-        setInterpolatedDefault(field, new Double(val));
+        setInterpolatedDefault(field, Double.valueOf(val));
     }
     
     /**

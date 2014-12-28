@@ -239,7 +239,7 @@ public class DoubleIntTreeMap extends AbstractTreeMap implements DoubleIntSorted
         }
         
         public Object getKey() {
-            return new Double(key);
+            return Double.valueOf(key);
         }
         
         public boolean keyEquals(Entry e) {

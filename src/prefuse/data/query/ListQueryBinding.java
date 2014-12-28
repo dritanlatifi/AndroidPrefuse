@@ -15,7 +15,6 @@ import prefuse.data.expression.OrPredicate;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TupleSet;
 import prefuse.util.DataLib;
-import prefuse.util.ui.JToggleGroup;
 import swing.javax.swing.event.SwingListSelectionEvent;
 import swing.javax.swing.event.SwingListSelectionListener;
 
@@ -29,7 +28,8 @@ public class ListQueryBinding extends DynamicQueryBinding {
     /** String used to indicate inclusion of all data values. */
     private static final String ALL = "All";
     
-    private Class m_type;
+    @SuppressWarnings("rawtypes")
+	private Class m_type;
     private ListModel m_model;
     private Listener m_lstnr;
     private boolean m_includeAll;

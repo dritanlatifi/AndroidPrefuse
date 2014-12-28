@@ -13,7 +13,8 @@ public class ObjectParser implements DataParser {
      * Returns Object.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return Object.class;
     }
     

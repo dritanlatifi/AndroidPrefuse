@@ -11,7 +11,8 @@ public class IntParser implements DataParser {
      * Returns int.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return int.class;
     }
     
@@ -42,7 +43,7 @@ public class IntParser implements DataParser {
      * @see prefuse.data.parser.DataParser#parse(java.lang.String)
      */
     public Object parse(String text) throws DataParseException {
-        return new Integer(parseInt(text));
+        return Integer.valueOf(parseInt(text));
     }
     
     /**

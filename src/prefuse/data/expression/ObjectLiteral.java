@@ -26,7 +26,8 @@ public class ObjectLiteral extends Literal {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return m_value==null ? Object.class : m_value.getClass();
     }
 

@@ -155,7 +155,8 @@ public class ParserFactory implements Cloneable {
      * @return a parser for the given data type, or null
      * if no such parser can be found.
      */
-    public DataParser getParser(Class type) {
+    @SuppressWarnings("rawtypes")
+	public DataParser getParser(Class type) {
        for ( int i=0; i<m_parsers.length; ++i ) {
            if ( m_parsers[i].getType().equals(type) ) {
                return m_parsers[i];

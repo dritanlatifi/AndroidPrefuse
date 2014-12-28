@@ -19,7 +19,8 @@ public abstract class Literal extends AbstractExpression {
      * @return a new Literal expression containing the
      * value of the Tuple's data field
      */
-    public static Literal getLiteral(Tuple t, String field) {
+    @SuppressWarnings("rawtypes")
+	public static Literal getLiteral(Tuple t, String field) {
         Class type = t.getColumnType(field);
         if ( type == int.class )
         {
@@ -65,7 +66,8 @@ public abstract class Literal extends AbstractExpression {
      * @return a new Literal expression containing the
      * object value
      */
-    public static Literal getLiteral(Object val, Class type) {
+    @SuppressWarnings("rawtypes")
+	public static Literal getLiteral(Object val, Class type) {
         if ( TypeLib.isNumericType(type) )
         {
             return new NumericLiteral(val);

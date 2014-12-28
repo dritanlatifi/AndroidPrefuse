@@ -18,10 +18,11 @@ import prefuse.util.collections.CopyOnWriteArrayList;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+
 public abstract class FunctionExpression extends AbstractExpression
     implements Function
 {
-    protected CopyOnWriteArrayList m_params;
+    protected CopyOnWriteArrayList<Expression> m_params;
     protected final int m_pcount; 
     
     /**
@@ -47,7 +48,7 @@ public abstract class FunctionExpression extends AbstractExpression
                 "This function takes only "+pc+" parameters.");
         }
         if ( m_params == null )
-            m_params = new CopyOnWriteArrayList();
+            m_params = new CopyOnWriteArrayList<Expression>();
         m_params.add(e);
     }
     
@@ -149,11 +150,12 @@ abstract class DoubleFunction extends FunctionExpression {
     protected DoubleFunction(int parameterCount) {
         super(parameterCount);
     }
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return double.class;
     }
     public Object get(Tuple t) {
-        return new Double(getDouble(t));
+        return Double.valueOf(getDouble(t));
     }
     public int getInt(Tuple t) {
         return (int)getDouble(t);
@@ -165,15 +167,17 @@ abstract class DoubleFunction extends FunctionExpression {
         return (float)getDouble(t);
     }
 }
+@SuppressWarnings("rawtypes")
 abstract class IntFunction extends FunctionExpression {
     protected IntFunction(int parameterCount) {
         super(parameterCount);
     }
-    public Class getType(Schema s) {
+    @SuppressWarnings("unchecked")
+	public Class getType(Schema s) {
         return int.class;
     }
     public Object get(Tuple t) {
-        return new Integer(getInt(t));
+        return Integer.valueOf(getInt(t));
     }
     public long getLong(Tuple t) {
         return (long)getInt(t);
@@ -191,6 +195,7 @@ abstract class BooleanFunction extends FunctionExpression
     protected BooleanFunction(int parameterCount) {
         super(parameterCount);
     }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Class getType(Schema s) {
         return boolean.class;
     }
@@ -200,6 +205,7 @@ abstract class BooleanFunction extends FunctionExpression
 }
 
 //ROW()
+@SuppressWarnings("unchecked")
 class RowFunction extends IntFunction {
     public RowFunction() { super(0); }
     public String getName() { return "ROW"; }
@@ -208,6 +214,7 @@ class RowFunction extends IntFunction {
     }
 }
 //ISNODE()
+@SuppressWarnings("unchecked")
 class IsNodeFunction extends BooleanFunction {
     public IsNodeFunction() { super(0); }
     public String getName() { return "ISNODE"; }
@@ -216,6 +223,7 @@ class IsNodeFunction extends BooleanFunction {
     }
 }
 //ISEDGE()
+@SuppressWarnings("unchecked")
 class IsEdgeFunction extends BooleanFunction {
     public IsEdgeFunction() { super(0); }
     public String getName() { return "ISEDGE"; }
@@ -224,6 +232,7 @@ class IsEdgeFunction extends BooleanFunction {
     }
 }
 //DEGREE()
+@SuppressWarnings("unchecked")
 class DegreeFunction extends IntFunction {
     public DegreeFunction() { super(0); }
     public String getName() { return "DEGREE"; }
@@ -232,6 +241,7 @@ class DegreeFunction extends IntFunction {
     }
 }
 //INDEGREE()
+@SuppressWarnings("unchecked")
 class InDegreeFunction extends IntFunction {
     public InDegreeFunction() { super(0); }
     public String getName() { return "INDEGREE"; }
@@ -240,6 +250,7 @@ class InDegreeFunction extends IntFunction {
     }
 }
 //OUTDEGREE()
+@SuppressWarnings("unchecked")
 class OutDegreeFunction extends IntFunction {
     public OutDegreeFunction() { super(0); }
     public String getName() { return "OUTDEGREE"; }
@@ -248,6 +259,7 @@ class OutDegreeFunction extends IntFunction {
     }
 }
 //CHILDCOUNT()
+@SuppressWarnings("unchecked")
 class ChildCountFunction extends IntFunction {
     public ChildCountFunction() { super(0); }
     public String getName() { return "CHILDCOUNT"; }
@@ -256,6 +268,7 @@ class ChildCountFunction extends IntFunction {
     }
 }
 //TREEDEPTH()
+@SuppressWarnings("unchecked")
 class TreeDepthFunction extends IntFunction {
     public TreeDepthFunction() { super(0); }
     public String getName() { return "TREEDEPTH"; }
@@ -265,6 +278,7 @@ class TreeDepthFunction extends IntFunction {
 }
 
 //ABS(X)
+@SuppressWarnings("unchecked")
 class AbsFunction extends DoubleFunction {
     public AbsFunction() { super(1); }
     public String getName() { return "ABS"; }
@@ -278,6 +292,7 @@ class AbsFunction extends DoubleFunction {
 }
 
 //ACOS(X)
+@SuppressWarnings("unchecked")
 class AcosFunction extends DoubleFunction {
     public AcosFunction() { super(1); }
     public String getName() { return "ACOS"; }
@@ -291,6 +306,7 @@ class AcosFunction extends DoubleFunction {
 }
 
 //ASIN(X)
+@SuppressWarnings("unchecked")
 class AsinFunction extends DoubleFunction {
     public AsinFunction() { super(1); }
     public String getName() { return "ASIN"; }
@@ -304,6 +320,7 @@ class AsinFunction extends DoubleFunction {
 }
 
 //ATAN(X)
+@SuppressWarnings("unchecked")
 class AtanFunction extends DoubleFunction {
     public AtanFunction() { super(1); }
     public String getName() { return "ATAN"; }
@@ -317,6 +334,7 @@ class AtanFunction extends DoubleFunction {
 }
 
 //ATAN2(Y,X)
+@SuppressWarnings("unchecked")
 class Atan2Function extends DoubleFunction {
     public Atan2Function() { super(2); }
     public String getName() { return "ATAN2"; }
@@ -329,6 +347,7 @@ class Atan2Function extends DoubleFunction {
     }
 }
 //CEILING(X), CEIL(X)
+@SuppressWarnings("unchecked")
 class CeilFunction extends DoubleFunction {
     public CeilFunction() { super(1); }
     public String getName() { return "CEIL"; }
@@ -344,6 +363,7 @@ class CeilFunction extends DoubleFunction {
     }
 }
 //COS(X)
+@SuppressWarnings("unchecked")
 class CosFunction extends DoubleFunction {
     public CosFunction() { super(1); }
     public String getName() { return "COS"; }
@@ -356,6 +376,7 @@ class CosFunction extends DoubleFunction {
     }
 }
 //COT(X)
+@SuppressWarnings("unchecked")
 class CotFunction extends DoubleFunction {
     public CotFunction() { super(1); }
     public String getName() { return "COT"; }
@@ -368,6 +389,7 @@ class CotFunction extends DoubleFunction {
     }
 }
 //DEGREES(X)
+@SuppressWarnings("unchecked")
 class DegreesFunction extends DoubleFunction {
     public DegreesFunction() { super(1); }
     public String getName() { return "DEGREES"; }
@@ -380,6 +402,7 @@ class DegreesFunction extends DoubleFunction {
     }
 }
 //E()
+@SuppressWarnings("unchecked")
 class EFunction extends DoubleFunction {
     public EFunction() { super(0); }
     public String getName() { return "E"; }
@@ -388,6 +411,7 @@ class EFunction extends DoubleFunction {
     }
 }
 //EXP(X)
+@SuppressWarnings("unchecked")
 class ExpFunction extends DoubleFunction {
     public ExpFunction() { super(1); }
     public String getName() { return "EXP"; }
@@ -400,6 +424,7 @@ class ExpFunction extends DoubleFunction {
     }
 }
 //FLOOR(X)
+@SuppressWarnings("unchecked")
 class FloorFunction extends DoubleFunction {
     public FloorFunction() { super(1); }
     public String getName() { return "FLOOR"; }
@@ -415,6 +440,7 @@ class FloorFunction extends DoubleFunction {
     }
 }
 //LOG(X), LOG(B,X)
+@SuppressWarnings("unchecked")
 class LogFunction extends DoubleFunction {
     public LogFunction() { super(2); }
     public String getName() { return "LOG"; }
@@ -433,6 +459,7 @@ class LogFunction extends DoubleFunction {
     }
 }
 //LOG2(X)
+@SuppressWarnings("unchecked")
 class Log2Function extends DoubleFunction {
     public Log2Function() { super(1); }
     public String getName() { return "LOG2"; }
@@ -445,6 +472,7 @@ class Log2Function extends DoubleFunction {
     }
 }
 //LOG10(X)
+@SuppressWarnings("unchecked")
 class Log10Function extends DoubleFunction {
     public Log10Function() { super(1); }
     public String getName() { return "LOG10"; }
@@ -457,6 +485,7 @@ class Log10Function extends DoubleFunction {
     }
 }
 //SAFELOG10(X)
+@SuppressWarnings("unchecked")
 class SafeLog10Function extends DoubleFunction {
     public SafeLog10Function() { super(2); }
     public String getName() { return "SAFELOG10"; }
@@ -472,6 +501,7 @@ class SafeLog10Function extends DoubleFunction {
     }
 }
 //MAX(X1,X2,...)
+@SuppressWarnings("unchecked")
 class MaxFunction extends DoubleFunction {
     public MaxFunction() { super(Function.VARARGS); }
     public String getName() { return "MAX"; }
@@ -485,6 +515,7 @@ class MaxFunction extends DoubleFunction {
     }
 }
 //MIN(X1,X2,...)
+@SuppressWarnings("unchecked")
 class MinFunction extends DoubleFunction {
     public MinFunction() { super(Function.VARARGS); }
     public String getName() { return "MIN"; }
@@ -498,6 +529,7 @@ class MinFunction extends DoubleFunction {
     }
 }
 //MOD(N,M)
+@SuppressWarnings("unchecked")
 class ModFunction extends DoubleFunction {
     public ModFunction() { super(2); }
     public String getName() { return "MOD"; }
@@ -512,6 +544,7 @@ class ModFunction extends DoubleFunction {
     }
 }
 //PI()
+@SuppressWarnings("unchecked")
 class PiFunction extends DoubleFunction {
     public PiFunction() { super(0); }
     public String getName() { return "PI"; }
@@ -520,6 +553,7 @@ class PiFunction extends DoubleFunction {
     }
 }
 //POW(X,Y), POWER(X,Y)
+@SuppressWarnings("unchecked")
 class PowFunction extends DoubleFunction {
     public PowFunction() { super(1); }
     public String getName() { return "POW"; }
@@ -532,6 +566,7 @@ class PowFunction extends DoubleFunction {
     }
 }
 //RADIANS(X)
+@SuppressWarnings("unchecked")
 class RadiansFunction extends DoubleFunction {
     public RadiansFunction() { super(1); }
     public String getName() { return "RADIANS"; }
@@ -544,6 +579,7 @@ class RadiansFunction extends DoubleFunction {
     }
 }
 //RAND(), RAND(N)
+@SuppressWarnings("unchecked")
 class RandFunction extends DoubleFunction {
     public RandFunction() { super(0); }
     public String getName() { return "RAND"; }
@@ -552,6 +588,7 @@ class RandFunction extends DoubleFunction {
     }
 }
 //ROUND(X) // --> ROUND(X,D) TODO
+@SuppressWarnings("unchecked")
 class RoundFunction extends DoubleFunction {
     public RoundFunction() { super(1); }
     public String getName() { return "ROUND"; }
@@ -570,7 +607,8 @@ class RoundFunction extends DoubleFunction {
 class SignFunction extends DoubleFunction {
     public SignFunction() { super(1); }
     public String getName() { return "SIGN"; }
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return int.class;
     }
     public double getDouble(Tuple t) {
@@ -586,6 +624,7 @@ class SignFunction extends DoubleFunction {
     }
 }
 //SIN(X)
+@SuppressWarnings("unchecked")
 class SinFunction extends DoubleFunction {
     public SinFunction() { super(1); }
     public String getName() { return "SIN"; }
@@ -598,6 +637,7 @@ class SinFunction extends DoubleFunction {
     }
 }
 //SQRT(X)
+@SuppressWarnings("unchecked")
 class SqrtFunction extends DoubleFunction {
     public SqrtFunction() { super(1); }
     public String getName() { return "SQRT"; }
@@ -610,6 +650,7 @@ class SqrtFunction extends DoubleFunction {
     }
 }
 //SUM(X1,X2,...)
+@SuppressWarnings("unchecked")
 class SumFunction extends DoubleFunction {
     public SumFunction() { super(Function.VARARGS); }
     public String getName() { return "SUM"; }
@@ -621,6 +662,7 @@ class SumFunction extends DoubleFunction {
     }
 }
 //SAFESQRT(X)
+@SuppressWarnings("unchecked")
 class SafeSqrtFunction extends DoubleFunction {
     public SafeSqrtFunction() { super(2); }
     public String getName() { return "SAFESQRT"; }
@@ -636,6 +678,7 @@ class SafeSqrtFunction extends DoubleFunction {
     }
 }
 //TAN(X)
+@SuppressWarnings("unchecked")
 class TanFunction extends DoubleFunction {
     public TanFunction() { super(1); }
     public String getName() { return "TAN"; }
@@ -657,7 +700,8 @@ abstract class StringFunction extends FunctionExpression {
     protected StringFunction(int parameterCount) {
         super(parameterCount);
     }
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return String.class;
     }
     protected StringBuffer getBuffer() {
@@ -665,6 +709,7 @@ abstract class StringFunction extends FunctionExpression {
     }
 }
 //CAP(str1)
+@SuppressWarnings("unchecked")
 class CapFunction extends StringFunction {
     public CapFunction() { super(1); }
     public String getName() { return "CAP"; }
@@ -674,6 +719,7 @@ class CapFunction extends StringFunction {
     }
 }
 //CONCAT(str1,str2,...)
+@SuppressWarnings("unchecked")
 class ConcatFunction extends StringFunction {
     public ConcatFunction() { super(Function.VARARGS); }
     public String getName() { return "CONCAT"; }
@@ -688,6 +734,7 @@ class ConcatFunction extends StringFunction {
     }
 }
 //CONCAT_WS(separator,str1,str2,...)
+@SuppressWarnings("unchecked")
 class ConcatWsFunction extends StringFunction {
     public ConcatWsFunction() { super(Function.VARARGS); }
     public String getName() { return "CONCAT_WS"; }
@@ -702,6 +749,7 @@ class ConcatWsFunction extends StringFunction {
     }
 }
 //FORMAT(X,D)
+@SuppressWarnings("unchecked")
 class FormatFunction extends StringFunction {
     public FormatFunction() { super(2); }
     public String getName() { return "FORMAT"; }
@@ -715,6 +763,7 @@ class FormatFunction extends StringFunction {
     }
 }
 //INSERT(str,pos,len,newstr)
+@SuppressWarnings("unchecked")
 class InsertFunction extends StringFunction {
     public InsertFunction() { super(4); }
     public String getName() { return "INSERT"; }
@@ -734,6 +783,7 @@ class InsertFunction extends StringFunction {
 }
 //INSTR(str,substr)
 //LEFT(str,len)
+@SuppressWarnings("unchecked")
 class LeftFunction extends StringFunction {
     public LeftFunction() { super(2); }
     public String getName() { return "LEFT"; }
@@ -745,6 +795,7 @@ class LeftFunction extends StringFunction {
     
 }
 //LENGTH(str)
+@SuppressWarnings("unchecked")
 class LengthFunction extends IntFunction {
     public LengthFunction() { super(1); }
     public String getName() { return "LENGTH"; }
@@ -754,6 +805,7 @@ class LengthFunction extends IntFunction {
 }
 //LOCATE(substr,str), LOCATE(substr,str,pos)
 //LOWER(str) | LCASE(str)
+@SuppressWarnings("unchecked")
 class LowerFunction extends StringFunction {
     public LowerFunction() { super(1); }
     public String getName() { return "LOWER"; }
@@ -762,6 +814,7 @@ class LowerFunction extends StringFunction {
     }
 }
 //LPAD(str,len,padstr)
+@SuppressWarnings("unchecked")
 class LPadFunction extends StringFunction {
     public LPadFunction() { super(3); }
     public String getName() { return "LPAD"; }
@@ -790,6 +843,7 @@ class LPadFunction extends StringFunction {
 //LTRIM(str)
 //MID(str,pos,len) -- same as substring
 //POSITION(substr, str)
+@SuppressWarnings("unchecked")
 class PositionFunction extends IntFunction {
     public PositionFunction() { super(2); }
     public String getName() { return "POSITION"; }
@@ -801,6 +855,7 @@ class PositionFunction extends IntFunction {
 }
 //QUOTE(str)
 //REPEAT(str,count)
+@SuppressWarnings("unchecked")
 class RepeatFunction extends StringFunction {
     public RepeatFunction() { super(2); }
     public String getName() { return "REPEAT"; }
@@ -815,6 +870,7 @@ class RepeatFunction extends StringFunction {
     } 
 }
 //REPLACE(str,from_str,to_str)
+@SuppressWarnings("unchecked")
 class ReplaceFunction extends StringFunction {
     public ReplaceFunction() { super(3); }
     public String getName() { return "REPLACE"; }
@@ -827,6 +883,7 @@ class ReplaceFunction extends StringFunction {
     
 }
 //REVERSE(str)
+@SuppressWarnings("unchecked")
 class ReverseFunction extends StringFunction {
     public ReverseFunction() { super(1); }
     public String getName() { return "REVERSE"; }
@@ -840,6 +897,7 @@ class ReverseFunction extends StringFunction {
     }
 }
 //RIGHT(str,len)
+@SuppressWarnings("unchecked")
 class RightFunction extends StringFunction {
     public RightFunction() { super(2); }
     public String getName() { return "RIGHT"; }
@@ -851,6 +909,7 @@ class RightFunction extends StringFunction {
     
 }
 //RPAD(str,len,padstr)
+@SuppressWarnings("unchecked")
 class RPadFunction extends StringFunction {
     public RPadFunction() { super(3); }
     public String getName() { return "RPAD"; }
@@ -879,6 +938,7 @@ class RPadFunction extends StringFunction {
 //RTRIM(str)
 //// SOUNDEX(str)
 //SPACE(N)
+@SuppressWarnings("unchecked")
 class SpaceFunction extends StringFunction {
     public SpaceFunction() { super(1); }
     public String getName() { return "SPACE"; }
@@ -892,6 +952,7 @@ class SpaceFunction extends StringFunction {
     
 }
 //SUBSTRING(str,pos), SUBSTRING(str,pos,len)
+@SuppressWarnings("unchecked")
 class SubstringFunction extends StringFunction {
     public SubstringFunction() { super(3); }
     public String getName() { return "SUBSTRING"; }
@@ -909,6 +970,7 @@ class SubstringFunction extends StringFunction {
 //SUBSTRING_INDEX(str,delim,count)
 //TRIM([{BOTH | LEADING | TRAILING} [remstr] FROM] str), TRIM(remstr FROM] str)
 //UPPER(str) | UCASE(str)
+@SuppressWarnings("unchecked")
 class UpperFunction extends StringFunction {
     public UpperFunction() { super(1); }
     public String getName() { return "UPPER"; }
@@ -920,6 +982,7 @@ class UpperFunction extends StringFunction {
 // ----------------------------------------------------------------------------
 
 //RGB(r,g,b)
+@SuppressWarnings("unchecked")
 class RGBFunction extends IntFunction {
     public RGBFunction() { super(3); }
     public String getName() { return "RGB"; }
@@ -931,6 +994,7 @@ class RGBFunction extends IntFunction {
     }
 }
 //HEX(hex)
+@SuppressWarnings("unchecked")
 class HexFunction extends IntFunction {
     public HexFunction() { super(1); }
     public String getName() { return "RGB"; }
@@ -940,6 +1004,7 @@ class HexFunction extends IntFunction {
     }
 }
 //RGBA(r,g,b,a)
+@SuppressWarnings("unchecked")
 class RGBAFunction extends IntFunction {
     public RGBAFunction() { super(4); }
     public String getName() { return "RGBA"; }
@@ -952,6 +1017,7 @@ class RGBAFunction extends IntFunction {
     }
 }
 //GRAY(v) | GRAY(v, a)
+@SuppressWarnings("unchecked")
 class GrayFunction extends IntFunction {
     public GrayFunction() { super(2); }
     public String getName() { return "GRAY"; }
@@ -966,6 +1032,7 @@ class GrayFunction extends IntFunction {
     }
 }
 //HSB(h,s,b)
+@SuppressWarnings("unchecked")
 class HSBFunction extends IntFunction {
     public HSBFunction() { super(3); }
     public String getName() { return "HSB"; }
@@ -977,6 +1044,7 @@ class HSBFunction extends IntFunction {
     }
 }
 //HSBA(h,s,b,a)
+@SuppressWarnings("unchecked")
 class HSBAFunction extends IntFunction {
     public HSBAFunction() { super(4); }
     public String getName() { return "HSBA"; }
@@ -989,6 +1057,7 @@ class HSBAFunction extends IntFunction {
     }
 }
 //COLORINTERP(c1, c2, f)
+@SuppressWarnings("unchecked")
 class ColorInterpFunction extends IntFunction {
     public ColorInterpFunction() { super(3); }
     public String getName() { return "COLORINTERP"; }

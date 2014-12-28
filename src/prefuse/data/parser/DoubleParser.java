@@ -13,7 +13,7 @@ public class DoubleParser implements DataParser {
      * Returns double.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    public Class<Double> getType() {
         return double.class;
     }
     
@@ -48,7 +48,7 @@ public class DoubleParser implements DataParser {
      * @see prefuse.data.parser.DataParser#parse(java.lang.String)
      */
     public Object parse(String text) throws DataParseException {
-        return new Double(parseDouble(text));
+        return Double.valueOf(parseDouble(text));
     }
     
     /**

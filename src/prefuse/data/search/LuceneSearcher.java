@@ -195,7 +195,7 @@
 //        Integer count;
 //        if ( (count=(Integer)m_hitCountCache.get(query)) == null ) {
 //            Hits hits = search(query);
-//            count = new Integer(hits.length());
+//            count = Integer.valueOf(hits.length());
 //            m_hitCountCache.put(query, count);
 //        }
 //        return count.intValue();

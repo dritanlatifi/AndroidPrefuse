@@ -39,7 +39,7 @@ public class NativeCMM {
     private static boolean isCMMLoaded;
 
     public static void addHandle(ICC_Profile key, long handle) {
-        profileHandles.put(key, new Long(handle));
+        profileHandles.put(key, Long.valueOf(handle));
     }
 
     public static void removeHandle(ICC_Profile key) {

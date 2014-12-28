@@ -12,6 +12,7 @@ import prefuse.data.DataTypeException;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class ObjectColumn extends AbstractColumn {
 
     private Object[] m_values;
@@ -28,7 +29,7 @@ public class ObjectColumn extends AbstractColumn {
      * Create a new ObjectColumn.
      * @param type the data type of Objects in this column 
      */
-    public ObjectColumn(Class type) {
+	public ObjectColumn(Class type) {
         this(type, 0, 10, null);
     }
     

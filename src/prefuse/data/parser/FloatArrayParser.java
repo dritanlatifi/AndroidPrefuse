@@ -15,7 +15,9 @@ public class FloatArrayParser implements DataParser {
      * Returns float[].class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+	
+    @SuppressWarnings("rawtypes")
+	public Class getType() {
         return float[].class;
     }
     

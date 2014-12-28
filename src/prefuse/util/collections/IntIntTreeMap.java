@@ -253,7 +253,7 @@ public class IntIntTreeMap extends AbstractTreeMap implements IntIntSortedMap {
         }
         
         public Object getKey() {
-            return new Integer(key);
+            return Integer.valueOf(key);
         }
         
         public boolean keyEquals(Entry e) {

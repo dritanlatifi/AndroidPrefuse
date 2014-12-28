@@ -96,7 +96,8 @@ public class IfExpression extends AbstractExpression {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         Class type1 = m_then.getType(s);
         Class type2 = m_else.getType(s);
         return TypeLib.getSharedType(type1, type2);

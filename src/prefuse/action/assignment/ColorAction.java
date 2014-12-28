@@ -143,7 +143,7 @@ public class ColorAction extends EncoderAction {
      * @param color the color value
      */
     public void add(Predicate p, int color) {
-        super.add(p, new Integer(color));
+        super.add(p, Integer.valueOf(color));
     }
 
     /**

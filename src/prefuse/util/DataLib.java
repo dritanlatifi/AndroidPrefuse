@@ -33,13 +33,13 @@ public class DataLib {
      * @param field the column / data field name
      * @return an array containing the data values
      */
-    public static Object[] toArray(Iterator tuples, String field) {
+    public static Object[] toArray(Iterator<Tuple> tuples, String field) {
         Object[] array = new Object[100];
         int i=0;
         for ( ; tuples.hasNext(); ++i ) {
             if ( i >= array.length )
                 array = ArrayLib.resize(array, 3*array.length/2);
-            array[i] = ((Tuple)tuples.next()).get(field);
+            array[i] = tuples.next().get(field);
         }
         return ArrayLib.trim(array, i);
     }
@@ -52,13 +52,13 @@ public class DataLib {
      * @param field the column / data field name
      * @return an array of doubles containing the column values
      */
-    public static double[] toDoubleArray(Iterator tuples, String field) {
+    public static double[] toDoubleArray(Iterator<Tuple> tuples, String field) {
         double[] array = new double[100];
         int i=0;
         for ( ; tuples.hasNext(); ++i ) {
             if ( i >= array.length )
                 array = ArrayLib.resize(array, 3*array.length/2);
-            array[i] = ((Tuple)tuples.next()).getDouble(field);
+            array[i] = tuples.next().getDouble(field);
         }
         return ArrayLib.trim(array, i);
     }
@@ -72,7 +72,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return an array containing the column values sorted
      */
-    public static Object[] ordinalArray(Iterator tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Object[] ordinalArray(Iterator<Tuple> tuples, String field) {
         return DataLib.ordinalArray(tuples, field,
                             DefaultLiteralComparator.getInstance());
     }
@@ -85,13 +86,13 @@ public class DataLib {
      * @param cmp a comparator for sorting the column contents
      * @return an array containing the column values sorted
      */
-    public static Object[] ordinalArray(Iterator tuples, String field,
-                                        Comparator cmp)
+    public static Object[] ordinalArray(Iterator<Tuple> tuples, String field,
+                                        Comparator<Object> cmp)
     {
         // get set of all unique values
-        HashSet set = new HashSet();
+        HashSet<Object> set = new HashSet<Object>();
         while ( tuples.hasNext() )
-            set.add(((Tuple)tuples.next()).get(field));
+            set.add(tuples.next().get(field));
         
         // sort the unique values
         Object[] o = set.toArray();
@@ -106,6 +107,7 @@ public class DataLib {
      * @param field the column / data field name
      * @return an array containing the column values sorted
      */
+    @SuppressWarnings("unchecked")
     public static Object[] ordinalArray(TupleSet tuples, String field) {
         return ordinalArray(tuples, field,
                             DefaultLiteralComparator.getInstance());
@@ -120,7 +122,7 @@ public class DataLib {
      * @return an array containing the column values sorted
      */
     public static Object[] ordinalArray(TupleSet tuples, String field,
-                                        Comparator cmp)
+                                        Comparator<Object> cmp)
     {
         if ( tuples instanceof Table ) {
             ColumnMetadata md = ((Table)tuples).getMetadata(field);
@@ -140,7 +142,8 @@ public class DataLib {
      * @return a map mapping column values to their position in a sorted
      * order of values
      */
-    public static Map ordinalMap(Iterator tuples, String field) {
+    @SuppressWarnings("unchecked")
+    public static Map<Object, Integer> ordinalMap(Iterator<Tuple> tuples, String field) {
         return ordinalMap(tuples, field,
                 DefaultLiteralComparator.getInstance());
     }
@@ -154,14 +157,14 @@ public class DataLib {
      * @return a map mapping column values to their position in a sorted
      * order of values
      */
-    public static Map ordinalMap(Iterator tuples, String field, Comparator cmp)
+    public static Map<Object, Integer> ordinalMap(Iterator<Tuple> tuples, String field, Comparator<Object> cmp)
     {
         Object[] o = ordinalArray(tuples, field, cmp);
         
         // map the values to the non-negative numbers
-        HashMap map = new HashMap();
+        HashMap<Object, Integer> map = new HashMap<Object, Integer>();
         for ( int i=0; i<o.length; ++i )
-            map.put(o[i], new Integer(i));
+            map.put(o[i], Integer.valueOf(i));
         return map;
     }
     
@@ -173,9 +176,10 @@ public class DataLib {
      * @return a map mapping column values to their position in a sorted
      * order of values
      */
-    public static Map ordinalMap(TupleSet tuples, String field) {
-        return ordinalMap(tuples, field,
-                          DefaultLiteralComparator.getInstance());
+    
+    @SuppressWarnings("unchecked")
+	public static Map<Object, Integer> ordinalMap(TupleSet tuples, String field) {
+        return ordinalMap(tuples, field, DefaultLiteralComparator.getInstance());
     }
 
     /**
@@ -187,7 +191,7 @@ public class DataLib {
      * @return a map mapping column values to their position in a sorted
      * order of values
      */
-    public static Map ordinalMap(TupleSet tuples, String field, Comparator cmp)
+    public static Map<Object, Integer> ordinalMap(TupleSet tuples, String field, Comparator<Object> cmp)
     {
         if ( tuples instanceof Table ) {
             ColumnMetadata md = ((Table)tuples).getMetadata(field);
@@ -205,7 +209,7 @@ public class DataLib {
      * @param field the column / data field name
      * @return the number of values
      */
-    public static int count(Iterator tuples, String field) {
+    public static int count(Iterator<Tuple> tuples, String field) {
         int i = 0;
         for ( ; tuples.hasNext(); ++i, tuples.next() );
         return i;
@@ -217,10 +221,10 @@ public class DataLib {
      * @param field the column / data field name
      * @return the number of distinct values
      */
-    public static int uniqueCount(Iterator tuples, String field) {
-        HashSet set = new HashSet();
+    public static int uniqueCount(Iterator<Tuple> tuples, String field) {
+        HashSet<Object> set = new HashSet<Object>();
         while ( tuples.hasNext() )
-            set.add(((Tuple)tuples.next()).get(field));
+            set.add(tuples.next().get(field));
         return set.size();
     }
 
@@ -232,7 +236,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the minimum data field value
      */
-    public static Tuple min(Iterator tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Tuple min(Iterator<Tuple> tuples, String field) {
         return min(tuples, field, DefaultLiteralComparator.getInstance());
     }
 
@@ -243,15 +248,15 @@ public class DataLib {
      * @param cmp a comparator for sorting the column contents
      * @return the Tuple with the minimum data field value
      */
-    public static Tuple min(Iterator tuples, String field, Comparator cmp) {
+    public static Tuple min(Iterator<Tuple> tuples, String field, Comparator<Object> cmp) {
         Tuple t = null, tmp;
         Object min = null;
         if ( tuples.hasNext() ) {
-            t = (Tuple)tuples.next();
+            t = tuples.next();
             min = t.get(field);
         }
         while ( tuples.hasNext() ) {
-            tmp = (Tuple)tuples.next();
+            tmp = tuples.next();
             Object obj = tmp.get(field);
             if ( cmp.compare(obj,min) < 0 ) {
                 t = tmp;
@@ -267,7 +272,7 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the minimum data field value
      */
-    public static Tuple min(TupleSet tuples, String field, Comparator cmp) {
+    public static Tuple min(TupleSet tuples, String field, Comparator<Object> cmp) {
         if ( tuples instanceof Table ) {
             Table table = (Table)tuples;
             ColumnMetadata md = table.getMetadata(field);
@@ -283,7 +288,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the minimum data field value
      */
-    public static Tuple min(TupleSet tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Tuple min(TupleSet tuples, String field) {
         return min(tuples, field, DefaultLiteralComparator.getInstance());
     }
     
@@ -295,7 +301,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the maximum data field value
      */
-    public static Tuple max(Iterator tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Tuple max(Iterator<Tuple> tuples, String field) {
         return max(tuples, field, DefaultLiteralComparator.getInstance());
     }
 
@@ -306,15 +313,15 @@ public class DataLib {
      * @param cmp a comparator for sorting the column contents
      * @return the Tuple with the maximum data field value
      */
-    public static Tuple max(Iterator tuples, String field, Comparator cmp) {
+    public static Tuple max(Iterator<Tuple> tuples, String field, Comparator<Object> cmp) {
         Tuple t = null, tmp;
         Object min = null;
         if ( tuples.hasNext() ) {
-            t = (Tuple)tuples.next();
+            t = tuples.next();
             min = t.get(field);
         }
         while ( tuples.hasNext() ) {
-            tmp = (Tuple)tuples.next();
+            tmp = tuples.next();
             Object obj = tmp.get(field);
             if ( cmp.compare(obj,min) > 0 ) {
                 t = tmp;
@@ -330,7 +337,7 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the maximum data field value
      */
-    public static Tuple max(TupleSet tuples, String field, Comparator cmp) {
+    public static Tuple max(TupleSet tuples, String field, Comparator<Object> cmp) {
         if ( tuples instanceof Table ) {
             Table table = (Table)tuples;
             ColumnMetadata md = table.getMetadata(field);
@@ -346,7 +353,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the maximum data field value
      */
-    public static Tuple max(TupleSet tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Tuple max(TupleSet tuples, String field) {
         return max(tuples, field, DefaultLiteralComparator.getInstance());
     }
     
@@ -358,7 +366,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the median data field value
      */
-    public static Tuple median(Iterator tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Tuple median(Iterator<Tuple> tuples, String field) {
         return median(tuples, field, DefaultLiteralComparator.getInstance());
     }
 
@@ -369,13 +378,13 @@ public class DataLib {
      * @param cmp a comparator for sorting the column contents
      * @return the Tuple with the median data field value
      */
-    public static Tuple median(Iterator tuples, String field, Comparator cmp) {
+    public static Tuple median(Iterator<Tuple> tuples, String field, Comparator<Object> cmp) {
         Object[] t = new Tuple[100];
         int i=0;
         for ( ; tuples.hasNext(); ++i ) {
             if ( i >= t.length )
                 t = ArrayLib.resize(t, 3*t.length/2);
-            t[i] = (Tuple)tuples.next();
+            t[i] = tuples.next();
         }
         ArrayLib.trim(t, i);
         
@@ -396,7 +405,7 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the median data field value
      */
-    public static Tuple median(TupleSet tuples, String field, Comparator cmp) {
+    public static Tuple median(TupleSet tuples, String field, Comparator<Object> cmp) {
         if ( tuples instanceof Table ) {
             Table table = (Table)tuples;
             ColumnMetadata md = table.getMetadata(field);
@@ -412,7 +421,8 @@ public class DataLib {
      * @param field the column / data field name
      * @return the Tuple with the median data field value
      */
-    public static Tuple median(TupleSet tuples, String field) {
+    @SuppressWarnings("unchecked")
+	public static Tuple median(TupleSet tuples, String field) {
         return median(tuples, field, DefaultLiteralComparator.getInstance());
     }
     
@@ -425,13 +435,13 @@ public class DataLib {
      * @param field the column / data field name
      * @return the mean value, or NaN if a non-numeric data type is encountered
      */
-    public static double mean(Iterator tuples, String field) {
+    public static double mean(Iterator<Tuple> tuples, String field) {
         try {
             int count = 0;
             double sum = 0;
             
             while ( tuples.hasNext() ) {
-                sum += ((Tuple)tuples.next()).getDouble(field);
+                sum += tuples.next().getDouble(field);
                 ++count;
             }
             return sum/count;
@@ -449,7 +459,7 @@ public class DataLib {
      * @return the standard deviation value, or NaN if a non-numeric data type
      * is encountered
      */
-    public static double deviation(Iterator tuples, String field) {
+    public static double deviation(Iterator<Tuple> tuples, String field) {
         return deviation(tuples, field, DataLib.mean(tuples, field));
     }    
     
@@ -464,14 +474,14 @@ public class DataLib {
      * @return the standard deviation value, or NaN if a non-numeric data type
      * is encountered
      */
-    public static double deviation(Iterator tuples, String field, double mean) {
+    public static double deviation(Iterator<Tuple> tuples, String field, double mean) {
         try {
             int count = 0;
             double sumsq = 0;
             double x;
             
             while ( tuples.hasNext() ) {
-                x = ((Tuple)tuples.next()).getDouble(field) - mean;
+                x = tuples.next().getDouble(field) - mean;
                 sumsq += x*x;
                 ++count;
             }
@@ -488,12 +498,12 @@ public class DataLib {
      * @param field the column / data field name
      * @return the sum, or NaN if a non-numeric data type is encountered
      */
-    public static double sum(Iterator tuples, String field) {
+    public static double sum(Iterator<Tuple> tuples, String field) {
         try {
             double sum = 0;
             
             while ( tuples.hasNext() ) {
-                sum += ((Tuple)tuples.next()).getDouble(field);
+                sum += tuples.next().getDouble(field);
             }
             return sum;
         } catch ( Exception e ) {
@@ -510,7 +520,7 @@ public class DataLib {
      * @return the inferred data type
      * @throws IllegalArgumentException if incompatible types are used
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Class inferType(TupleSet tuples, String field) {
         if ( tuples instanceof Table ) {
             return ((Table)tuples).getColumnType(field);

@@ -314,7 +314,8 @@ public class DatabaseDataSource {
      * @return the index of the existing row, or -1 if no match is found
      * @throws SQLException
      */
-    protected int getExistingRow(Table t, ResultSet rset, String keyField)
+    @SuppressWarnings("rawtypes")
+	protected int getExistingRow(Table t, ResultSet rset, String keyField)
         throws SQLException
     {
         // check if we have a keyField, bail if not
@@ -351,7 +352,8 @@ public class DatabaseDataSource {
      * @return the schema determined by the metadata and handler
      * @throws SQLException if an error occurs accessing the metadata
      */
-    public Schema getSchema(ResultSetMetaData metadata, SQLDataHandler handler)
+    @SuppressWarnings("rawtypes")
+	public Schema getSchema(ResultSetMetaData metadata, SQLDataHandler handler)
         throws SQLException
     {
         int ncols = metadata.getColumnCount();

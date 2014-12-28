@@ -80,7 +80,7 @@ import java.util.HashMap;
  *   will be ignored.
  *   <li>The identity of the value does not matter, only the actual
  *   value.  For example, <code>TextAttribute.WEIGHT_BOLD</code> and
- *   <code>new Float(2.0)</code>
+ *   <code>Float.valueOf(2.0)</code>
  *   indicate the same <code>WEIGHT</code>.
  *   <li>Attribute values of type <code>Number</code> (used for
  *   <code>WEIGHT</code>, <code>WIDTH</code>, <code>POSTURE</code>,

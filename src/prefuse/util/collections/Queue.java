@@ -35,7 +35,7 @@ public class Queue {
     }
     
     public void visit(Object o, int depth) {
-        m_map.put(o, new Integer(depth));
+        m_map.put(o, Integer.valueOf(depth));
     }
     
     public Object removeFirst() {

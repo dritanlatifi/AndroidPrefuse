@@ -237,7 +237,7 @@ public class LongIntTreeMap extends AbstractTreeMap implements LongIntSortedMap 
         }
         
         public Object getKey() {
-            return new Long(key);
+            return Long.valueOf(key);
         }
         
         public boolean keyEquals(Entry e) {

@@ -40,7 +40,8 @@ public class QueryExpression extends GroupExpression {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return String.class;
     }
     

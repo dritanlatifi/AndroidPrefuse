@@ -38,7 +38,8 @@ public class GroupSizeFunction extends GroupExpression {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType(Schema s) {
         return int.class;
     }
 
@@ -46,7 +47,7 @@ public class GroupSizeFunction extends GroupExpression {
      * @see prefuse.data.expression.Expression#get(prefuse.data.Tuple)
      */
     public Object get(Tuple t) {
-        return new Integer(getInt(t));
+        return Integer.valueOf(getInt(t));
     }
 
     /**

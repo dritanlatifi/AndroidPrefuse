@@ -37,7 +37,7 @@ public class ColumnMetadata implements ColumnListener {
     private Double m_stdev;
     private Double m_sum;
     private Object[] m_ordinalA;
-    private Map m_ordinalM;
+    private Map<Object, Integer> m_ordinalM;
     
     // ------------------------------------------------------------------------
     
@@ -233,7 +233,7 @@ public class ColumnMetadata implements ColumnListener {
     public double getMean() {
         accessCheck();
         if ( m_mean == null && m_dynamic ) {
-            m_mean = new Double(DataLib.mean(m_table.tuples(), m_field));
+            m_mean = Double.valueOf(DataLib.mean(m_table.tuples(), m_field));
         }
         return m_mean.doubleValue();
     }
@@ -247,7 +247,7 @@ public class ColumnMetadata implements ColumnListener {
     public double getDeviation() {
         accessCheck();
         if ( m_stdev == null && m_dynamic ) {
-            m_stdev = new Double(
+            m_stdev = Double.valueOf(
                     DataLib.deviation(m_table.tuples(), m_field, getMean()));
         }
         return m_stdev.doubleValue();
@@ -262,7 +262,7 @@ public class ColumnMetadata implements ColumnListener {
     public double getSum() {
         accessCheck();
         if ( m_sum == null && m_dynamic ) {
-            m_sum = new Double(DataLib.sum(m_table.tuples(), m_field));
+            m_sum = Double.valueOf(DataLib.sum(m_table.tuples(), m_field));
         }
         return m_sum.doubleValue();
     }
@@ -286,13 +286,13 @@ public class ColumnMetadata implements ColumnListener {
      * @return a map between all unique column values and their integer index
      * in the values' sort order
      */
-    public Map getOrdinalMap() {
+    public Map<Object, Integer> getOrdinalMap() {
         accessCheck();
         if ( m_ordinalM == null && m_dynamic ) {
             Object[] a = getOrdinalArray();
-            m_ordinalM = new HashMap();
+            m_ordinalM = new HashMap<Object, Integer>();
             for ( int i=0; i<a.length; ++i )
-                m_ordinalM.put(a[i], new Integer(i));
+                m_ordinalM.put(a[i], Integer.valueOf(i));
             //m_ordinalM = DataLib.ordinalMap(m_table.tuples(), m_field, m_cmp);
         }
         return m_ordinalM;

@@ -13,7 +13,7 @@ import prefuse.data.Node;
  */
 public class NeighborIterator implements Iterator {
 
-    private Iterator m_edges;
+    private Iterator<Edge> m_edges;
     private Node     m_node;
     
     /**
@@ -21,7 +21,7 @@ public class NeighborIterator implements Iterator {
      * @param n the source node
      * @param edges the node edges to iterate over
      */
-    public NeighborIterator(Node n, Iterator edges) {
+    public NeighborIterator(Node n, Iterator<Edge> edges) {
         m_node = n;
         m_edges = edges;
     }

@@ -56,7 +56,7 @@ public class ObjectRangeModel extends SwingDefaultBoundedRangeModel
             m_ordinal.clear();
         }
         for ( int i=0; i<objects.length; ++i ) {
-            m_ordinal.put(objects[i], new Integer(i));
+            m_ordinal.put(objects[i], Integer.valueOf(i));
         }
         setRangeProperties(0, objects.length-1, 0, objects.length-1, false);
     }

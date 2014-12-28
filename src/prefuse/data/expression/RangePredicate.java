@@ -14,6 +14,7 @@ import prefuse.util.collections.LiteralComparator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class RangePredicate extends BinaryExpression implements Predicate {
 
     /** Indicates the both the left and right bounds are inclusive */
@@ -105,7 +106,8 @@ public class RangePredicate extends BinaryExpression implements Predicate {
      * Get the comparator used to compare data values.
      * @return the comparator used to compare data values
      */
-    public Comparator getComparator() {
+    
+	public Comparator getComparator() {
         return m_cmp;
     }
     
@@ -115,7 +117,8 @@ public class RangePredicate extends BinaryExpression implements Predicate {
     /**
      * @see prefuse.data.expression.Expression#getBoolean(prefuse.data.Tuple)
      */
-    public boolean getBoolean(Tuple t) {
+	@SuppressWarnings("unchecked")
+	public boolean getBoolean(Tuple t) {
         Class lType = m_left.getType(t.getSchema());
         Class rType = m_right.getType(t.getSchema());
         Class mType = m_middle.getType(t.getSchema());
@@ -187,7 +190,8 @@ public class RangePredicate extends BinaryExpression implements Predicate {
     /**
      * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
      */
-    public Class getType(Schema s) {
+	@SuppressWarnings("unchecked")
+	public Class getType(Schema s) {
         return boolean.class;
     }
 

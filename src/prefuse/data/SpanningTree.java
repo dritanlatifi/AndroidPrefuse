@@ -28,8 +28,8 @@ public class SpanningTree extends Tree {
     /** Edge table schema used by the spanning tree. */
     protected static final Schema EDGE_SCHEMA = new Schema();
     static {
-        EDGE_SCHEMA.addColumn(DEFAULT_SOURCE_KEY, int.class, new Integer(-1));
-        EDGE_SCHEMA.addColumn(DEFAULT_TARGET_KEY, int.class, new Integer(-1));
+        EDGE_SCHEMA.addColumn(DEFAULT_SOURCE_KEY, int.class, Integer.valueOf(-1));
+        EDGE_SCHEMA.addColumn(DEFAULT_TARGET_KEY, int.class, Integer.valueOf(-1));
         EDGE_SCHEMA.addColumn(SOURCE_EDGE, int.class);
     }
     

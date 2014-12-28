@@ -38,7 +38,8 @@ public class DateColumn extends AbstractColumn {
      * subclass of java.util.Date) 
      * @param nrows the initial size of the column
      */
-    public DateColumn(Class type, int nrows) {
+    @SuppressWarnings("rawtypes")
+	public DateColumn(Class type, int nrows) {
         this(type, nrows, nrows, 0L);
     }
     
@@ -50,7 +51,8 @@ public class DateColumn extends AbstractColumn {
      * @param capacity the initial capacity of the column
      * @param defaultValue the default value for the column
      */
-    public DateColumn(Class type, int nrows, int capacity, long defaultValue) {
+    @SuppressWarnings("rawtypes")
+	public DateColumn(Class type, int nrows, int capacity, long defaultValue) {
         super(type, TimeLib.getDate(type, defaultValue));
         if ( !Date.class.isAssignableFrom(type) ) {
             throw new IllegalArgumentException("Column type must be an "
@@ -96,7 +98,8 @@ public class DateColumn extends AbstractColumn {
      * @param type the Class of the data type to check
      * @return true if the type is supported by this column, false otherwise
      */
-    public boolean canSet(Class type) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public boolean canSet(Class type) {
         if ( type == null ) return false;
         
         if ( Number.class.isAssignableFrom(type) ||

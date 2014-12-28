@@ -29,6 +29,7 @@ import prefuse.util.collections.IntIterator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class GraphMLReader extends AbstractGraphReader  implements GraphReader {
     
     /**
@@ -119,8 +120,8 @@ public class GraphMLReader extends AbstractGraphReader  implements GraphReader {
         private String m_key;
         private int m_row = -1;
         private Table m_table = null;
-        protected HashMap m_nodeMap = new HashMap();
-        protected HashMap m_idMap = new HashMap();
+        protected HashMap<String, Integer> m_nodeMap = new HashMap<String, Integer>();
+        protected HashMap<String, String> m_idMap = new HashMap<String, String>();
         
         private boolean m_directed = false;
         private boolean inSchema;
@@ -199,7 +200,7 @@ public class GraphMLReader extends AbstractGraphReader  implements GraphReader {
                 m_row = m_nodes.addRow();
                 
                 String id = atts.getValue(ID);
-                m_nodeMap.put(id, new Integer(m_row));
+                m_nodeMap.put(id, Integer.valueOf(m_row));
                 m_table = m_nodes;
             }
             else if ( qName.equals(EDGE) )
@@ -329,7 +330,7 @@ public class GraphMLReader extends AbstractGraphReader  implements GraphReader {
             }
         }
         
-        protected Object parse(String s, Class type)
+		protected Object parse(String s, Class type)
             throws DataParseException
         {
             DataParser dp = m_pf.getParser(type);

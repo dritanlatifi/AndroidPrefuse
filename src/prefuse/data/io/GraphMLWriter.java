@@ -15,6 +15,7 @@ import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
+import prefuse.data.Tuple;
 import prefuse.util.io.XMLWriter;
 
 /**
@@ -32,6 +33,7 @@ import prefuse.util.io.XMLWriter;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class GraphMLWriter extends AbstractGraphWriter {
 
     /**
@@ -50,9 +52,9 @@ public class GraphMLWriter extends AbstractGraphWriter {
     /**
      * Map containing legal data types and their names in the GraphML spec
      */
-    public static final java.util.Map TYPES; 
+    public static final java.util.Map<Class, String> TYPES; 
     static {
-        HashMap types = new HashMap();
+        HashMap<Class, String> types = new HashMap<Class, String>();
         types.put(int.class, Tokens.INT);
         types.put(long.class, Tokens.LONG);
         types.put(float.class, Tokens.FLOAT);
@@ -92,7 +94,7 @@ public class GraphMLWriter extends AbstractGraphWriter {
         
         // print the nodes
         xml.comment("nodes");
-        Iterator nodes = graph.nodes();
+        Iterator<Tuple> nodes = graph.nodes();
         while ( nodes.hasNext() ) {
             Node n = (Node)nodes.next();
             
@@ -117,7 +119,7 @@ public class GraphMLWriter extends AbstractGraphWriter {
         String[] vals = new String[3];
         
         xml.comment("edges");
-        Iterator edges = graph.edges();
+        Iterator<Tuple> edges = graph.edges();
         while ( edges.hasNext() ) {
             Edge e = (Edge)edges.next();
             vals[0] = String.valueOf(e.getRow());
@@ -190,7 +192,7 @@ OUTER:
      * <code>boolean</code>, and <code>string</code>.
      * @param s the Schema to check
      */
-    public static void checkGraphMLSchema(Schema s) throws DataIOException {
+	public static void checkGraphMLSchema(Schema s) throws DataIOException {
         for ( int i=0; i<s.getColumnCount(); ++i ) {
             Class type = s.getColumnType(i);
             if ( TYPES.get(type) == null ) {

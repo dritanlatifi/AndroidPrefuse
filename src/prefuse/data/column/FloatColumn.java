@@ -23,7 +23,7 @@ public class FloatColumn extends AbstractColumn {
     }
     
     /**
-     * Create a new FloatColumn. 
+     * Create a Float.valueOfColumn. 
      * @param nrows the initial size of the column
      */
     public FloatColumn(int nrows) {
@@ -31,13 +31,13 @@ public class FloatColumn extends AbstractColumn {
     }
     
     /**
-     * Create a new FloatColumn. 
+     * Create a Float.valueOfColumn. 
      * @param nrows the initial size of the column
      * @param capacity the initial capacity of the column
      * @param defaultValue the default value for the column
      */
     public FloatColumn(int nrows, int capacity, float defaultValue) {
-        super(float.class, new Float(defaultValue));
+        super(float.class, Float.valueOf(defaultValue));
         if ( capacity < nrows ) {
             throw new IllegalArgumentException(
                 "Capacity value can not be less than the row count.");
@@ -79,7 +79,7 @@ public class FloatColumn extends AbstractColumn {
      * @see prefuse.data.column.Column#get(int)
      */
     public Object get(int row) {
-        return new Float(getFloat(row));
+        return Float.valueOf(getFloat(row));
     }
 
     /**

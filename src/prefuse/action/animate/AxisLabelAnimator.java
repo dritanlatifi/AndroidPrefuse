@@ -46,7 +46,7 @@ public class AxisLabelAnimator extends ItemAction {
             super.run(frac);
         }
         TupleSet ts = m_vis.getGroup(m_group);
-        ts.putClientProperty(AxisLabelLayout.FRAC, new Double(frac));
+        ts.putClientProperty(AxisLabelLayout.FRAC, Double.valueOf(frac));
     }
     
     private void setup() {

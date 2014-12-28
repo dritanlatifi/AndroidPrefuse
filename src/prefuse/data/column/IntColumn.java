@@ -37,7 +37,7 @@ public class IntColumn extends AbstractColumn {
      * @param defaultValue the default value for the column
      */
     public IntColumn(int nrows, int capacity, int defaultValue) {
-        super(int.class, new Integer(defaultValue));
+        super(int.class, Integer.valueOf(defaultValue));
         if ( capacity < nrows ) {
             throw new IllegalArgumentException(
                 "Capacity value can not be less than the row count.");
@@ -79,7 +79,7 @@ public class IntColumn extends AbstractColumn {
      * @see prefuse.data.column.Column#get(int)
      */
     public Object get(int row) {
-        return new Integer(getInt(row));
+        return Integer.valueOf(getInt(row));
     }
 
     /**

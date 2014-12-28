@@ -8,6 +8,11 @@ package prefuse.data;
 public class DataTypeException extends RuntimeException {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Create a new DataTypeException.
      */
     public DataTypeException() {
@@ -45,7 +50,8 @@ public class DataTypeException extends RuntimeException {
      * Create a new DataTypeException.
      * @param type the incompatible data type
      */
-    public DataTypeException(Class type) {
+    @SuppressWarnings("rawtypes")
+	public DataTypeException(Class type) {
         super("Type "+type.getName()+" not supported.");
     }
     

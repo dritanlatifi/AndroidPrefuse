@@ -162,7 +162,8 @@ public class DefaultSQLDataHandler implements SQLDataHandler {
     /**
      * @see prefuse.data.io.sql.SQLDataHandler#getDataType(java.lang.String, int)
      */
-    public Class getDataType(String columnName, int sqlType) {
+    @SuppressWarnings("rawtypes")
+	public Class getDataType(String columnName, int sqlType) {
         switch ( sqlType ) {
         case Types.ARRAY:
             return Array.class;

@@ -239,7 +239,7 @@ public class FloatIntTreeMap extends AbstractTreeMap implements FloatIntSortedMa
         }
         
         public Object getKey() {
-            return new Float(key);
+            return Float.valueOf(key);
         }
         
         public boolean keyEquals(Entry e) {

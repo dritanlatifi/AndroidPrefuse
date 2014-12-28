@@ -50,7 +50,7 @@ public class JValueSlider {
 //     * @param value the value associated with the starting slider position
 //     */
 //    public JValueSlider(String title, double min, double max, double value) {
-//        this(title, new Double(min), new Double(max), new Double(value));
+//        this(title, Double.valueOf(min), Double.valueOf(max), Double.valueOf(value));
 //    }
 //    
 //    /**
@@ -61,7 +61,7 @@ public class JValueSlider {
 //     * @param value the value associated with the starting slider position
 //     */
 //    public JValueSlider(String title, float min, float max, float value) {
-//        this(title, new Float(min), new Float(max), new Float(value));
+//        this(title, Float.valueOf(min), Float.valueOf(max), Float.valueOf(value));
 //    }
 //    
 //    /**
@@ -72,12 +72,12 @@ public class JValueSlider {
 //     * @param value the value associated with the starting slider position
 //     */
 //    public JValueSlider(String title, int min, int max, int value) {
-//        this(title, new Integer(min), new Integer(max), new Integer(value));
+//        this(title, Integer.valueOf(min), Integer.valueOf(max), Integer.valueOf(value));
 //        m_smin = min;
 //        m_srange = max-min;
 //        m_slider.setMinimum(min);
 //        m_slider.setMaximum(max);
-//        setValue(new Integer(value));
+//        setValue(Integer.valueOf(value));
 //    }
 //    
 //    /**
@@ -88,7 +88,7 @@ public class JValueSlider {
 //     * @param value the value associated with the starting slider position
 //     */
 //    public JValueSlider(String title, long min, long max, long value) {
-//        this(title, new Long(min), new Long(max), new Long(value));
+//        this(title, Long.valueOf(min), Long.valueOf(max), Long.valueOf(value));
 //    }
 //    
 //    /**
@@ -214,19 +214,19 @@ public class JValueSlider {
 //            int val = m_slider.getValue();
 //            int min = m_min.intValue();
 //            int max = m_max.intValue();
-//            return new Integer(min + (val-m_smin)*(max-min)/m_srange);
+//            return Integer.valueOf(min + (val-m_smin)*(max-min)/m_srange);
 //        } else if ( m_value instanceof Long ) {
 //            int val = m_slider.getValue();
 //            long min = m_min.longValue();
 //            long max = m_max.longValue();
-//            return new Long(min + (val-m_smin)*(max-min)/m_srange);
+//            return Long.valueOf(min + (val-m_smin)*(max-min)/m_srange);
 //        } else {
 //            double f = (m_slider.getValue()-m_smin)/(double)m_srange;
 //            double min = m_min.doubleValue();
 //            double max = m_max.doubleValue();
 //            double val = min + f*(max-min);
-//            return (m_value instanceof Double ? (Number)new Double(val)
-//                                              : new Float((float)val));
+//            return (m_value instanceof Double ? (Number)Double.valueOf(val)
+//                                              : Float.valueOf((float)val));
 //        }
 //    }
 //    
@@ -266,8 +266,8 @@ public class JValueSlider {
 //                // TODO handle exception
 //                return m_value;
 //            }
-//            return m_value instanceof Double ? (Number)new Double(v) 
-//                                             : new Float((float)v);
+//            return m_value instanceof Double ? (Number)Double.valueOf(v) 
+//                                             : Float.valueOf((float)v);
 //        } else {
 //            long v;
 //            try {
@@ -280,8 +280,8 @@ public class JValueSlider {
 //                // TODO handle exception
 //                return m_value;
 //            }
-//            return m_value instanceof Long ? (Number)new Long(v) 
-//                                           : new Integer((int)v);
+//            return m_value instanceof Long ? (Number)Long.valueOf(v) 
+//                                           : Integer.valueOf((int)v);
 //        }
 //    }
 //    

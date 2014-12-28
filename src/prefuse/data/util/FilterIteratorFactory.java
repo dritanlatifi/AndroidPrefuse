@@ -226,7 +226,7 @@ public class FilterIteratorFactory {
         if ( index == null || !cmp.equals(index.getComparator()) )
             return null;
         
-        Class ltype = t.getColumnType(col.getColumnName());
+        Class<?> ltype = t.getColumnType(col.getColumnName());
         if ( ltype == int.class ) {
             int val = lit.getInt(null); // literal value, so null is safe
             switch ( operation ) {
@@ -335,7 +335,7 @@ public class FilterIteratorFactory {
             return null;
         
         int operation = rp.getOperation();
-        Class ltype = t.getColumnType(col.getColumnName());
+        Class<?> ltype = t.getColumnType(col.getColumnName());
         
         // TODO safety check literal types
         

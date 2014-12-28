@@ -16,15 +16,16 @@ import prefuse.visual.expression.VisiblePredicate;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class FunctionTable {
     
     private FunctionTable() {
         // prevent instantiation
     }
     
-    private static HashMap s_functionTable;
+	private static HashMap<String, Class> s_functionTable;
     static {
-        s_functionTable = new HashMap();
+        s_functionTable = new HashMap<String, Class>();
         // tuple functions
         addFunction("ROW", RowFunction.class);
         addFunction("ISNODE", IsNodeFunction.class);
@@ -129,7 +130,7 @@ public class FunctionTable {
      * be registered in the table, i.e. there is no function overloading.
      * @param type the Class instance of the function itself
      */
-    public static void addFunction(String name, Class type) {
+	public static void addFunction(String name, Class type) {
         if ( !Function.class.isAssignableFrom(type) ) {
             throw new IllegalArgumentException(
                 "Type argument must be a subclass of FunctionExpression.");
@@ -152,7 +153,7 @@ public class FunctionTable {
      * @param name the name of the function to create
      * @return the instantiated Function
      */
-    public static Function createFunction(String name) {
+	public static Function createFunction(String name) {
         Class type = (Class)s_functionTable.get(name);
         if ( type == null ) {
             throw new IllegalArgumentException(

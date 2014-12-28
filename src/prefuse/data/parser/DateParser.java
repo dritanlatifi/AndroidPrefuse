@@ -40,7 +40,7 @@ public class DateParser implements DataParser {
      * Returns java.sql.Date.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    public Class<Date> getType() {
         return Date.class;
     }
     
