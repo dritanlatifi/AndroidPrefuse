@@ -62,7 +62,8 @@ public abstract class AbstractTreeMap implements IntSortedMap {
     /**
      * @see java.util.SortedMap#comparator()
      */
-    public Comparator comparator() {
+    @SuppressWarnings("rawtypes")
+	public Comparator comparator() {
         return cmp;
     }
     

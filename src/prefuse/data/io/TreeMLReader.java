@@ -104,7 +104,8 @@ public class TreeMLReader extends AbstractGraphReader {
             }
         }
         
-        public void startElement(String namespaceURI, String localName,
+        @SuppressWarnings("rawtypes")
+		public void startElement(String namespaceURI, String localName,
                                  String qName, Attributes atts) {           
             if ( qName.equals(DECL) ) {
                 if ( !m_inSchema ) {
@@ -157,14 +158,16 @@ public class TreeMLReader extends AbstractGraphReader {
             }
         }
         
-        protected Object parse(String s, Class type)
+        @SuppressWarnings("rawtypes")
+		protected Object parse(String s, Class type)
             throws DataParseException
         {
             DataParser dp = m_pf.getParser(type);
             return dp.parse(s);
         }
         
-        protected Class parseType(String type) {
+        @SuppressWarnings("rawtypes")
+		protected Class parseType(String type) {
             type = Character.toUpperCase(type.charAt(0)) +
                    type.substring(1).toLowerCase();
             if ( type.equals(INT) || type.equals(INTEGER) ) {

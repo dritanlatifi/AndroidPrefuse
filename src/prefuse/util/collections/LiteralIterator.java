@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public interface LiteralIterator extends Iterator {
+public interface LiteralIterator<T> extends Iterator<T> {
     
     public int nextInt();
     public boolean isIntSupported();

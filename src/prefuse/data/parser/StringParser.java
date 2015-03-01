@@ -13,6 +13,7 @@ public class StringParser implements DataParser {
      * Returns String.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
+	@SuppressWarnings( {"rawtypes"})
     public Class getType() {
         return String.class;
     }

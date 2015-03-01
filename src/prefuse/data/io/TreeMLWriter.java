@@ -40,7 +40,7 @@ public class TreeMLWriter extends AbstractGraphWriter {
     /**
      * Map containing legal data types and their names in the GraphML spec
      */
-    private static final HashMap TYPES = new HashMap();
+    private static final HashMap<Class<?>, String> TYPES = new HashMap<Class<?>, String>();
     static {
         TYPES.put(int.class, Tokens.INT);
         TYPES.put(long.class, Tokens.LONG);
@@ -150,7 +150,8 @@ public class TreeMLWriter extends AbstractGraphWriter {
      * <code>boolean</code>, <code>string</code>, and <code>date</code>.
      * @param s the Schema to check
      */
-    private void checkTreeMLSchema(Schema s) throws DataIOException {
+    @SuppressWarnings("rawtypes")
+	private void checkTreeMLSchema(Schema s) throws DataIOException {
         for ( int i=0; i<s.getColumnCount(); ++i ) {
             Class type = s.getColumnType(i);
             if ( TYPES.get(type) == null ) {

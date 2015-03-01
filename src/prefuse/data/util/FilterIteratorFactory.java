@@ -189,7 +189,7 @@ public class FilterIteratorFactory {
         // otherwise get optimized source, run through other clauses
         return new FilterRowIterator(rows, t, ap.getSubPredicate(clause));
     }
-    
+    @SuppressWarnings({ "rawtypes" })
     protected static IntIterator getComparisonIterator(Table t, 
                                            ComparisonPredicate cp)
     {
@@ -309,7 +309,7 @@ public class FilterIteratorFactory {
             }
         }        
     }
-    
+    @SuppressWarnings({ "rawtypes" })
     protected static IntIterator getRangeIterator(Table t, RangePredicate rp) {
         ColumnExpression col;
         Expression l, r;

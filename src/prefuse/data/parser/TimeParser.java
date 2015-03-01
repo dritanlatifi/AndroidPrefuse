@@ -35,7 +35,8 @@ public class TimeParser extends DateParser {
      * Returns java.sql.Time.class.
      * @see prefuse.data.parser.DataParser#getType()
      */
-    public Class getType() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class getType() {
         return Time.class;
     }
     

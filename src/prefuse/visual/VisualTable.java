@@ -101,7 +101,8 @@ public class VisualTable extends CascadedTable implements VisualTupleSet {
      * @param schema the data schema to use for the table's local columns
      * @param tupleType the type of Tuple instances to use
      */
-    public VisualTable(Visualization vis, String group, Schema schema,
+    @SuppressWarnings("rawtypes")
+	public VisualTable(Visualization vis, String group, Schema schema,
             Class tupleType)
     {
         super(tupleType);

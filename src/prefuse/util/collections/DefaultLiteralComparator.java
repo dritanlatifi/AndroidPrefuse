@@ -67,6 +67,7 @@ public class DefaultLiteralComparator implements LiteralComparator {
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public int compare(Object o1, Object o2) {
         if ( o1 == null ) {
             return ( o2 == null ? 0 : -1 );

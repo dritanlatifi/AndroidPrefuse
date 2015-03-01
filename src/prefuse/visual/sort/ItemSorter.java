@@ -16,6 +16,7 @@ import prefuse.visual.VisualItem;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class ItemSorter implements Comparator {
 
     protected static final int AGGREGATE = 0;

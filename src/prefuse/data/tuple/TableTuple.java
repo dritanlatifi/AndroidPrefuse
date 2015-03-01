@@ -12,6 +12,7 @@ import prefuse.data.Tuple;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings( {"rawtypes", "unchecked"})
 public class TableTuple implements Tuple {
 
     protected Table m_table;

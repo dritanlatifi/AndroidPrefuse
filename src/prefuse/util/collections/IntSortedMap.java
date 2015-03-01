@@ -16,7 +16,8 @@ public interface IntSortedMap {
     public boolean isAllowDuplicates();
     public int size();
     public boolean isEmpty();
-    public Comparator comparator();
+    @SuppressWarnings("rawtypes")
+	public Comparator comparator();
     
     public void clear();
     public boolean containsValue(int value);

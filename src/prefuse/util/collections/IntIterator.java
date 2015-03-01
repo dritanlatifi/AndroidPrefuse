@@ -10,12 +10,12 @@ package prefuse.util.collections;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public abstract class IntIterator extends AbstractLiteralIterator {
+public abstract class IntIterator extends AbstractLiteralIterator<Integer> {
 
     /**
      * @see java.util.Iterator#next()
      */
-    public Object next() {
+    public Integer next() {
         return Integer.valueOf(nextInt());
     }
 

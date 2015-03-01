@@ -36,6 +36,7 @@ public interface SQLDataHandler {
      * in the {@link java.sql.Types} class.
      * @return the Java Class data type
      */
-    public Class getDataType(String columnName, int sqlType);
+    @SuppressWarnings("rawtypes")
+	public Class getDataType(String columnName, int sqlType);
     
 } // end of interface SQLDataValueHandler

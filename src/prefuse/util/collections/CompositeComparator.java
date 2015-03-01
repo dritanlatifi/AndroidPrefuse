@@ -8,6 +8,7 @@ import java.util.Comparator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class CompositeComparator<T> implements Comparator<T> {
 
     private static final int INCREMENT = 2;

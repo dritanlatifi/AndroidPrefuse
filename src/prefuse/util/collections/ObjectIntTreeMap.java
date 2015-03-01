@@ -16,7 +16,8 @@ public class ObjectIntTreeMap extends AbstractTreeMap
     
     // dummy entry used as wrapper for queries
     private ObjectEntry dummy = new ObjectEntry(null, Integer.MIN_VALUE, NIL, 0);
-    private Comparator cmp = null;
+    @SuppressWarnings("rawtypes")
+	private Comparator cmp = null;
     
     // ------------------------------------------------------------------------
     // Constructors
@@ -29,11 +30,13 @@ public class ObjectIntTreeMap extends AbstractTreeMap
         this(null, allowDuplicates);
     }
     
-    public ObjectIntTreeMap(Comparator comparator) {
+    @SuppressWarnings("rawtypes")
+	public ObjectIntTreeMap(Comparator comparator) {
         this(comparator, false);
     }
     
-    public ObjectIntTreeMap(Comparator comparator, boolean allowDuplicates) {
+    @SuppressWarnings("rawtypes")
+	public ObjectIntTreeMap(Comparator comparator, boolean allowDuplicates) {
         super(null, allowDuplicates);
         this.cmp = (comparator == null ? super.comparator() : comparator);
     }
@@ -41,7 +44,8 @@ public class ObjectIntTreeMap extends AbstractTreeMap
     /**
      * @see java.util.SortedMap#comparator()
      */
-    public Comparator comparator() {
+    @SuppressWarnings("rawtypes")
+	public Comparator comparator() {
         return cmp;
     }
     
@@ -195,7 +199,8 @@ public class ObjectIntTreeMap extends AbstractTreeMap
     // Internal Binary Search Tree / Red-Black Tree methods
     // Adapted from Cormen, Leiserson, and Rivest's Introduction to Algorithms
     
-    protected int compare(Entry e1, Entry e2) {
+    @SuppressWarnings("unchecked")
+	protected int compare(Entry e1, Entry e2) {
         Object k1 = e1.getKey(), k2 = e2.getKey();
         
         if ( k1 == k2 && (k1 == MIN_KEY || k1 == MAX_KEY) ) {

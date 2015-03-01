@@ -19,12 +19,13 @@ import prefuse.util.PrefuseLib;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public class Schema implements Cloneable {
 
     private String[] m_names;
     private Class[]  m_types;
     private Object[] m_dflts;
-    private HashMap  m_lookup;
+    private HashMap<String, Integer>  m_lookup;
     private int      m_size;
     private boolean  m_locked;
     
@@ -110,7 +111,7 @@ public class Schema implements Cloneable {
      * accelerate name-based lookups of schema information.
      */
     protected void initLookup() {
-        m_lookup = new HashMap();
+        m_lookup = new HashMap<String, Integer>();
         for ( int i=0; i<m_names.length; ++i ) {
             m_lookup.put(m_names[i], Integer.valueOf(i));
         }
@@ -283,7 +284,7 @@ public class Schema implements Cloneable {
      * @param field the column name
      * @return the column type
      */
-    public Class getColumnType(String field) {
+	public Class getColumnType(String field) {
         int idx = getColumnIndex(field);
         return ( idx<0 ? null : m_types[idx] );
     }

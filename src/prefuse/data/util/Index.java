@@ -73,7 +73,8 @@ public interface Index {
      * Get the comparator used to compare column data values.
      * @return the sort comparator
      */
-    public Comparator getComparator();
+    @SuppressWarnings("rawtypes")
+	public Comparator getComparator();
     
     /**
      * Get the row (or one of the rows) with the minimum data value.

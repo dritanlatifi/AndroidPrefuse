@@ -12,9 +12,10 @@ import prefuse.data.DataTypeException;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings( {"rawtypes", "unchecked"})
 public class SortedMapFactory {
-
-    public static IntSortedMap getMap(
+	
+	public static IntSortedMap getMap(
             Class type, Comparator cmp, boolean unique)
         throws IncompatibleComparatorException
     {

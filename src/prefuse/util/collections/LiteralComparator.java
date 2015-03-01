@@ -5,6 +5,7 @@ import java.util.Comparator;
 /**
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings("rawtypes")
 public interface LiteralComparator extends Comparator {
 
     int compare(byte x1, byte x2);

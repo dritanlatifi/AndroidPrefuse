@@ -2,6 +2,7 @@ package prefuse.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -12,6 +13,7 @@ import java.util.StringTokenizer;
  *
  * @author jeffrey heer
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class ArrayLib {
     
     /**
@@ -284,7 +286,7 @@ public abstract class ArrayLib {
      * otherwise -1 times the index value at the insertion point that
      * would be used if the key were added to the array. 
      */
-    public static final int binarySearch(Object[] a, Object key) {
+	public static final int binarySearch(Object[] a, Object key) {
         int x1 = 0;
         int x2 = a.length;
         int i = x2 / 2, c;
@@ -312,7 +314,7 @@ public abstract class ArrayLib {
      * otherwise -1 times the index value at the insertion point that
      * would be used if the key were added to the array. 
      */
-    public static final int binarySearch(Object[] a, Object key, int length) {
+	public static final int binarySearch(Object[] a, Object key, int length) {
         int x1 = 0;
         int x2 = length;
         int i = x2 / 2, c;
@@ -1306,8 +1308,9 @@ public abstract class ArrayLib {
      */
     public static int[] getIntArray(String filename) {
         int[] array = null;
+        BufferedReader br =	null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
+            br = new BufferedReader(new FileReader(filename));
             String line = br.readLine();
             StringTokenizer st = new StringTokenizer(line);
             int maxlen = st.countTokens();
@@ -1325,6 +1328,18 @@ public abstract class ArrayLib {
         } catch ( Exception e ) {
             e.printStackTrace();
             return null;
+        }
+        finally
+        {
+        	try
+			{
+				br.close();
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
         }
     }
 

@@ -1,17 +1,17 @@
 package prefuse.util.display;
 
 //import awt.java.awt.BorderLayout;
-import awt.java.awt.Dimension;
-import awt.java.awt.Graphics;
-import awt.java.awt.Image;
+//import awt.java.awt.Dimension;
+//import awt.java.awt.Graphics;
+//import awt.java.awt.Image;
 
 //import javax.swing.Box;
 //import javax.swing.BoxLayout;
 //import javax.swing.JComponent;
 //import javax.swing.JLabel;
 //import javax.swing.JSlider;
-import swing.javax.swing.event.SwingChangeEvent;
-import swing.javax.swing.event.SwingChangeListener;
+//import swing.javax.swing.event.SwingChangeEvent;
+//import swing.javax.swing.event.SwingChangeListener;
 
 /**
  * Swing widget which displays a preview image and helps select the

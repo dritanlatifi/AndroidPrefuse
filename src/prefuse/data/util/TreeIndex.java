@@ -42,7 +42,8 @@ public class TreeIndex implements Index, ColumnListener, TableListener {
      * @throws IncompatibleComparatorException if the comparator is not
      * compatible with the column's data type
      */
-    public TreeIndex(Table t, RowManager rows, Column col, Comparator cmp)
+    @SuppressWarnings("rawtypes")
+	public TreeIndex(Table t, RowManager rows, Column col, Comparator cmp)
         throws IncompatibleComparatorException
     {
         m_table = t;
@@ -67,7 +68,8 @@ public class TreeIndex implements Index, ColumnListener, TableListener {
     /**
      * @see prefuse.data.util.Index#getComparator()
      */
-    public Comparator getComparator() {
+    @SuppressWarnings("rawtypes")
+	public Comparator getComparator() {
         return m_index.comparator();
     }
     

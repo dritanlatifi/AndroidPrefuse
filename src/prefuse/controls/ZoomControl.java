@@ -2,15 +2,11 @@ package prefuse.controls;
 
 //import awt.java.awt.Cursor;
 //import awt.java.awt.event.MouseEvent;
-import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.geom.Point2D;
 
-import prefuse.PDisplay;
-import prefuse.util.ui.UILib;
 import prefuse.visual.VisualItem;
 
 /**
@@ -61,7 +57,7 @@ public class ZoomControl extends AbstractZoomControl
 		
 		display.getAbsoluteCoordinate(new Point2D.Float(detector.getFocusX(), detector.getFocusY()), down);
 		zoom(display, down, scaleFactor, true);
-
+		// ( 1- scaleFactor) * 0.9 +1
 		display.invalidate();
 		return true;
 	}

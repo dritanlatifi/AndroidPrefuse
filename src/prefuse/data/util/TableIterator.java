@@ -83,7 +83,8 @@ public class TableIterator extends IntIterator {
      * the {@link #get(String)} can be cast to the given type.
      * @see #get(String)
      */
-    public final boolean canGet(String field, Class type) {
+    @SuppressWarnings("rawtypes")
+	public final boolean canGet(String field, Class type) {
         return m_table.canGet(field, type);
     }
     
@@ -98,7 +99,8 @@ public class TableIterator extends IntIterator {
      * can be used as parameters of the {@link #set(String, Object)} method.
      * @see #set(String, Object)
      */
-    public final boolean canSet(String field, Class type) {
+    @SuppressWarnings("rawtypes")
+	public final boolean canSet(String field, Class type) {
         return m_table.canSet(field, type);
     }
     

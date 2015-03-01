@@ -147,7 +147,8 @@ public class BooleanIntBitSetMap implements BooleanIntSortedMap {
         return m_true.isEmpty() && m_false.isEmpty();
     }
 
-    public Comparator comparator() {
+    @SuppressWarnings("rawtypes")
+	public Comparator comparator() {
         return DefaultLiteralComparator.getInstance();
     }
 

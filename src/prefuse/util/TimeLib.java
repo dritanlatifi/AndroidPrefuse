@@ -194,7 +194,8 @@ public class TimeLib {
      * @param d the date/time value as a long
      * @return the new Date instance, or null if the class type is not valid
      */
-    public static Date getDate(Class type, long d) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Date getDate(Class type, long d) {
         try {
             Constructor c = type.getConstructor(new Class[] {long.class});
             return (Date)c.newInstance(new Object[] {Long.valueOf(d)});

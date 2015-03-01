@@ -14,6 +14,7 @@ import prefuse.util.collections.LiteralComparator;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class TupleComparator implements Comparator<Tuple> {
 
     private String m_field;
@@ -67,7 +68,7 @@ public class TupleComparator implements Comparator<Tuple> {
      * @param type the expected type of the data field
      * @param ascend true to sort in ascending order, false for descending
      */
-    public TupleComparator(int col, Class type, boolean ascend, Comparator c) {
+	public TupleComparator(int col, Class type, boolean ascend, Comparator c) {
         m_field = null;
         m_col = col;
         m_type = type;
@@ -80,8 +81,7 @@ public class TupleComparator implements Comparator<Tuple> {
      * a ClassCastException will be thrown.
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    @SuppressWarnings("unchecked")
-	public int compare(Tuple o1, Tuple o2) {
+    public int compare(Tuple o1, Tuple o2) {
         Tuple t1 = o1, t2 = o2;
         int c = 0;
         

@@ -5,6 +5,7 @@ package prefuse.util;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class TypeLib {
 
     private TypeLib() {
@@ -104,7 +105,7 @@ public class TypeLib {
      * either primitive or a wrapper.
      * @return the primitive class type
      */
-    public static Class getPrimitiveType(Class type) {
+	public static Class getPrimitiveType(Class type) {
         if ( Integer.class.equals(type) || type == int.class ) {
             return int.class;
         } else if ( Long.class.equals(type) || type == long.class ) {

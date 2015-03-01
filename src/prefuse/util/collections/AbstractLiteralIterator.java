@@ -5,7 +5,7 @@ package prefuse.util.collections;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public abstract class AbstractLiteralIterator implements LiteralIterator {
+public abstract class AbstractLiteralIterator<T> implements LiteralIterator<T> {
 
     /**
      * @see prefuse.util.collections.LiteralIterator#nextInt()

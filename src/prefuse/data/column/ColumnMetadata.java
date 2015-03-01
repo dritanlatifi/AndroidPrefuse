@@ -17,6 +17,7 @@ import prefuse.util.collections.DefaultLiteralComparator;
  * retrieved using the {@link prefuse.data.Table#getMetadata(String)} method.
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ColumnMetadata implements ColumnListener {
 
 	// TODO consider refactor. is non-dynamic mode needed? pass Column reference in?
