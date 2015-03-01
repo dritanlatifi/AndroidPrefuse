@@ -20,8 +20,8 @@ import java.util.List;
 //import javax.swing.JTextField;
 
 import prefuse.util.StringLib;
-import swing.javax.swing.event.SwingChangeEvent;
-import swing.javax.swing.event.SwingChangeListener;
+//import swing.javax.swing.event.SwingChangeEvent;
+//import swing.javax.swing.event.SwingChangeListener;
 
 /**
  * Swing component that contains a slider, and title label, and editable
