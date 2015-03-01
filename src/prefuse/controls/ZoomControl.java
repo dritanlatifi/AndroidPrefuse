@@ -31,7 +31,7 @@ public class ZoomControl extends AbstractZoomControl
 	@Override
 	public void onTouchDown(MotionEvent event)
 	{
-		display.getAbsoluteCoordinate(new Point2D.Float(event.getX(), event.getY()), down);
+		down = display.getAbsoluteCoordinate(new Point2D.Float(event.getX(), event.getY()), down);
 		Log.d("PZOOM", "event touch: ("+event.getX() + "," + event.getY() + ")");
 	}
 
@@ -45,8 +45,10 @@ public class ZoomControl extends AbstractZoomControl
 	public boolean onScale(ScaleGestureDetector detector)
 	{
 		scaleFactor *= detector.getScaleFactor();
+		
 		// don't let the object get too small or too large.
 		scaleFactor = Math.max(0.9f, Math.min(scaleFactor, 1.2f));
+		Log.d("PZOOM", "scaleFactor: (" + scaleFactor + ")");
 		
 		int currentSpan = (int) detector.getCurrentSpan();
 		int previousSpan = (int) detector.getPreviousSpan();
@@ -55,9 +57,9 @@ public class ZoomControl extends AbstractZoomControl
 		if (display.isTranformInProgress() || Math.abs(currentSpan - previousSpan ) < 5 ) // if some other transformation is in progress or the distance between to fingers is not changing (while the fingers remain on screen)
 			return true;
 		
-		display.getAbsoluteCoordinate(new Point2D.Float(detector.getFocusX(), detector.getFocusY()), down);
+		//display.getAbsoluteCoordinate(new Point2D.Float(detector.getFocusX(), detector.getFocusY()), down);
+		// scaleFactor = ( 1- scaleFactor) * 0.9f + 1.0f; // vorschlag von Tim, hat aber nicht funktioniert
 		zoom(display, down, scaleFactor, true);
-		// ( 1- scaleFactor) * 0.9 +1
 		display.invalidate();
 		return true;
 	}

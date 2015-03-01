@@ -1,7 +1,9 @@
 package com.example.scatterplot;
 
 import android.app.Activity;
+import java.util.Random;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -94,7 +96,7 @@ public class MainActivity extends Activity
 		/* STEP 2: set up renderers for the visual data */
 		vis.setRendererFactory(new RendererFactory()
 		{
-			AbstractShapeRenderer sr = new ShapeRenderer(30);
+			AbstractShapeRenderer sr = new ShapeRenderer(20);
 			Renderer arY = new AxisRenderer(Constants.FAR_LEFT, Constants.CENTER);
 			Renderer arX = new AxisRenderer(Constants.CENTER, Constants.FAR_BOTTOM);
 
@@ -118,7 +120,7 @@ public class MainActivity extends Activity
 		AxisLabelLayout y_labels = new AxisLabelLayout("ylab", y_axis, boundsLabelsY);
 
 		// define the visible range for the y axis
-		y_axis.setRangeModel(new NumberRangeModel(1, 40, 1, 40));
+		y_axis.setRangeModel(new NumberRangeModel(0, 40, 0, 40));
 
 		// use square root scale for y axis
 		y_axis.setScale(Constants.SQRT_SCALE);
@@ -642,26 +644,46 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
+		int items = 5000;
+		table.addRows(items);
+//
+//		cal.set(2007, 11, 23);
+//		table.set(0, 0, cal.getTime());
+//		table.set(0, 1, 21.0);
+//		table.set(0, 2, 236.0);
+//		table.set(0, 3, "F");
+//
+//		cal.set(2008, 6, 22);
+//		table.set(1, 0, cal.getTime());
+//		table.set(1, 1, 35.8);
+//		table.set(1, 2, 400.0);
+//		table.set(1, 3, "F");
+//
+//		cal.set(2009, 3, 8);
+//		table.set(2, 0, cal.getTime());
+//		table.set(2, 1, 28.8);
+//		table.set(2, 2, 309.0);
+//		table.set(2, 3, "T");
+		
+		Random randomGenerator = new Random();
+		for(int i = 0; i<items; i++)
+		{
+			String insult = randomGenerator.nextBoolean() ? "T" : "F";
+			table.set(i, 0, cal.getTime());
+			table.set(i, 1, randomGenerator.nextDouble() * 40);
+			table.set(i, 2, randomGenerator.nextDouble() * 400);
+			table.set(i, 3, insult);
+		}
 
-		table.addRows(3);
-
-		cal.set(2007, 11, 23);
-		table.set(0, 0, cal.getTime());
-		table.set(0, 1, 21.0);
-		table.set(0, 2, 236.0);
-		table.set(0, 3, "F");
-
-		cal.set(2008, 6, 22);
-		table.set(1, 0, cal.getTime());
-		table.set(1, 1, 35.8);
-		table.set(1, 2, 400.0);
-		table.set(1, 3, "F");
-
-		cal.set(2009, 3, 8);
-		table.set(2, 0, cal.getTime());
-		table.set(2, 1, 28.8);
-		table.set(2, 2, 309.0);
-		table.set(2, 3, "T");
+ /**  add items outside of visible area **/ 		
+//		for(int i = 5000; i<items; i++)
+//		{
+//			String insult = randomGenerator.nextBoolean() ? "T" : "F";
+//			table.set(i, 0, cal.getTime());
+//			table.set(i, 1, 400);
+//			table.set(i, 2, randomGenerator.nextDouble() * 400);
+//			table.set(i, 3, insult);
+//		}		
 
 		return table;
 	}

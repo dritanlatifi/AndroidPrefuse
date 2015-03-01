@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -828,6 +829,8 @@ public class PDisplay extends View
 	@Override
 	protected void onDraw(Canvas g)
 	{
+		long startTime = System.currentTimeMillis();
+		Log.d("PERFORMANCE", "START");
 		super.onDraw(g);
 
 		if (m_offscreen == null)
@@ -864,6 +867,7 @@ public class PDisplay extends View
 			mark = t;
 			nframes = 0;
 		}
+		Log.d("PERFORMANCE", "END: " + (System.currentTimeMillis() - startTime) + " ms");
 	}
 
 	/**
