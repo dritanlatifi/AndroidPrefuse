@@ -19,34 +19,7 @@ package awt.java.awt;
 
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import awt.java.awt.font.FontRenderContext;
-import awt.java.awt.font.GlyphVector;
-import awt.java.awt.font.LineMetrics;
-import awt.java.awt.font.TextAttribute;
-import awt.java.awt.font.TransformAttribute;
-import awt.java.awt.geom.AffineTransform;
-import awt.java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.text.CharacterIterator;
-import java.text.AttributedCharacterIterator.Attribute;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-//import org.apache.harmony.awt.gl.font.AndroidGlyphVector;
-//import org.apache.harmony.awt.gl.font.CommonGlyphVector;
-//import org.apache.harmony.awt.gl.font.FontPeerImpl;
-//import org.apache.harmony.awt.gl.font.FontMetricsImpl;
-import org.apache.harmony.awt.gl.font.LineMetricsImpl;
-import org.apache.harmony.awt.internal.nls.Messages;
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.misc.HashCode;
 
 /**
