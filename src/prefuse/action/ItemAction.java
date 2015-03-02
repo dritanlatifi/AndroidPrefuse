@@ -97,9 +97,9 @@ public abstract class ItemAction extends GroupAction {
      * @see prefuse.action.Action#run(double)
      */
     public void run(double frac) {
-        Iterator items = getVisualization().items(m_group, m_predicate);
+    	Iterator<VisualItem> items = getVisualization().items(m_group, m_predicate);
         while ( items.hasNext() ) {
-            process((VisualItem)items.next(), frac);
+            process( items.next(), frac);
         }
     }
     

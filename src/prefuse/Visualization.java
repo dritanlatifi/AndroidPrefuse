@@ -1197,8 +1197,17 @@ public class Visualization {
      * @param action the name of the Action to run
      * @return the Action scheduled to run
      */
-    public PActivity run(String action) {
-        return m_actions.run(action);
+    public PActivity run(final String action) {
+        PActivity a = m_actions.get(action);
+        getDisplay(0).post(new Runnable()
+		{
+			@Override
+			public void run()
+			{ 
+				m_actions.run(action);
+			}
+		});
+        return a;
     }
 
     /**
@@ -1211,8 +1220,17 @@ public class Visualization {
      * running the Action
      * @return the Action scheduled to run
      */
-    public PActivity runAfter(String action, long delay) {
-        return m_actions.runAt(action, System.currentTimeMillis()+delay);
+    public PActivity runAfter(final String action, final long delay) {
+         PActivity a = m_actions.get(action);
+         getDisplay(0).post(new Runnable()
+ 		{
+ 			@Override
+ 			public void run()
+ 			{ 
+ 				m_actions.runAt(action, System.currentTimeMillis()+delay);
+ 			}
+ 		});
+        return a;
     }
     
     /**
@@ -1225,8 +1243,17 @@ public class Visualization {
      * epoch, at which to run the Action.
      * @return the Action scheduled to run
      */
-    public PActivity runAt(String action, long startTime) {
-        return m_actions.runAt(action, startTime);
+    public PActivity runAt(final String action, final long startTime) {
+        PActivity a = m_actions.get(action);
+        getDisplay(0).post(new Runnable()
+		{
+			@Override
+			public void run()
+			{ 
+				m_actions.runAt(action, startTime);
+			}
+		});
+       return a;
     }
     
     /**
@@ -1240,8 +1267,18 @@ public class Visualization {
      * @param after the name of the Action to run after the first one finishes
      * @return the Action scheduled to run after the first one finishes
      */
-    public PActivity runAfter(String before, String after) {
-        return m_actions.runAfter(before, after);
+    public PActivity runAfter(final String before, final String after) {
+    	PActivity a = m_actions.get(after);
+        getDisplay(0).post(new Runnable()
+		{
+			@Override
+			public void run()
+			{ 
+			 m_actions.runAfter(before, after);
+			}
+		});
+       return a;
+        
     }
     
     /**
@@ -1253,8 +1290,17 @@ public class Visualization {
      * @param after the name of the Action to run after the first one finishes
      * @return the Action scheduled to always run after the first one finishes
      */
-    public PActivity alwaysRunAfter(String before, String after) {
-        return m_actions.alwaysRunAfter(before, after);
+    public PActivity alwaysRunAfter(final String before, final String after) {
+    	PActivity a = m_actions.get(after);
+        getDisplay(0).post(new Runnable()
+		{
+			@Override
+			public void run()
+			{ 
+			 m_actions.alwaysRunAfter(before, after);
+			}
+		});
+    	return a;
     }
     
     /**

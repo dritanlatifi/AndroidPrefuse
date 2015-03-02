@@ -333,9 +333,9 @@ public class AxisLayout extends Layout {
             m_dist[1] = ((Number)m_model.getHighValue()).doubleValue();
         }
         
-        Iterator iter = m_vis.items(m_group, m_filter);
+        Iterator<VisualItem> iter = m_vis.items(m_group, m_filter);
         while ( iter.hasNext() ) {
-            VisualItem item = (VisualItem)iter.next();
+            VisualItem item = iter.next();
             double v = item.getDouble(m_field);
             double f = MathLib.interp(m_scale, v, m_dist);
             set(item, f);
@@ -361,9 +361,9 @@ public class AxisLayout extends Layout {
         int end = start + model.getExtent();
         double total = (double)(end-start);
         
-        Iterator iter = m_vis.items(m_group, m_filter);
+        Iterator<VisualItem> iter = m_vis.items(m_group, m_filter);
         while ( iter.hasNext() ) {
-            VisualItem item = (VisualItem)iter.next();
+            VisualItem item = iter.next();
             int order = model.getIndex(item.get(m_field)) - start;
             set(item, (total > 0.0) ? order/total : 0.5);
         }

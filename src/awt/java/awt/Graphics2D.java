@@ -299,7 +299,7 @@ public interface Graphics2D extends Graphics {
 	 * The coordinate system is rotated by the specified angle in radians
 	 * relative to current origin. TODO for Dritan: this function exists in
 	 * android.graphics.Canvas but with other parameters. i.e. there is no
-	 * confict, but must check if the functionality is the same
+	 * conflict, but must check if the functionality is the same
 	 * 
 	 * @param theta
 	 *            the angle of rotation in radians.
@@ -312,7 +312,7 @@ public interface Graphics2D extends Graphics {
 	 * radians relative to current origin and then moved to point (x, y). Is
 	 * this right? TODO for Dritan: this function exists in
 	 * android.graphics.Canvas but with other parameters. i.e. there is no
-	 * confict, but must check if the functionality is the same
+	 * conflict, but must check if the functionality is the same
 	 * 
 	 * @param theta
 	 *            the angle of rotation in radians.
@@ -450,7 +450,7 @@ public interface Graphics2D extends Graphics {
 	 * moved to the (x, y) point accordingly. All rendering and transform
 	 * operations are performed relative to this new origin. TODO for Dritan:
 	 * this function exists in android.graphics.Canvas but with other
-	 * parameters. i.e. there is no confict, but must check if the functionality
+	 * parameters. i.e. there is no conflict, but must check if the functionality
 	 * is the same
 	 * 
 	 * @param x
