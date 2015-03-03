@@ -2,6 +2,8 @@ package prefuse.action;
 
 import java.util.logging.Logger;
 
+import android.util.Log;
+
 import prefuse.Visualization;
 import prefuse.activity.PActivity;
 
@@ -119,8 +121,10 @@ public abstract class Action extends PActivity {
         Visualization vis = getVisualization();
         if ( vis != null ) {
             synchronized (vis) {
+            	Log.d("PERFORMANCE", "Action-run");
                 run(getPace(elapsedTime));
             }
+            Log.d("PERFORMANCE", "Action-run-END");
         } else {
             s_logger.info("Running unsynchronized Action");
             run(getPace(elapsedTime));

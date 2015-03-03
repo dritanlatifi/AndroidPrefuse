@@ -1,5 +1,6 @@
 package prefuse;
 
+import android.util.Log;
 import awt.java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -217,7 +218,8 @@ public class Visualization {
      * instance
      */
     public synchronized VisualTupleSet add(String group, TupleSet data) {
-        return add(group, data, null);
+    	Log.d("PERFORMANCE", "V-add");
+    	return add(group, data, null);
     }
 
     /**
@@ -235,6 +237,7 @@ public class Visualization {
     public synchronized VisualTupleSet add(
             String group, TupleSet data, Predicate filter)
     {
+    	Log.d("PERFORMANCE", "V-add1");
         if ( data instanceof Table ) {
             return addTable(group, (Table)data, filter);
         } else if ( data instanceof Tree ) {
@@ -272,6 +275,7 @@ public class Visualization {
      * @return the added VisualTable
      */
     public synchronized VisualTable addTable(String group) {
+    	Log.d("PERFORMANCE", "V-addTable");
     	VisualTable vt = new VisualTable(this, group);
     	addDataGroup(group, vt, null);
         return vt;
@@ -288,8 +292,10 @@ public class Visualization {
      * @return the added VisualTable
      */
     public synchronized VisualTable addTable(String group, Schema schema) {
+    	Log.d("PERFORMANCE", "V-addTable2");
     	VisualTable vt = new VisualTable(this, group, schema);
         addDataGroup(group, vt, null);
+        Log.d("PERFORMANCE", "V-addTable2 done");
         return vt;
     }
     
@@ -302,7 +308,8 @@ public class Visualization {
      * @param table the data table to visualize
      */
     public synchronized VisualTable addTable(String group, Table table) {
-        return addTable(group, table, (Predicate)null);
+    	Log.d("PERFORMANCE", "V-addTable3");
+    	return addTable(group, table, (Predicate)null);
     }
     
     /**
@@ -318,8 +325,10 @@ public class Visualization {
     public synchronized VisualTable addTable(
             String group, Table table, Predicate filter)
     {
+    	Log.d("PERFORMANCE", "V-addTable4");
     	VisualTable vt = new VisualTable(table, this, group, filter);
     	addDataGroup(group, vt, table);
+    	Log.d("PERFORMANCE", "V-addTable4-END");
         return vt;
     }
 
@@ -335,6 +344,7 @@ public class Visualization {
     public synchronized VisualTable addTable(
             String group, Table table, Schema schema)
     {
+    	Log.d("PERFORMANCE", "V-addTable5");
         return addTable(group, table, null, schema);
     }
     
@@ -352,6 +362,7 @@ public class Visualization {
     public synchronized VisualTable addTable(
             String group, Table table, Predicate filter, Schema schema)
     {
+    	Log.d("PERFORMANCE", "V-addTable6");
         VisualTable vt = new VisualTable(table, this, group, filter, schema);
         addDataGroup(group, vt, table);
         return vt;
@@ -369,6 +380,7 @@ public class Visualization {
      * @return the added VisualTable
      */
     public synchronized VisualTable addTable(VisualTable table) {
+    	Log.d("PERFORMANCE", "V-addTable7");
     	addDataGroup(table.getGroup(), table, table.getParentTable());
     	table.setVisualization(this);
     	return table;
@@ -387,6 +399,7 @@ public class Visualization {
      * @param graph the graph to visualize
      */
     public synchronized VisualGraph addGraph(String group, Graph graph) {
+    	Log.d("PERFORMANCE", "V-addGraph");
         return addGraph(group, graph, null);
     }
     
@@ -405,6 +418,7 @@ public class Visualization {
     public synchronized VisualGraph addGraph(
             String group, Graph graph, Predicate filter)
     {
+    	Log.d("PERFORMANCE", "V-addGraph2");
         return addGraph(group, graph, filter, VisualItem.SCHEMA, VisualItem.SCHEMA);
     }
     
@@ -425,6 +439,7 @@ public class Visualization {
     public synchronized VisualGraph addGraph(String group, Graph graph,
             Predicate filter, Schema nodeSchema, Schema edgeSchema)
     {
+    	Log.d("PERFORMANCE", "V-addGraph3");
     	checkGroupExists(group); // check before adding sub-tables
         String ngroup = PrefuseLib.getGroupName(group, Graph.NODES); 
         String egroup = PrefuseLib.getGroupName(group, Graph.EDGES);
@@ -461,7 +476,8 @@ public class Visualization {
      * @return the added VisualTree
      */
     public synchronized VisualTree addTree(String group, Schema nodeSchema) {
-        Schema edgeSchema = PrefuseLib.getVisualItemSchema();
+    	Log.d("PERFORMANCE", "V-addTree");
+    	Schema edgeSchema = PrefuseLib.getVisualItemSchema();
         edgeSchema.addColumn(Tree.DEFAULT_SOURCE_KEY, int.class, Integer.valueOf(-1));
         edgeSchema.addColumn(Tree.DEFAULT_TARGET_KEY, int.class, Integer.valueOf(-1));
          
@@ -480,7 +496,8 @@ public class Visualization {
      * @return the added VisualTree
      */
     public synchronized VisualTree addTree(String group, Schema nodeSchema, Schema edgeSchema) {
-        checkGroupExists(group); // check before adding sub-tables
+    	Log.d("PERFORMANCE", "V-addTree1");
+    	checkGroupExists(group); // check before adding sub-tables
         String ngroup = PrefuseLib.getGroupName(group, Graph.NODES); 
         String egroup = PrefuseLib.getGroupName(group, Graph.EDGES);
         
@@ -517,7 +534,8 @@ public class Visualization {
      * @param tree the tree to visualize
      */
     public synchronized VisualTree addTree(String group, Tree tree) {
-        return addTree(group, tree, null);
+    	Log.d("PERFORMANCE", "V-addTree3");
+    	return addTree(group, tree, null);
     }
     
     /**
@@ -535,6 +553,7 @@ public class Visualization {
     public synchronized VisualTree addTree(
             String group, Tree tree, Predicate filter)
     {
+    	Log.d("PERFORMANCE", "V-addTree4");
         return addTree(group, tree, filter, VisualItem.SCHEMA, VisualItem.SCHEMA);
     }
     
@@ -555,6 +574,7 @@ public class Visualization {
     public synchronized VisualTree addTree(String group, Tree tree,
             Predicate filter, Schema nodeSchema, Schema edgeSchema)
     {
+    	Log.d("PERFORMANCE", "V-addTree5");
     	checkGroupExists(group); // check before adding sub-tables
         String ngroup = PrefuseLib.getGroupName(group, Graph.NODES); 
         String egroup = PrefuseLib.getGroupName(group, Graph.EDGES);
@@ -589,6 +609,7 @@ public class Visualization {
      * @see prefuse.visual.AggregateTable
      */
     public synchronized AggregateTable addAggregates(String group) {
+    	Log.d("PERFORMANCE", "V-addAggr");
         return addAggregates(group, VisualItem.SCHEMA);
     }
     
@@ -603,6 +624,7 @@ public class Visualization {
     public synchronized AggregateTable addAggregates(String group,
                                                      Schema schema)
     {
+    	Log.d("PERFORMANCE", "V-addAggr2");
         AggregateTable vat = new AggregateTable(this, group, schema);
         addDataGroup(group, vat, null);
         return vat;
@@ -628,6 +650,7 @@ public class Visualization {
     public synchronized VisualTable addDerivedTable(
             String group, String source, Predicate filter, Schema override)
     {
+    	Log.d("PERFORMANCE", "V-addDerivedTable");
         VisualTable src = (VisualTable)getGroup(source);
         VisualTable vt = new VisualTable(src, this, group, filter, override);
      
@@ -649,7 +672,8 @@ public class Visualization {
      * @return the generated VisualTable of DecoratorItem instances
      */
     public synchronized VisualTable addDecorators(String group,String source) {
-        return addDecorators(group, source, (Predicate)null);
+    	Log.d("PERFORMANCE", "V-addDecorators");
+    	return addDecorators(group, source, (Predicate)null);
     }
     
     /**
@@ -669,6 +693,7 @@ public class Visualization {
     public synchronized VisualTable addDecorators(
             String group, String source, Schema schema)
     {
+    	Log.d("PERFORMANCE", "V-addDecorators2");
         return addDecorators(group, source, null, schema);
     }
     
@@ -688,6 +713,7 @@ public class Visualization {
     public synchronized VisualTable addDecorators(
             String group, String source, Predicate filter)
     {
+    	Log.d("PERFORMANCE", "V-addDecorators3");
         VisualTable t = addDerivedTable(group,source,filter,VisualItem.SCHEMA);
         t.setTupleManager(new TupleManager(t, null, TableDecoratorItem.class));
         return t;
@@ -712,6 +738,7 @@ public class Visualization {
     public synchronized VisualTable addDecorators(
             String group, String source, Predicate filter, Schema schema)
     {
+    	Log.d("PERFORMANCE", "V-addDecorators4");
         VisualTable t = addDerivedTable(group, source, filter, schema);
         t.setTupleManager(new TupleManager(t, null, TableDecoratorItem.class));
         return t;
@@ -730,7 +757,8 @@ public class Visualization {
      * was not found in this visualization.
      */
     public synchronized boolean removeGroup(String group) {
-        // check for focus group first
+    	Log.d("PERFORMANCE", "V-removeGroup");
+    	// check for focus group first
         TupleSet ts = getFocusGroup(group);
         if ( ts != null ) {
             // invalidate the item to reflect group membership change
@@ -784,7 +812,8 @@ public class Visualization {
      * tuples.
      */
     public synchronized void reset() {
-        // first clear out all the focus groups
+    	Log.d("PERFORMANCE", "V-reset");
+    	// first clear out all the focus groups
 		for (Map.Entry<String, TupleSet> entry : m_focus.entrySet())
 		{
 			TupleSet ts = entry.getValue();
@@ -1354,6 +1383,7 @@ public class Visualization {
      * visualization to be repainted.
      */
     public synchronized void repaint() {
+    	Log.d("PERFORMANCE", "V-repaint");
         Iterator<VisualItem> items = items(ValidatedPredicate.FALSE);
         while ( items.hasNext() ) {
             items.next().validateBounds();
@@ -1361,6 +1391,7 @@ public class Visualization {
         for ( int i=0; i<m_displays.size(); ++i ) {
         	getDisplay(i).postInvalidate();
         }
+        Log.d("PERFORMANCE", "V-repaint-END");
     }
     
     /**

@@ -201,7 +201,7 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 100;
+		int items = 1000;
 		table.addRows(items);
 //
 //		cal.set(2007, 11, 23);

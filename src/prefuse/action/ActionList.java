@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import prefuse.Visualization;
 import prefuse.activity.PActivity;
 import prefuse.util.StringLib;
+import prefuse.util.io.LogTime;
 
 
 /**
@@ -76,7 +77,13 @@ public class ActionList extends CompositeAction {
         for ( int i=0; i<actions.length; ++i ) {
             Action a = (Action)actions[i];
             try {
-                if ( a.isEnabled() ) a.run(frac);
+                if ( a.isEnabled() )
+                {
+                	
+                	LogTime.log( "run."+ a.getClass().getName() );
+                	a.run(frac);
+                	LogTime.log( "run."+ a.getClass().getName() );
+                }
             } catch ( Exception e ) {
                 s_logger.warning(e.getMessage() + '\n'
                         + StringLib.getStackTrace(e));

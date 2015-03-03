@@ -33,7 +33,9 @@ import awt.java.awt.geom.Point2D;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import prefuse.activity.PActivity;
@@ -53,6 +55,7 @@ import prefuse.util.display.Clip;
 import prefuse.util.display.ItemBoundsListener;
 import prefuse.util.display.PaintListener;
 import prefuse.util.display.RenderingQueue;
+import prefuse.util.io.LogTime;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.VisiblePredicate;
 import prefuse.visual.sort.ItemSorter;
@@ -156,7 +159,12 @@ public class PDisplay extends View
 
 	// imitate Insets of JComponent
 	protected Insets m_insets = new Insets(0, 0, 0, 0);
-
+	
+	protected void log(String key)
+	{
+		LogTime.log(key);
+	}
+	
 	/**
 	 * Creates a new Display instance. You will need to associate this Display with a {@link Visualization} for it to display anything.
 	 */
@@ -829,10 +837,13 @@ public class PDisplay extends View
 	@Override
 	protected void onDraw(Canvas g)
 	{
-		long startTime = System.currentTimeMillis();
-		Log.d("PERFORMANCE", "START");
+		Log.d("PERFORMANCE", "--------------------------------------------------------------");
+		log("ALL");
+		log("onDraw");
 		super.onDraw(g);
-
+		log("onDraw");
+		
+		log("default0");
 		if (m_offscreen == null)
 		{
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
@@ -842,6 +853,9 @@ public class PDisplay extends View
 		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this);
 		int width = getWidth();
 		int height = getHeight();
+		
+		log("default0");
+		
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
 
@@ -849,12 +863,17 @@ public class PDisplay extends View
 		paintDisplay(buf_g2D, new Dimension(width, height));
 		// paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
 
+		log("firePostPaint");
 		// fire post-paint events to any painters
 		firePostPaint(g2D);
-
+		log( "firePostPaint" );
+		
+		log("dispose");
 		buf_g2D.dispose();
-
+		log("dispose");
+		
 		// compute frame rate
+		log("ComputeRate");
 		nframes++;
 		if (mark < 0)
 		{
@@ -867,7 +886,8 @@ public class PDisplay extends View
 			mark = t;
 			nframes = 0;
 		}
-		Log.d("PERFORMANCE", "END: " + (System.currentTimeMillis() - startTime) + " ms");
+		log("ComputeRate");
+		log("ALL");
 	}
 
 	/**
@@ -895,21 +915,28 @@ public class PDisplay extends View
 	public void paintDisplay(AndroidGraphics2D g2D, Dimension d)
 	{
 		// if double-locking *ALWAYS* lock on the visualization first
+		log("synchMVis");
+		Log.d("PERFORMANCE", "synchMVis Aquire");
 		synchronized (m_vis)
 		{
+			log("synchMVis");
+			log("synch");
 			synchronized (this)
 			{
-
+				Log.d("PERFORMANCE", "synchMVis GOT");
+				log("synch");
 				if (m_clip.isEmpty())
 					return; // no damage, no render
-
+				
+				log("transform");
 				// map the screen bounds to absolute coords
 				m_screen.setClip(0, 0, d.width + 1, d.height + 1);
 				m_screen.transform(m_itransform);
-
+				log("transform");
 				// compute the approximate size of an "absolute pixel"
 				// values too large are OK (though cause unnecessary rendering)
 				// values too small will cause incorrect rendering
+				log("default1");
 				double pixel = 1.0 + 1.0 / getScale();
 
 				if (m_damageRedraw)
@@ -927,7 +954,7 @@ public class PDisplay extends View
 
 					// expand the clip by the extra pixel margin
 					m_clip.expand(pixel);
-
+					
 					// set the transform, rendering keys, etc
 					prepareGraphics(g2D);
 
@@ -967,6 +994,8 @@ public class PDisplay extends View
 
 				// fill the rendering and picking queues
 				m_queue.clear(); // clear the queue
+				log( "default1" );
+				log("prepareItems");
 				Iterator<VisualItem> items = m_vis.items(m_predicate);
 				for (m_visibleCount = 0; items.hasNext(); ++m_visibleCount)
 				{
@@ -979,22 +1008,28 @@ public class PDisplay extends View
 					if (item.isInteractive())
 						m_queue.addToPickingQueue(item);
 				}
-
+				log("prepareItems");
+				log("sortItems");
 				// sort the rendering queue
 				m_queue.sortRenderQueue();
+				log("sortItems");
+				log("renderItems");
 				// render each visual item
 				for (int i = 0; i < m_queue.rsize; ++i)
 				{
 					m_queue.ritems[i].render(g2D);
 				}
-
+				log("renderItems");
 				// no more damage so reset the clip
+				
+				log("checkBounds");
 				if (m_damageRedraw)
 					m_clip.reset();
 
+				
 				// fire bounds change, if appropriate
 				checkItemBoundsChanged(m_rclip);
-
+				log("checkBounds");
 			}
 		} // end synchronized block
 	}
@@ -2212,6 +2247,7 @@ public class PDisplay extends View
 		{
 			synchronized (m_vis)
 			{
+				Log.d("PERFORMANCE", "ondoubletap");
 				// check if we've gone over any item
 				Point p = new Point((int) event.getX(), (int) event.getY());
 				activeItem = findItem(p);
@@ -2231,6 +2267,7 @@ public class PDisplay extends View
 		{
 			synchronized (m_vis)
 			{
+				Log.d("PERFORMANCE", "onSingleTapConfirmed");
 				// check if we've gone over any item
 				Point p = new Point((int) event.getX(), (int) event.getY());
 				activeItem = findItem(p);
@@ -2250,6 +2287,7 @@ public class PDisplay extends View
 		{
 			synchronized (m_vis)
 			{
+				Log.d("PERFORMANCE", "onSingleTapUp");
 				// check if we've gone over any item
 				Point p = new Point((int) event.getX(), (int) event.getY());
 				activeItem = findItem(p);
@@ -2269,6 +2307,7 @@ public class PDisplay extends View
 		{
 			synchronized (m_vis)
 			{
+				Log.d("PERFORMANCE", "onLongPress");
 				// check if we've gone over any item
 				Point p = new Point((int) event.getX(), (int) event.getY());
 				activeItem = findItem(p);
@@ -2288,6 +2327,7 @@ public class PDisplay extends View
 		{
 			synchronized (m_vis)
 			{
+				Log.d("PERFORMANCE", "onScroll");
 				Point p = new Point((int) e1.getX(), (int) e2.getY());
 				activeItem = findItem(p);
 				if (activeItem != null)
@@ -2331,6 +2371,7 @@ public class PDisplay extends View
 		{
 			synchronized (m_vis)
 			{
+				Log.d("PERFORMANCE", "onScale");
 				inputEC.fireScale(scaleGestureDetector);
 				return true;
 			}
