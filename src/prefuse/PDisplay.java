@@ -843,7 +843,7 @@ public class PDisplay extends View
 		super.onDraw(g);
 		log("onDraw");
 		
-		log("default0");
+		log("creating-AndroidGraphics2D");
 		if (m_offscreen == null)
 		{
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
@@ -854,7 +854,7 @@ public class PDisplay extends View
 		int width = getWidth();
 		int height = getHeight();
 		
-		log("default0");
+		log("creating-AndroidGraphics2D");
 		
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
@@ -920,11 +920,9 @@ public class PDisplay extends View
 		synchronized (m_vis)
 		{
 			log("synchMVis");
-			log("synch");
 			synchronized (this)
 			{
 				Log.d("PERFORMANCE", "synchMVis GOT");
-				log("synch");
 				if (m_clip.isEmpty())
 					return; // no damage, no render
 				
@@ -1017,7 +1015,9 @@ public class PDisplay extends View
 				// render each visual item
 				for (int i = 0; i < m_queue.rsize; ++i)
 				{
+//					log("renderItem-"+i);
 					m_queue.ritems[i].render(g2D);
+//					log("renderItem-"+i);
 				}
 				log("renderItems");
 				// no more damage so reset the clip

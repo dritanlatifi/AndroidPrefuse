@@ -201,29 +201,11 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 1000;
+		int items = 6000;
 		table.addRows(items);
-//
-//		cal.set(2007, 11, 23);
-//		table.set(0, 0, cal.getTime());
-//		table.set(0, 1, 21.0);
-//		table.set(0, 2, 236.0);
-//		table.set(0, 3, "F");
-//
-//		cal.set(2008, 6, 22);
-//		table.set(1, 0, cal.getTime());
-//		table.set(1, 1, 35.8);
-//		table.set(1, 2, 400.0);
-//		table.set(1, 3, "F");
-//
-//		cal.set(2009, 3, 8);
-//		table.set(2, 0, cal.getTime());
-//		table.set(2, 1, 28.8);
-//		table.set(2, 2, 309.0);
-//		table.set(2, 3, "T");
 		
 		Random randomGenerator = new Random();
-		for(int i = 0; i<items; i++)
+		for(int i = 0; i<items / 2; i++)
 		{
 			String insult = randomGenerator.nextBoolean() ? "T" : "F";
 			table.set(i, 0, cal.getTime());
@@ -233,13 +215,13 @@ public class MainActivity extends Activity
 		}
 
  /**  add items outside of visible area (for performance check) **/ 		
-//		for(int i = 5000; i<items; i++)
+//		for(int j = 5000; j<items; j++)
 //		{
 //			String insult = randomGenerator.nextBoolean() ? "T" : "F";
-//			table.set(i, 0, cal.getTime());
-//			table.set(i, 1, 400);
-//			table.set(i, 2, randomGenerator.nextDouble() * 400);
-//			table.set(i, 3, insult);
+//			table.set(j, 0, cal.getTime());
+//			table.set(j, 1, 400);
+//			table.set(j, 2, randomGenerator.nextDouble() * 400);
+//			table.set(j, 3, insult);
 //		}		
 
 		return table;

@@ -121,10 +121,10 @@ public abstract class Action extends PActivity {
         Visualization vis = getVisualization();
         if ( vis != null ) {
             synchronized (vis) {
-            	Log.d("PERFORMANCE", "Action-run");
+            	Log.d("PERFORMANCE", "Actions-run-Vis-Synch-Acquire");
                 run(getPace(elapsedTime));
             }
-            Log.d("PERFORMANCE", "Action-run-END");
+            Log.d("PERFORMANCE", "Actions-run-Vis-Synch-Release");
         } else {
             s_logger.info("Running unsynchronized Action");
             run(getPace(elapsedTime));
