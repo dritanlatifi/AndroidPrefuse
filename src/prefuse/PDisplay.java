@@ -1015,9 +1015,7 @@ public class PDisplay extends View
 				// render each visual item
 				for (int i = 0; i < m_queue.rsize; ++i)
 				{
-//					log("renderItem-"+i);
 					m_queue.ritems[i].render(g2D);
-//					log("renderItem-"+i);
 				}
 				log("renderItems");
 				// no more damage so reset the clip

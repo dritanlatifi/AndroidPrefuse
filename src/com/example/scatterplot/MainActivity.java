@@ -201,11 +201,11 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 6000;
+		int items = 5000;
 		table.addRows(items);
 		
 		Random randomGenerator = new Random();
-		for(int i = 0; i<items / 2; i++)
+		for(int i = 0; i<items; i++)
 		{
 			String insult = randomGenerator.nextBoolean() ? "T" : "F";
 			table.set(i, 0, cal.getTime());
