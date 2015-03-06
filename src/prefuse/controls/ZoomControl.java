@@ -46,8 +46,10 @@ public class ZoomControl extends AbstractZoomControl
 	{
 		scaleFactor *= detector.getScaleFactor();
 		
+		down = display.getAbsoluteCoordinate(new Point2D.Float(detector.getFocusX(), detector.getFocusY()), down);
+		
 		// don't let the object get too small or too large.
-		scaleFactor = Math.max(0.9f, Math.min(scaleFactor, 1.2f));
+		scaleFactor = Math.max(0.95f, Math.min(scaleFactor, 1.05f));
 		Log.d("PZOOM", "scaleFactor: (" + scaleFactor + ")");
 		
 		int currentSpan = (int) detector.getCurrentSpan();
