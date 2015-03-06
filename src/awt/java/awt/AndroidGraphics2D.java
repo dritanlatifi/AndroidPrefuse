@@ -172,6 +172,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawChars(char[] chars, int off, int len, int x, int y)
 	{
+		currentPaint.setTextSize(this.font.getSize());
 		canvas.drawText(chars, off, len, x, y, currentPaint);
 	}
 
@@ -980,6 +981,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawString(String s, float x, float y)
 	{
+		currentPaint.setTextSize(this.font.getSize());
 		canvas.drawText(s, x, y, currentPaint);
 	}
 
@@ -991,6 +993,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawString(String str, int x, int y)
 	{
+		currentPaint.setTextSize(this.font.getSize());
 		canvas.drawText(str, x, y, currentPaint);
 	}
 

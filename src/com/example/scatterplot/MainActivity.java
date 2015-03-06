@@ -5,6 +5,7 @@ import java.util.Random;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import awt.java.awt.Font;
 //import android.view.WindowManager;
 import awt.java.awt.geom.Rectangle2D;
 
@@ -17,6 +18,7 @@ import prefuse.PDisplay;
 import prefuse.Visualization;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
+import prefuse.action.ItemAction;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataShapeAction;
@@ -34,6 +36,7 @@ import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
+import prefuse.util.FontLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.expression.VisiblePredicate;
@@ -133,10 +136,8 @@ public class MainActivity extends Activity
 		
 		ColorAction color = new ColorAction("data", VisualItem.STROKECOLOR, ColorLib.rgb(100, 100, 255));
 
-		int[] palette =
-		{ Constants.SHAPE_STAR, Constants.SHAPE_ELLIPSE };
+		int[] palette =	{ Constants.SHAPE_STAR, Constants.SHAPE_ELLIPSE };
 		DataShapeAction shape = new DataShapeAction("data", "Insult", palette);
-
 		ActionList draw = new ActionList();
 		// this code was added to eliminate the call of the method "updateBounds" at display.post()
 		draw.add(new Action(){
@@ -151,6 +152,18 @@ public class MainActivity extends Activity
 		draw.add(y_axis);
 		draw.add(x_labels);
 		draw.add(y_labels);
+		draw.add(new ItemAction()
+		{
+			//change the font size of the axis labels
+			@Override
+			public void process(VisualItem item, double frac)
+			{
+				if( !item.isInGroup("xlab") && !item.isInGroup("ylab") ) // process only the items of the axis
+					return;
+		        Font font = FontLib.getFont("SansSerif",Font.PLAIN,25);
+				item.setFont(font);
+			}
+		});			
 		draw.add(color);
 		draw.add(shape);
 		
@@ -238,10 +251,10 @@ public class MainActivity extends Activity
 	private static void updateBounds(PDisplay display, Rectangle2D boundsData, Rectangle2D boundsLabelsX, Rectangle2D boundsLabelsY)
 	{
 
-		int paddingLeft = 30;
+		int paddingLeft = 50;
 		int paddingTop = 15;
 		int paddingRight = 30;
-		int paddingBottom = 15;
+		int paddingBottom = 35;
 
 		int axisWidth = 20;
 		int axisHeight = 10;
