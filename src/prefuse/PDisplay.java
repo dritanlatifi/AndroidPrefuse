@@ -835,11 +835,11 @@ public class PDisplay extends View
 
 	@SuppressLint("DrawAllocation")
 	@Override
-	protected void onDraw(Canvas g)
+	protected void onDraw(Canvas canvas)
 	{
 		Log.d("PERFORMANCE", "--------------------------------------------------------------");
 		log("ALL");
-		super.onDraw(g);
+		super.onDraw(canvas);
 		
 		log("creating-AndroidGraphics2D");
 		if (m_offscreen == null)
@@ -847,8 +847,8 @@ public class PDisplay extends View
 			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
 			damageReport();
 		}
-		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this); // TODO for Dritan: Analyze is this necessary
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(g, this);
+		AndroidGraphics2D g2D = new AndroidGraphics2D(canvas, this); // TODO for Dritan: Analyze is this necessary
+		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(canvas, this);
 		int width = getWidth();
 		int height = getHeight();
 		
@@ -859,7 +859,6 @@ public class PDisplay extends View
 
 		// paint the visualization
 		paintDisplay(buf_g2D, new Dimension(width, height));
-		// paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
 
 		// fire post-paint events to any painters
 		firePostPaint(g2D);
