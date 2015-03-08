@@ -1583,4 +1583,8 @@ public class AndroidGraphics2D implements Graphics2D
 		}
 	}
 
+	public Canvas getCanvas()
+	{
+		return canvas;
+	}
 }
