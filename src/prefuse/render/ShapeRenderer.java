@@ -1,6 +1,5 @@
 package prefuse.render;
 
-import awt.java.awt.AndroidGraphics2D;
 import awt.java.awt.Shape;
 import awt.java.awt.geom.Ellipse2D;
 import awt.java.awt.geom.GeneralPath;

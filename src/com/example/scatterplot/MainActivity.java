@@ -214,18 +214,26 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 10;
+		int items = 10000;
 		table.addRows(items);
 		
 		Random randomGenerator = new Random();
-		for(int i = 0; i<items; i++)
+		for(int i = 0; i < items / 2; i++)
 		{
-			String insult = randomGenerator.nextBoolean() ? "T" : "F";
 			table.set(i, 0, cal.getTime());
 			table.set(i, 1, randomGenerator.nextDouble() * 40);
 			table.set(i, 2, randomGenerator.nextDouble() * 400);
-			table.set(i, 3, insult);
+			table.set(i, 3, "T");
 		}
+
+		for(int i = items/2; i<items; i++)
+		{
+			table.set(i, 0, cal.getTime());
+			table.set(i, 1, randomGenerator.nextDouble() * 40);
+			table.set(i, 2, randomGenerator.nextDouble() * 400);
+			table.set(i, 3, "F");
+		}
+		
 
  /**  add items outside of visible area (for performance check) **/ 		
 //		for(int j = 5000; j<items; j++)

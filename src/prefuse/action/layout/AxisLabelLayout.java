@@ -309,7 +309,6 @@ public class AxisLabelLayout extends Layout {
                 item.setEndVisible(true);
             } else {
                 VisualItem item = labels.addItem(); 
-//                item.setFont(new Font("default", Font.PLAIN, 20)); // TODO for Dritan: see where the fontsize of the axislabels can be changed
                 item.set(LABEL, m_nf.format(v));
                 item.setDouble(VALUE, v);
                 double f = pspan==0 ? 0 : ((v-m_prevlo)/pspan);

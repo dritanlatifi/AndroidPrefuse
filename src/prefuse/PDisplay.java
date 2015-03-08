@@ -839,9 +839,7 @@ public class PDisplay extends View
 	{
 		Log.d("PERFORMANCE", "--------------------------------------------------------------");
 		log("ALL");
-		log("onDraw");
 		super.onDraw(g);
-		log("onDraw");
 		
 		log("creating-AndroidGraphics2D");
 		if (m_offscreen == null)
@@ -863,17 +861,12 @@ public class PDisplay extends View
 		paintDisplay(buf_g2D, new Dimension(width, height));
 		// paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
 
-		log("firePostPaint");
 		// fire post-paint events to any painters
 		firePostPaint(g2D);
-		log( "firePostPaint" );
 		
-		log("dispose");
 		buf_g2D.dispose();
-		log("dispose");
 		
 		// compute frame rate
-		log("ComputeRate");
 		nframes++;
 		if (mark < 0)
 		{
@@ -886,7 +879,6 @@ public class PDisplay extends View
 			mark = t;
 			nframes = 0;
 		}
-		log("ComputeRate");
 		log("ALL");
 	}
 

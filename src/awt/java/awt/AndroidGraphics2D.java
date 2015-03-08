@@ -17,6 +17,7 @@ package awt.java.awt;
 
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
+import java.util.ArrayList;
 import java.util.Map;
 
 import prefuse.PDisplay;
@@ -37,7 +38,6 @@ import awt.java.awt.geom.AffineTransform;
 import awt.java.awt.geom.GeneralPath;
 import awt.java.awt.geom.NoninvertibleTransformException;
 import awt.java.awt.geom.PathIterator;
-import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import awt.java.awt.image.BufferedImageOp;
 import awt.java.awt.image.ImageObserver;
@@ -62,7 +62,8 @@ public class AndroidGraphics2D implements Graphics2D
 	protected Color currentColor;
 	protected RenderingHints currentRenderingHints;
 	public final static double RAD_360 = Math.PI / 180 * 360;
-
+	protected Path path = new Path();
+	protected ArrayList<Float> points = new ArrayList<Float>();
 	public AndroidGraphics2D(Canvas canvas, PDisplay display)
 	{
 		this.canvas = canvas;
@@ -455,7 +456,7 @@ public class AndroidGraphics2D implements Graphics2D
 			currentPaint = new Paint();
 
 		this.setStroke();
-		canvas.drawLine((float) x1, (float) y1, (float) x2, (float) y2, currentPaint);
+		canvas.drawLine((float) x1, (float) y1, (float) x2, (float) y2, currentPaint);  // remove this line to test the performance without drawing-operation (for performance tests)
 	}
 
 	/*
@@ -472,7 +473,7 @@ public class AndroidGraphics2D implements Graphics2D
 		RectF oval = new RectF(x, y, x + width, y + height);
 		Paint.Style tmp = currentPaint.getStyle();
 		currentPaint.setStyle(Paint.Style.STROKE);
-		canvas.drawOval(oval, currentPaint);
+		canvas.drawOval(oval, currentPaint); // remove this line to test the performance without drawing-operation (for performance tests)
 		currentPaint.setStyle(tmp);
 	}
 
@@ -799,82 +800,9 @@ public class AndroidGraphics2D implements Graphics2D
 		}
 		Paint.Style tmp = currentPaint.getStyle();
 		currentPaint.setStyle(Paint.Style.STROKE);
-		canvas.drawPath(getPath(s), currentPaint);
+//		canvas.drawLines(getLineCoordiantes(s), currentPaint);
+		canvas.drawPath( getPath(s), currentPaint); // remove this line to test the performance without drawing-operation (for performance tests)
 		currentPaint.setStyle(tmp);
-	}
-
-	public void drawOld(Shape s)
-	{
-		paintShape(s, true);
-	}
-
-	/**
-	 * paint a shape. currently only rectangle or general path is supported as a shape.
-	 * 
-	 * @param s
-	 *            shape to be painted
-	 * @param setStroke
-	 *            if true, than paint in stroke mode, else paint in fill mode.
-	 */
-	public void paintShape(Shape s, boolean setStroke)
-	{
-		if (s instanceof Rectangle2D.Double)
-		{
-			Rectangle2D.Double r = (Rectangle2D.Double) s;
-			if (setStroke)
-				drawRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float) r.getHeight());
-			else
-				fillRect((float) r.getX(), (float) r.getY(), (float) r.getWidth(), (float) r.getHeight());
-		} else
-		{
-			GeneralPath path = (GeneralPath) s;
-			Path aPath = transformPath(path);
-			if (setStroke)
-				this.setStroke();
-			else
-				setFill();
-
-			canvas.drawPath(aPath, currentPaint);
-		}
-	}
-
-	public Path transformPath(GeneralPath path)
-	{
-		Path aPath = new Path();
-		aPath.reset();
-		PathIterator it = path.getPathIterator(null);
-		while (!it.isDone())
-		{
-			float coords[] = new float[6];
-			switch (it.currentSegment(coords))
-			{
-				case PathIterator.SEG_MOVETO:
-					// if (typeSize == 0) {
-					aPath.moveTo(coords[0], coords[1]);
-					break;
-				// }
-				// if (types[typeSize - 1] != PathIterator.SEG_CLOSE
-				// && points[pointSize - 2] == coords[0]
-				// && points[pointSize - 1] == coords[1]) {
-				// break;
-				// }
-				// NO BREAK;
-				case PathIterator.SEG_LINETO:
-					aPath.lineTo(coords[0], coords[1]);
-					break;
-				case PathIterator.SEG_QUADTO:
-					aPath.quadTo(coords[0], coords[1], coords[2], coords[3]);
-					break;
-				case PathIterator.SEG_CUBICTO:
-					aPath.cubicTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
-					break;
-				case PathIterator.SEG_CLOSE:
-					aPath.close();
-					break;
-			}
-			it.next();
-		}
-		return aPath;
 	}
 
 	/*
@@ -982,7 +910,7 @@ public class AndroidGraphics2D implements Graphics2D
 	public void drawString(String s, float x, float y)
 	{
 		currentPaint.setTextSize(this.font.getSize());
-		canvas.drawText(s, x, y, currentPaint);
+		canvas.drawText(s, x, y, currentPaint);  // remove this line to test the performance without drawing-operation (for performance tests)
 	}
 
 	/*
@@ -1012,11 +940,6 @@ public class AndroidGraphics2D implements Graphics2D
 		currentPaint.setStyle(Paint.Style.FILL);
 		canvas.drawPath(getPath(s), currentPaint);
 		currentPaint.setStyle(tmp);
-	}
-
-	public void fillOld(Shape s)
-	{
-		paintShape(s, false);
 	}
 
 	/*
@@ -1485,7 +1408,7 @@ public class AndroidGraphics2D implements Graphics2D
 
 	private Path getPath(Shape s)
 	{
-		Path path = new Path();
+		path.rewind();
 		PathIterator pi = s.getPathIterator(null);
 		while (pi.isDone() == false)
 		{
@@ -1495,6 +1418,47 @@ public class AndroidGraphics2D implements Graphics2D
 		return path;
 	}
 
+	/**
+	 * a try to replace the drawPath with drawLines (because of performance issues)
+	 * 1. this solution was not faster
+	 * 2. it has a bug, it does not draws the last line to close the shape 
+	 * @param s
+	 * @return
+	 */
+	private float[] getLineCoordiantes( Shape s )
+	{
+		float[] coordinates = new float[6];
+		points.clear();
+		PathIterator pi = s.getPathIterator(null);
+		while (pi.isDone() == false)
+		{
+			int type = pi.currentSegment(coordinates);
+			switch (type)
+			{
+				case PathIterator.SEG_MOVETO:
+					points.add(coordinates[0]);
+					points.add(coordinates[1]);
+					break;
+				case PathIterator.SEG_LINETO:
+					points.add(coordinates[0]);
+					points.add(coordinates[1]);
+					points.add(coordinates[0]);
+					points.add(coordinates[1]);					
+					break;
+				default:
+					break;
+			}			
+			pi.next();
+		}
+
+		float[] floatPoints = new float[points.size()];
+		int i = 0;
+		for(float p: points)
+			floatPoints[i++] = p;
+		
+		return floatPoints;
+	}
+	
 	private void getCurrentSegment(PathIterator pi, Path path)
 	{
 		float[] coordinates = new float[6];
@@ -1521,6 +1485,34 @@ public class AndroidGraphics2D implements Graphics2D
 		}
 	}
 
+	private float[] getCurrentCoordiantes(PathIterator pi, Path path)
+	{
+		float[] coordinates = new float[6];
+		int type = pi.currentSegment(coordinates);
+		switch (type)
+		{
+			case PathIterator.SEG_MOVETO:
+				path.moveTo(coordinates[0], coordinates[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				path.lineTo(coordinates[0], coordinates[1]);
+				break;
+			case PathIterator.SEG_QUADTO:
+				path.quadTo(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+				break;
+			case PathIterator.SEG_CUBICTO:
+				path.cubicTo(coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				path.close();
+				break;
+			default:
+				break;
+		}
+		return coordinates;
+	}
+
+	
 	public static float getDegree(float radian)
 	{
 		return (float) ((180 / Math.PI) * radian);
