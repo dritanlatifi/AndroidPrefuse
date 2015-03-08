@@ -3,6 +3,7 @@ package prefuse;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
@@ -124,7 +125,8 @@ public class PDisplay extends View
 	protected CopyOnWriteArrayList<ItemBoundsListener> m_bounders;
 
 	// display
-	protected BufferedImage m_offscreen;
+	protected Canvas m_offscreen;
+	protected Bitmap m_offscreen_bitmap;
 	protected Clip m_clip = new Clip();
 	protected Clip m_screen = new Clip();
 	protected Clip m_bounds = new Clip();
@@ -662,7 +664,7 @@ public class PDisplay extends View
 	 * 
 	 * @return the offscreen buffer
 	 */
-	public BufferedImage getOffscreenBuffer()
+	public Canvas getOffscreenBuffer()
 	{
 		return m_offscreen;
 	}
@@ -773,12 +775,12 @@ public class PDisplay extends View
 	 * @param g
 	 *            the Graphics context to paint to
 	 */
-	protected void paintBufferToScreen(Graphics g)
+	protected void paintBufferToScreen(AndroidGraphics2D g)
 	{
 
-		// synchronized (this) {
-		// g.drawImage(m_offscreen, 0, 0, null);
-		// }
+		 synchronized (this) {
+			 g.getCanvas().drawBitmap(m_offscreen_bitmap, 0, 0, null);
+		 }
 	}
 
 	/**
@@ -835,22 +837,27 @@ public class PDisplay extends View
 
 	@SuppressLint("DrawAllocation")
 	@Override
-	protected void onDraw(Canvas canvas)
+	protected void onDraw(Canvas g)
 	{
 		Log.d("PERFORMANCE", "--------------------------------------------------------------");
 		log("ALL");
-		super.onDraw(canvas);
+		super.onDraw(g);
 		
 		log("creating-AndroidGraphics2D");
-		if (m_offscreen == null)
-		{
-			m_offscreen = getNewOffscreenBuffer(getWidth(), getHeight());
-			damageReport();
-		}
-		AndroidGraphics2D g2D = new AndroidGraphics2D(canvas, this); // TODO for Dritan: Analyze is this necessary
-		AndroidGraphics2D buf_g2D = (AndroidGraphics2D) m_offscreen.getGraphics(canvas, this);
 		int width = getWidth();
 		int height = getHeight();
+				
+		if(m_offscreen_bitmap == null)
+		{
+			m_offscreen_bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		}
+		if (m_offscreen == null)
+		{
+			m_offscreen = new Canvas(m_offscreen_bitmap);
+			damageReport();
+		}
+		AndroidGraphics2D g2D = new AndroidGraphics2D(g, this); // TODO for Dritan: Analyze is this necessary
+		AndroidGraphics2D buf_g2D = new AndroidGraphics2D ( m_offscreen, this);
 		
 		log("creating-AndroidGraphics2D");
 		
@@ -858,8 +865,11 @@ public class PDisplay extends View
 		// Pre-paint events are fired by the clearRegion method
 
 		// paint the visualization
+		m_offscreen.save();
 		paintDisplay(buf_g2D, new Dimension(width, height));
-
+		paintBufferToScreen(g2D); // TODO for Dritan: Analyze is this necessary
+		m_offscreen.restore();
+		
 		// fire post-paint events to any painters
 		firePostPaint(g2D);
 		
