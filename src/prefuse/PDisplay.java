@@ -862,7 +862,11 @@ public class PDisplay extends View
 		
 		// Why not fire a pre-paint event here?
 		// Pre-paint events are fired by the clearRegion method
-
+		if(isHardwareAccelerated())
+			Log.d("PERFORMANCE", "Harfware accelerated");
+		else
+			Log.d("PERFORMANCE", "Harfware acceleration is disabled");
+		
 		// paint the visualization
 		m_offscreen.save();
 		paintDisplay(buf_g2D, new Dimension(width, height));
