@@ -34,9 +34,7 @@ import awt.java.awt.geom.Point2D;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import prefuse.activity.PActivity;
@@ -89,6 +87,7 @@ import prefuse.visual.sort.ItemSorter;
  * 
  * @version 1.0
  * @author <a href="http://jheer.org">jeffrey heer</a>
+ * @author <a href="http://dritan.at">Dritan Latifi</a>
  * @see Visualization
  * @see prefuse.controls.Control
  * @see prefuse.controls
@@ -2351,13 +2350,6 @@ public class PDisplay extends View
 	 */
 	private final ScaleGestureDetector.OnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener()
 	{
-		/**
-		 * This is the active focal point in terms of the viewport. Could be a local variable but kept here to minimize per-frame allocations.
-		 */
-		private PointF viewportFocus = new PointF();
-		private float lastSpanX;
-		private float lastSpanY;
-
 		@Override
 		public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector)
 		{
