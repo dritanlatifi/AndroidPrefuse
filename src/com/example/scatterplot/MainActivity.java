@@ -37,6 +37,7 @@ import prefuse.render.RendererFactory;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
+import prefuse.util.io.LogTime;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.expression.VisiblePredicate;
@@ -81,6 +82,7 @@ public class MainActivity extends Activity
 
 	private View createVisualizationV6(Table data)
 	{
+		LogTime.log("ALL-START");
 		vis = new Visualization();
 		display = new PDisplay(this, vis);
 		display.disableHardwareAcceleration(); // disable hardware acceleration , otherwise some drawing code do not work. e.g. antialiasing on drawing with Path
@@ -214,7 +216,7 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 10000;
+		int items = 500;
 		table.addRows(items);
 		
 		Random randomGenerator = new Random();

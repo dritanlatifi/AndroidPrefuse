@@ -6,6 +6,7 @@ import android.util.Log;
 
 import prefuse.Visualization;
 import prefuse.activity.PActivity;
+import prefuse.util.io.LogTime;
 
 /**
  * <p>Actions are building blocks that perform any number of operations on a
@@ -121,10 +122,10 @@ public abstract class Action extends PActivity {
         Visualization vis = getVisualization();
         if ( vis != null ) {
             synchronized (vis) {
-            	Log.d("PERFORMANCE", "Actions-run-Vis-Synch-Acquire");
+            	LogTime.log("Actions-run-Vis-Synch");
                 run(getPace(elapsedTime));
             }
-            Log.d("PERFORMANCE", "Actions-run-Vis-Synch-Release");
+            LogTime.log("Actions-run-Vis-Synch");
         } else {
             s_logger.info("Running unsynchronized Action");
             run(getPace(elapsedTime));

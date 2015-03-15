@@ -892,6 +892,7 @@ public class PDisplay extends View
 			nframes = 0;
 		}
 		log("ALL");
+		log("ALL-START");
 	}
 
 	/**
