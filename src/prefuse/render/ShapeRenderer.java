@@ -17,10 +17,6 @@ import prefuse.visual.VisualItem;
 public class ShapeRenderer extends AbstractShapeRenderer {
 
     private int m_baseSize = 10;
-    
-    private Ellipse2D   m_ellipse = new Ellipse2D.Double();
-    private Rectangle2D m_rect = new Rectangle2D.Double();
-    protected GeneralPath m_path = new GeneralPath();
 
     /**
      * Creates a new ShapeRenderer with default base size of 10 pixels.
@@ -144,7 +140,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a rectangle of the given dimenisions.
      */
     public Shape rectangle(double x, double y, double width, double height) {
-        m_rect.setFrame(x, y, width, height);
+    	Rectangle2D m_rect = new Rectangle2D.Double();
+    	m_rect.setFrame(x, y, width, height);
         return m_rect;
     }
 
@@ -152,7 +149,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns an ellipse of the given dimenisions.
      */
     public Shape ellipse(double x, double y, double width, double height) {
-        m_ellipse.setFrame(x, y, width, height);
+    	Ellipse2D   m_ellipse = new Ellipse2D.Double();
+    	m_ellipse.setFrame(x, y, width, height);
         return m_ellipse;
     }
     
@@ -160,7 +158,7 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a up-pointing triangle of the given dimenisions.
      */
     public Shape triangle_up(float x, float y, float height) {
-        m_path.reset();
+    	GeneralPath m_path = new GeneralPath();
         m_path.moveTo(x,y+height);
         m_path.lineTo(x+height/2, y);
         m_path.lineTo(x+height, (y+height));
@@ -172,8 +170,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a down-pointing triangle of the given dimenisions.
      */
     public Shape triangle_down(float x, float y, float height) {
-        m_path.reset();
-        m_path.moveTo(x,y);
+    	GeneralPath m_path = new GeneralPath();
+    	m_path.moveTo(x,y);
         m_path.lineTo(x+height, y);
         m_path.lineTo(x+height/2, (y+height));
         m_path.closePath();
@@ -184,8 +182,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a left-pointing triangle of the given dimenisions.
      */
     public Shape triangle_left(float x, float y, float height) {
-        m_path.reset();
-        m_path.moveTo(x+height, y);
+    	GeneralPath m_path = new GeneralPath();
+    	m_path.moveTo(x+height, y);
         m_path.lineTo(x+height, y+height);
         m_path.lineTo(x, y+height/2);
         m_path.closePath();
@@ -196,8 +194,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a right-pointing triangle of the given dimenisions.
      */
     public Shape triangle_right(float x, float y, float height) {
-        m_path.reset();
-        m_path.moveTo(x,y+height);
+    	GeneralPath m_path = new GeneralPath();
+    	m_path.moveTo(x,y+height);
         m_path.lineTo(x+height, y+height/2);
         m_path.lineTo(x, y);
         m_path.closePath();
@@ -209,7 +207,7 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      */
     public Shape cross(float x, float y, float height) {
         float h14 = 3*height/8, h34 = 5*height/8;
-        m_path.reset();
+        GeneralPath m_path = new GeneralPath();
         m_path.moveTo(x+h14, y);
         m_path.lineTo(x+h34, y);
         m_path.lineTo(x+h34, y+h14);
@@ -230,7 +228,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a star shape of the given dimenisions.
      */
     public Shape star(float x, float y, float height) {
-        float s = (float)(height/(2*Math.sin(Math.toRadians(54))));
+    	GeneralPath m_path = new GeneralPath();
+    	float s = (float)(height/(2*Math.sin(Math.toRadians(54))));
         float shortSide = (float)(height/(2*Math.tan(Math.toRadians(54))));
         float mediumSide = (float)(s*Math.sin(Math.toRadians(18)));
         float longSide = (float)(s*Math.cos(Math.toRadians(18)));
@@ -238,7 +237,6 @@ public class ShapeRenderer extends AbstractShapeRenderer {
         float innerShortSide = innerLongSide*(float)Math.sin(Math.toRadians(36));
         float innerMediumSide = innerLongSide*(float)Math.cos(Math.toRadians(36));
 
-        m_path.reset();
         m_path.moveTo(x, y+shortSide);            
         m_path.lineTo((x+innerLongSide),(y+shortSide));
         m_path.lineTo((x+height/2),y);
@@ -258,8 +256,7 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      */
     public Shape hexagon(float x, float y, float height) {
         float width = height/2;  
-        
-        m_path.reset();
+        GeneralPath m_path = new GeneralPath();        
         m_path.moveTo(x,            y+0.5f*height);
         m_path.lineTo(x+0.5f*width, y);
         m_path.lineTo(x+1.5f*width, y);
@@ -274,8 +271,8 @@ public class ShapeRenderer extends AbstractShapeRenderer {
      * Returns a diamond shape of the given dimenisions.
      */
     public Shape diamond(float x, float y, float height) {
-        m_path.reset();
-        m_path.moveTo(x,(y+0.5f*height));
+    	GeneralPath m_path = new GeneralPath();
+    	m_path.moveTo(x,(y+0.5f*height));
         m_path.lineTo((x+0.5f*height),y);
         m_path.lineTo((x+height),(y+0.5f*height));
         m_path.lineTo((x+0.5f*height),(y+height));

@@ -85,6 +85,7 @@ public class MainActivity extends Activity
 		LogTime.log("ALL-START");
 		vis = new Visualization();
 		display = new PDisplay(this, vis);
+		display.setNumberThreads(4); // create 4 threads to render items
 		display.disableHardwareAcceleration(); // disable hardware acceleration , otherwise some drawing code do not work. e.g. antialiasing on drawing with Path
 		final Rectangle2D boundsData = new Rectangle2D.Double();
 		final Rectangle2D boundsLabelsX = new Rectangle2D.Double();
@@ -216,7 +217,7 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 500;
+		int items = 10000;
 		table.addRows(items);
 		
 		Random randomGenerator = new Random();

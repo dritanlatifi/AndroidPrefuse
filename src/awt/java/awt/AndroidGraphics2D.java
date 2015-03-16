@@ -62,7 +62,7 @@ public class AndroidGraphics2D implements Graphics2D
 	protected Color currentColor;
 	protected RenderingHints currentRenderingHints;
 	public final static double RAD_360 = Math.PI / 180 * 360;
-	protected Path path = new Path();
+//	protected Path path = new Path();
 	protected ArrayList<Float> points = new ArrayList<Float>();
 	public AndroidGraphics2D(Canvas canvas, PDisplay display)
 	{
@@ -1408,14 +1408,15 @@ public class AndroidGraphics2D implements Graphics2D
 
 	private Path getPath(Shape s)
 	{
-		path.rewind();
+		//path.rewind();
+		Path path1 = new Path();
 		PathIterator pi = s.getPathIterator(null);
 		while (pi.isDone() == false)
 		{
-			getCurrentSegment(pi, path);
+			getCurrentSegment(pi, path1);
 			pi.next();
 		}
-		return path;
+		return path1;
 	}
 
 	/**

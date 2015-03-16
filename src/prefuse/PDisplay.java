@@ -34,6 +34,7 @@ import awt.java.awt.geom.Point2D;
 import awt.java.awt.geom.Rectangle2D;
 import awt.java.awt.image.BufferedImage;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -94,6 +95,20 @@ import prefuse.visual.sort.ItemSorter;
  */
 public class PDisplay extends View
 {
+	private int numberThreads = 1;
+	
+	public int getNumberThreads()
+	{
+		return numberThreads;
+	}
+
+	public void setNumberThreads(int numberThreads)
+	{
+		if (numberThreads < 1)
+			throw new IllegalArgumentException();
+		this.numberThreads = numberThreads;
+	}
+
 	private VisualItem activeItem = null;
 
 	private InputEventCapturer inputEC = new InputEventCapturer();
@@ -803,7 +818,6 @@ public class PDisplay extends View
 	{
 		if (m_transform != null)
 			g.transform(m_transform);
-		setRenderingHints(g);
 	}
 
 	/**
@@ -870,6 +884,7 @@ public class PDisplay extends View
 		// paint the visualization
 		m_offscreen.save();
 		paintDisplay(buf_g2D, new Dimension(width, height));
+
 		paintBufferToScreen(g2D); 
 		m_offscreen.restore();
 		
@@ -877,7 +892,6 @@ public class PDisplay extends View
 		firePostPaint(g2D);
 		
 		buf_g2D.dispose();
-		
 		// compute frame rate
 		nframes++;
 		if (mark < 0)
@@ -891,6 +905,7 @@ public class PDisplay extends View
 			mark = t;
 			nframes = 0;
 		}
+		Log.d("PERFORMANCE", "framerate: " + nframes );
 		log("ALL");
 		log("ALL-START");
 	}
@@ -1017,12 +1032,31 @@ public class PDisplay extends View
 				m_queue.sortRenderQueue();
 				log("sortItems");
 				log("renderItems");
+
 				// render each visual item
-				for (int i = 0; i < m_queue.rsize; ++i)
+				ArrayList<Thread> threads = new ArrayList<Thread>();
+				
+				Thread t ;
+				for (int i = 0; i < numberThreads; i++)
 				{
-					m_queue.ritems[i].render(g2D);
+					AndroidGraphics2D gThread = new AndroidGraphics2D(g2D.getCanvas(), this);
+					setRenderingHints(gThread);
+					t = new RenderThread( gThread, i );
+					t.start();
+					threads.add(t);
 				}
+				
+				for (Thread thread : threads) {
+					try
+					{
+						thread.join();
+					} catch (InterruptedException e)
+					{
+						Log.d("PERFORMANCE", "*********error********" + e.getMessage() );
+					}
+				}				
 				log("renderItems");
+				
 				// no more damage so reset the clip
 				
 				log("checkBounds");
@@ -2374,5 +2408,33 @@ public class PDisplay extends View
 		}
 	};
 
+	class RenderThread extends Thread
+	{
+		AndroidGraphics2D g;
+		int threadNr;
+		
+		public RenderThread(AndroidGraphics2D g, int threadNr)
+		{
+			this.g = g;
+			this.threadNr = threadNr;
+		}
+
+		public void setThreadNr(int threadNr)
+		{
+			this.threadNr = threadNr;
+		}
+		@Override
+		public void run()
+		{
+			int from = threadNr * m_queue.rsize/numberThreads ;
+			int to = (threadNr + 1) * m_queue.rsize/numberThreads ;
+			for (int i = from; i < to; ++i)
+			{
+//				Log.d("PERFORMANCE", "i1: " + i);
+				m_queue.ritems[i].render(g);
+			}
+		}		
+	}
+	
 } // end of class Display
 

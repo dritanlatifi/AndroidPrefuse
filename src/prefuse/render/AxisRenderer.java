@@ -135,7 +135,7 @@ public class AxisRenderer extends AbstractShapeRenderer {
     /**
      * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
      */
-    public void render(AndroidGraphics2D g, VisualItem item) { 
+    public synchronized void render(AndroidGraphics2D g, VisualItem item) { 
     	Shape s = getShape(item); 
     	GraphicsLib.paint(g, item, m_line, getStroke(item), getRenderType(item)); 
     	 
