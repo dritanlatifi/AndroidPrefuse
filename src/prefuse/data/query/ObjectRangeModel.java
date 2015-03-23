@@ -5,7 +5,7 @@ import java.util.Map;
 
 
 import prefuse.util.ui.ValuedRangeModel;
-import swing.javax.swing.SwingDefaultBoundedRangeModel;
+import swing.javax.swing.DefaultBoundedRangeModel;
 
 /**
  * Supports an ordered range of arbitrary objects. Designed to support
@@ -13,7 +13,7 @@ import swing.javax.swing.SwingDefaultBoundedRangeModel;
  * data.
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class ObjectRangeModel extends SwingDefaultBoundedRangeModel
+public class ObjectRangeModel extends DefaultBoundedRangeModel
     implements ValuedRangeModel
 {
     private Object[] m_objects;

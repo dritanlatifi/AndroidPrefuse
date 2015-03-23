@@ -29,7 +29,7 @@ this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
 package swing.javax.swing;
-import swing.javax.swing.event.SwingListDataListener;
+import swing.javax.swing.event.ListDataListener;
 /**
  * The data model that is typically used in {@link JList}.
  *
@@ -57,12 +57,12 @@ public interface ListModel
    *
    * @param l The listener to add
    */
-  void addListDataListener(SwingListDataListener l);
+  void addListDataListener(ListDataListener l);
   /**
    * Add a listener object to this model. The listener will no longer be
    * called when the set of elements in the model is changed.
    *
    * @param l The listener to remove
    */
-  void removeListDataListener(SwingListDataListener l);
+  void removeListDataListener(ListDataListener l);
 }

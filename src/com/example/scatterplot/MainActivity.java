@@ -217,7 +217,7 @@ public class MainActivity extends Activity
 		table.addColumn("BMI", double.class);
 		table.addColumn("NBZ", int.class);
 		table.addColumn("Insult", String.class);
-		int items = 10000;
+		int items = 2500;
 		table.addRows(items);
 		
 		Random randomGenerator = new Random();

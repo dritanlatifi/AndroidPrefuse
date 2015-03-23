@@ -10,7 +10,7 @@ package prefuse.util.display;
 //import javax.swing.JComponent;
 //import javax.swing.JLabel;
 //import javax.swing.JSlider;
-//import swing.javax.swing.event.SwingChangeEvent;
+//import javax.swing.event.SwingChangeEvent;
 //import swing.javax.swing.event.SwingChangeListener;
 
 /**

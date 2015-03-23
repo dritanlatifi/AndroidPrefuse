@@ -80,7 +80,7 @@ import java.util.EventListener;
  * @author Andrew Selkirk (aselkirk@sympatico.ca)
  * @author Sascha Brawer (brawer@dandelis.ch)
  */
-public class SwingEventListenerList
+public class EventListenerList
   implements Serializable
 {
   /**
@@ -107,7 +107,7 @@ public class SwingEventListenerList
   /**
    * EventListenerList constructor
    */
-  public SwingEventListenerList()
+  public EventListenerList()
   {
     // Nothing to do here.
   }

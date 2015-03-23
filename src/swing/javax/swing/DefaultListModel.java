@@ -32,7 +32,7 @@ package swing.javax.swing;
 import java.util.Enumeration;
 import java.util.Vector;
 /**
- * The default implementation of {@link SwingAbstractListModel}, used by
+ * The default implementation of {@link AbstractListModel}, used by
  * {@link javax.swing.JList} and similar objects as the model of a list of
  * values. The implementation is based on an underlying {@link
  * java.util.Vector}.
@@ -40,7 +40,7 @@ import java.util.Vector;
  * @author Andrew Selkirk
  * @author Graydon Hoare (graydon@redhat.com)
  */
-public class SwingDefaultListModel extends SwingAbstractListModel
+public class DefaultListModel extends AbstractListModel
 {
   private static final long serialVersionUID = 2315945659722172272L;
   /**

@@ -40,7 +40,7 @@ import swing.javax.swing.ListSelectionModel;
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public class SwingListSelectionEvent extends EventObject 
+public class ListSelectionEvent extends EventObject 
 {
   /** 
    * The index of the first list item in the range of items that has 
@@ -66,7 +66,7 @@ public class SwingListSelectionEvent extends EventObject
    * @throws IllegalArgumentException if <code>source</code> is 
    *         <code>null</code>.
    */
-  public SwingListSelectionEvent(Object source, int firstIndex,
+  public ListSelectionEvent(Object source, int firstIndex,
       int lastIndex, boolean isAdjusting) 
   {
     super(source);

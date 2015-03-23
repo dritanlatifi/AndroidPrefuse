@@ -33,9 +33,10 @@ import java.io.Serializable;
 import java.util.BitSet;
 import java.util.EventListener;
 
-import swing.javax.swing.event.SwingEventListenerList;
-import swing.javax.swing.event.SwingListSelectionEvent;
-import swing.javax.swing.event.SwingListSelectionListener;
+import swing.javax.swing.event.EventListenerList;
+import swing.javax.swing.event.ListSelectionEvent;
+import swing.javax.swing.event.ListSelectionListener;
+
 /**
  * The default implementation of {@link ListSelectionModel},
  * which is used by {@link javax.swing.JList} and
@@ -49,13 +50,13 @@ import swing.javax.swing.event.SwingListSelectionListener;
  * modifying the set of intervals, with simplified forms accepting a single
  * index, representing an interval with only one element. </p>
  */
-public class SwingDefaultListSelectionModel implements Cloneable,
+public class DefaultListSelectionModel implements Cloneable,
                                                   ListSelectionModel,
                                                   Serializable
 {
   private static final long serialVersionUID = -5718799865110415860L;
   /** The list of ListSelectionListeners subscribed to this selection model. */
-  protected SwingEventListenerList listenerList = new SwingEventListenerList();
+  protected EventListenerList listenerList = new EventListenerList();
   /** 
    * The current list selection mode. Must be one of the numeric constants
    * <code>SINGLE_SELECTION</code>, <code>SINGLE_INTERVAL_SELECTION</code>
@@ -86,12 +87,12 @@ public class SwingDefaultListSelectionModel implements Cloneable,
   int anchorSelectionIndex = -1;
   /**
    * controls the range of indices provided in any {@link
-   * SwingListSelectionEvent} fired by the selectionModel. Let
+   * ListSelectionEvent} fired by the selectionModel. Let
    * <code>[A,L]</code> be the range of indices between {@link
    * #anchorSelectionIndex} and {@link #leadSelectionIndex} inclusive, and
    * let <code>[i0,i1]</code> be the range of indices changed in a given
-   * call which generates a {@link SwingListSelectionEvent}. Then when this
-   * property is <code>true</code>, the {@link SwingListSelectionEvent} contains
+   * call which generates a {@link ListSelectionEvent}. Then when this
+   * property is <code>true</code>, the {@link ListSelectionEvent} contains
    * the range <code>[A,L] union [i0,i1]</code>; when <code>false</code> it
    * will contain only <code>[i0,i1]</code>. The default is
    * <code>true</code>.
@@ -102,9 +103,9 @@ public class SwingDefaultListSelectionModel implements Cloneable,
   protected boolean leadAnchorNotificationEnabled = true;
   /**
    * Whether the selection is currently "adjusting". Any {@link
-   * SwingListSelectionEvent} events constructed in response to changes in this
+   * ListSelectionEvent} events constructed in response to changes in this
    * list selection model will have their {@link
-   * SwingListSelectionEvent#isAdjusting} field set to this value.
+   * ListSelectionEvent#isAdjusting} field set to this value.
    *
    * @see #getValueIsAdjusting
    * @see #setValueIsAdjusting
@@ -214,9 +215,9 @@ public class SwingDefaultListSelectionModel implements Cloneable,
    *
    * </ul>
    *
-   * <p>This method generates at most a single {@link SwingListSelectionEvent}
+   * <p>This method generates at most a single {@link ListSelectionEvent}
    * despite changing multiple ranges. The range of values provided to the
-   * {@link SwingListSelectionEvent} includes only the minimum range of values
+   * {@link ListSelectionEvent} includes only the minimum range of values
    * which changed selection status between the beginning and end of the
    * method.</p>
    * 
@@ -674,12 +675,12 @@ public class SwingDefaultListSelectionModel implements Cloneable,
       sel.set(lo + i, tmp.get(i));
   }
   /**
-   * Fires a {@link SwingListSelectionEvent} to all the listeners of type {@link
-   * SwingListSelectionListener} registered with this selection model to
+   * Fires a {@link ListSelectionEvent} to all the listeners of type {@link
+   * ListSelectionListener} registered with this selection model to
    * indicate that a series of adjustment has just ended.
    *
    * The values of {@link #getMinSelectionIndex} and
-   * {@link #getMaxSelectionIndex} are used in the {@link SwingListSelectionEvent}
+   * {@link #getMaxSelectionIndex} are used in the {@link ListSelectionEvent}
    * that gets fired.
    *
    * @param isAdjusting <code>true</code> if this is the final change
@@ -691,8 +692,8 @@ public class SwingDefaultListSelectionModel implements Cloneable,
                      isAdjusting);
   }
   /**
-   * Fires a {@link SwingListSelectionEvent} to all the listeners of type {@link
-   * SwingListSelectionListener} registered with this selection model.
+   * Fires a {@link ListSelectionEvent} to all the listeners of type {@link
+   * ListSelectionListener} registered with this selection model.
    *
    * @param firstIndex The low index of the changed range
    * @param lastIndex The high index of the changed range
@@ -703,8 +704,8 @@ public class SwingDefaultListSelectionModel implements Cloneable,
   }
   
   /**
-   * Fires a {@link SwingListSelectionEvent} to all the listeners of type {@link
-   * SwingListSelectionListener} registered with this selection model.
+   * Fires a {@link ListSelectionEvent} to all the listeners of type {@link
+   * ListSelectionListener} registered with this selection model.
    *
    * @param firstIndex The low index of the changed range
    * @param lastIndex The high index of the changed range
@@ -714,9 +715,9 @@ public class SwingDefaultListSelectionModel implements Cloneable,
   protected void fireValueChanged(int firstIndex, int lastIndex,
 				  boolean isAdjusting)
   {
-    SwingListSelectionEvent evt = new SwingListSelectionEvent(this, firstIndex,
+    ListSelectionEvent evt = new ListSelectionEvent(this, firstIndex,
                                                     lastIndex, isAdjusting);
-    SwingListSelectionListener[] listeners = getListSelectionListeners();
+    ListSelectionListener[] listeners = getListSelectionListeners();
     for (int i = 0; i < listeners.length; ++i)
       listeners[i].valueChanged(evt);
   }
@@ -728,9 +729,9 @@ public class SwingDefaultListSelectionModel implements Cloneable,
    * @see #removeListSelectionListener
    * @see #getListSelectionListeners
    */
-  public void addListSelectionListener(SwingListSelectionListener listener)
+  public void addListSelectionListener(ListSelectionListener listener)
   {
-    listenerList.add(SwingListSelectionListener.class, listener);
+    listenerList.add(ListSelectionListener.class, listener);
   }
   /**
    * Removes a registered listener.
@@ -740,9 +741,9 @@ public class SwingDefaultListSelectionModel implements Cloneable,
    * @see #addListSelectionListener
    * @see #getListSelectionListeners
    */
-  public void removeListSelectionListener(SwingListSelectionListener listener)
+  public void removeListSelectionListener(ListSelectionListener listener)
   {
-    listenerList.remove(SwingListSelectionListener.class, listener);
+    listenerList.remove(ListSelectionListener.class, listener);
   }
   /**
    * Returns an array of all registerers listeners.
@@ -768,9 +769,9 @@ public class SwingDefaultListSelectionModel implements Cloneable,
    * @see #getListeners
    * @since 1.4
    */
-  public SwingListSelectionListener[] getListSelectionListeners()
+  public ListSelectionListener[] getListSelectionListeners()
   {
-    return (SwingListSelectionListener[]) getListeners(SwingListSelectionListener.class);
+    return (ListSelectionListener[]) getListeners(ListSelectionListener.class);
   }
   /**
    * Returns a clone of this object.
@@ -783,10 +784,10 @@ public class SwingDefaultListSelectionModel implements Cloneable,
   public Object clone()
     throws CloneNotSupportedException
   {
-    SwingDefaultListSelectionModel model =
-      (SwingDefaultListSelectionModel) super.clone();
+    DefaultListSelectionModel model =
+      (DefaultListSelectionModel) super.clone();
     model.sel = (BitSet) sel.clone();
-    model.listenerList = new SwingEventListenerList();
+    model.listenerList = new EventListenerList();
     return model;
   }
 }

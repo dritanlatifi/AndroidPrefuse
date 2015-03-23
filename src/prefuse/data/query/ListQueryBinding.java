@@ -4,6 +4,7 @@ package prefuse.data.query;
 //import javax.swing.JComponent;
 //import javax.swing.JList;
 
+
 import prefuse.data.Table;
 import prefuse.data.column.ColumnMetadata;
 import prefuse.data.expression.BooleanLiteral;
@@ -15,8 +16,8 @@ import prefuse.data.expression.OrPredicate;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TupleSet;
 import prefuse.util.DataLib;
-import swing.javax.swing.event.SwingListSelectionEvent;
-import swing.javax.swing.event.SwingListSelectionListener;
+import swing.javax.swing.event.ListSelectionEvent;
+import swing.javax.swing.event.ListSelectionListener;
 
 /**
  * DynamicQueryBinding supporting queries based on a list of included
@@ -159,9 +160,9 @@ public class ListQueryBinding extends DynamicQueryBinding {
         return new ComparisonPredicate(ComparisonPredicate.EQ, left, right);
     }
     
-    private class Listener implements SwingListSelectionListener {
+    private class Listener implements ListSelectionListener {
 
-        public void valueChanged(SwingListSelectionEvent e) {
+        public void valueChanged(ListSelectionEvent e) {
             ListModel model = (ListModel)e.getSource();
             OrPredicate orP = (OrPredicate)m_query;
             

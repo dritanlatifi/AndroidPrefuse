@@ -11,7 +11,7 @@ import awt.java.awt.Dimension;
 
 import prefuse.util.force.Force;
 import prefuse.util.force.ForceSimulator;
-//import swing.javax.swing.event.SwingChangeEvent;
+//import javax.swing.event.SwingChangeEvent;
 //import swing.javax.swing.event.SwingChangeListener;
 
 /**

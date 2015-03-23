@@ -37,7 +37,7 @@ import java.util.EventObject;
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public class SwingListDataEvent extends EventObject
+public class ListDataEvent extends EventObject
 {
   private static final long serialVersionUID = 2510353260071004774L;
   
@@ -68,7 +68,7 @@ public class SwingListDataEvent extends EventObject
    * @param index1  the index for the other end of the modified range of list 
    *     elements.
    */
-  public SwingListDataEvent(Object source, int type, int index0, int index1)
+  public ListDataEvent(Object source, int type, int index0, int index1)
   {
     super(source);
     this.type = type;

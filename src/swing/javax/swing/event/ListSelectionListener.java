@@ -1,4 +1,4 @@
-/* ChangeListener.java --
+/* ListSelectionListener.java --
    Copyright (C) 2002, 2006, Free Software Foundation, Inc.
 This file is part of GNU Classpath.
 GNU Classpath is free software; you can redistribute it and/or modify
@@ -30,23 +30,21 @@ obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
 package swing.javax.swing.event;
 import java.util.EventListener;
+
+import swing.javax.swing.ListSelectionModel;
 /**
- * A <code>ChangeListener</code> can register with an object to receive 
- * notification of state changes (for objects that support this mechanism).
- * 
+ * A listener that receives {@link ListSelectionEvent} notifications, 
+ * typically from a {@link ListSelectionModel} when it is modified.
+ *
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public interface SwingChangeListener 
-  extends EventListener 
+public interface ListSelectionListener extends EventListener 
 {
   /**
-   * Called by an object to notify the listener that the object's state has
-   * changed.  The incoming <code>event</code> identifies the 
-   * <code>source</code> of the event, allowing the listener to differentiate
-   * when it is listening for changes in multiple sources.
+   * Receives notification of a {@link ListSelectionEvent}.
    * 
-   * @param event  the change event.
+   * @param event  the event.
    */
-  void stateChanged(SwingChangeEvent event);
+  void valueChanged(ListSelectionEvent event);
 }

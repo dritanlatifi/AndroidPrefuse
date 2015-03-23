@@ -38,7 +38,7 @@ package swing.javax.swing;
  * @author Andrew Selkirk
  * @author Olga Rodimina
  */
-public interface MutableComboBoxModel extends SwingComboBoxModel
+public interface MutableComboBoxModel extends ComboBoxModel
 {
   /**
    * This method adds given object to its data model.

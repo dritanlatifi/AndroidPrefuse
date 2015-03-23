@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 //import swing.javax.swing.SwingBoundedRangeModel;
 //import swing.javax.swing.SwingDefaultBoundedRangeModel;
-//import swing.javax.swing.event.SwingChangeEvent;
+//import javax.swing.event.SwingChangeEvent;
 //import swing.javax.swing.event.SwingChangeListener;
 
 /**

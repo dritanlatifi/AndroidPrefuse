@@ -39,17 +39,17 @@ import swing.javax.swing.ListModel;
  * @author Andrew Selkirk
  * @author Ronald Veldema
  */
-public interface SwingListDataListener extends EventListener 
+public interface ListDataListener extends EventListener 
 {
   /**
    * Notifies the listener that the contents of the list have changed
    * in some way.  This method will be called if the change cannot be
-   * notified via the {@link #intervalAdded(SwingListDataEvent)} or the
-   * {@link #intervalRemoved(SwingListDataEvent)} methods.
+   * notified via the {@link #intervalAdded(ListDataEvent)} or the
+   * {@link #intervalRemoved(ListDataEvent)} methods.
    * 
    * @param event  the event.
    */
-  void contentsChanged(SwingListDataEvent event);
+  void contentsChanged(ListDataEvent event);
   /**
    * Notifies the listener that one or more items have been added to the
    * list.  The <code>event</code> argument can supply the indices for the
@@ -57,7 +57,7 @@ public interface SwingListDataListener extends EventListener
    * 
    * @param event  the event.
    */
-  void intervalAdded(SwingListDataEvent event);
+  void intervalAdded(ListDataEvent event);
   /**
    * Notifies the listener that one or more items have been removed from
    * the list.  The <code>event</code> argument can supply the indices for 
@@ -65,5 +65,5 @@ public interface SwingListDataListener extends EventListener
    * 
    * @param event  the event.
    */
-  void intervalRemoved(SwingListDataEvent event);
+  void intervalRemoved(ListDataEvent event);
 }

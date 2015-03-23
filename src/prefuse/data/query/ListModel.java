@@ -3,11 +3,12 @@ package prefuse.data.query;
 import java.util.ArrayList;
 
 
+
 import prefuse.util.collections.CopyOnWriteArrayList;
 import swing.javax.swing.MutableComboBoxModel;
-import swing.javax.swing.SwingDefaultListSelectionModel;
-import swing.javax.swing.event.SwingListDataEvent;
-import swing.javax.swing.event.SwingListDataListener;
+import swing.javax.swing.DefaultListSelectionModel;
+import swing.javax.swing.event.ListDataEvent;
+import swing.javax.swing.event.ListDataListener;
 
 /**
  * List data model supporting both data modeling and selection management.
@@ -16,14 +17,14 @@ import swing.javax.swing.event.SwingListDataListener;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class ListModel extends SwingDefaultListSelectionModel implements MutableComboBoxModel
+public class ListModel extends DefaultListSelectionModel implements MutableComboBoxModel
 {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private ArrayList<Object> m_items = new ArrayList<Object>();
-    private CopyOnWriteArrayList<SwingListDataListener> m_lstnrs = new CopyOnWriteArrayList<SwingListDataListener>();
+    private CopyOnWriteArrayList<ListDataListener> m_lstnrs = new CopyOnWriteArrayList<ListDataListener>();
     
     /**
      * Create an empty ListModel.
@@ -52,7 +53,7 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
     }
     
     /**
-     * @see swing.javax.swing.SwingComboBoxModel#getSelectedItem()
+     * @see swing.javax.swing.ComboBoxModel#getSelectedItem()
      */
     public Object getSelectedItem() {
         int idx = getMinSelectionIndex();
@@ -60,7 +61,7 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
     }
     
     /**
-     * @see swing.javax.swing.SwingComboBoxModel#setSelectedItem(java.lang.Object)
+     * @see swing.javax.swing.ComboBoxModel#setSelectedItem(java.lang.Object)
      */
     public void setSelectedItem(Object item) {
         int idx = m_items.indexOf(item);
@@ -70,7 +71,7 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
             return;
         
         super.setSelectionInterval(idx,idx);
-        fireDataEvent(this,SwingListDataEvent.CONTENTS_CHANGED,-1,-1);
+        fireDataEvent(this,ListDataEvent.CONTENTS_CHANGED,-1,-1);
     }
     
     /**
@@ -93,7 +94,7 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
     public void addElement(Object item) {
         m_items.add(item);
         int sz = m_items.size()-1;
-        fireDataEvent(this,SwingListDataEvent.INTERVAL_ADDED,sz,sz);
+        fireDataEvent(this,ListDataEvent.INTERVAL_ADDED,sz,sz);
         if ( sz >= 0 && isSelectionEmpty() && item != null )
             setSelectedItem(item);
     }
@@ -103,7 +104,7 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
      */
     public void insertElementAt(Object item, int idx) {
         m_items.add(idx, item);
-        fireDataEvent(this,SwingListDataEvent.INTERVAL_ADDED,idx,idx);
+        fireDataEvent(this,ListDataEvent.INTERVAL_ADDED,idx,idx);
     }
     
     /**
@@ -126,24 +127,24 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
         }
     
         m_items.remove(idx);
-        fireDataEvent(this,SwingListDataEvent.INTERVAL_REMOVED,idx,idx);
+        fireDataEvent(this,ListDataEvent.INTERVAL_REMOVED,idx,idx);
     }
     
     // --------------------------------------------------------------------
     // List Data Listeners
     
     /**
-     * @see swing.javax.swing.ListModel#addListDataListener(swing.javax.swing.event.SwingListDataListener)
+     * @see swing.javax.swing.ListModel#addListDataListener(swing.javax.swing.event.ListDataListener)
      */
-    public void addListDataListener(SwingListDataListener l) {
+    public void addListDataListener(ListDataListener l) {
         if ( !m_lstnrs.contains(l) )
             m_lstnrs.add(l);
     }
     
     /**
-     * @see swing.javax.swing.ListModel#removeListDataListener(swing.javax.swing.event.SwingListDataListener)
+     * @see swing.javax.swing.ListModel#removeListDataListener(swing.javax.swing.event.ListDataListener)
      */
-    public void removeListDataListener(SwingListDataListener l) {
+    public void removeListDataListener(ListDataListener l) {
         m_lstnrs.remove(l);
     }
     
@@ -153,9 +154,9 @@ public class ListModel extends SwingDefaultListSelectionModel implements Mutable
     protected void fireDataEvent(Object src, int type, int idx0, int idx1) {
         Object[] lstnrs = m_lstnrs.getArray();
         if ( lstnrs.length > 0 ) {
-            SwingListDataEvent e = new SwingListDataEvent(src, type, idx0, idx1);
+            ListDataEvent e = new ListDataEvent(src, type, idx0, idx1);
             for ( int i=0; i<lstnrs.length; ++i ) {
-                ((SwingListDataListener)lstnrs[i]).contentsChanged(e);
+                ((ListDataListener)lstnrs[i]).contentsChanged(e);
             }
         }
     }

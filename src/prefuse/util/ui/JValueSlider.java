@@ -20,7 +20,7 @@ import java.util.List;
 //import javax.swing.JTextField;
 
 import prefuse.util.StringLib;
-//import swing.javax.swing.event.SwingChangeEvent;
+//import javax.swing.event.SwingChangeEvent;
 //import swing.javax.swing.event.SwingChangeListener;
 
 /**

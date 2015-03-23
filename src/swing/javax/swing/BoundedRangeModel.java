@@ -29,8 +29,8 @@ this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
 package swing.javax.swing;
-import swing.javax.swing.event.SwingChangeEvent;
-import swing.javax.swing.event.SwingChangeListener;
+import swing.javax.swing.event.ChangeEvent;
+import swing.javax.swing.event.ChangeListener;
 /**
  * The data model that represents a <i>range</i> that is constrained to fit 
  * within specified <i>bounds</i>.  The range is defined as <code>value</code> 
@@ -43,7 +43,7 @@ import swing.javax.swing.event.SwingChangeListener;
  *
  * @author Andrew Selkirk
  */
-public interface SwingBoundedRangeModel
+public interface BoundedRangeModel
 {
   /**
    * Returns the current value for the model.
@@ -54,7 +54,7 @@ public interface SwingBoundedRangeModel
    */
   int getValue();
   /**
-   * Sets the value for the model and sends a {@link SwingChangeEvent} to
+   * Sets the value for the model and sends a {@link ChangeEvent} to
    * all registered listeners.  The new value must satisfy the constraint
    * <code>min <= value <= value + extent <= max</code>.
    * 
@@ -74,7 +74,7 @@ public interface SwingBoundedRangeModel
    */
   int getMinimum();
   /**
-   * Sets the lower bound for the model and sends a {@link SwingChangeEvent} to all
+   * Sets the lower bound for the model and sends a {@link ChangeEvent} to all
    * registered listeners.  The new minimum must be less than or equal to the
    * start value of the model's range (as returned by {@link #getValue()}).
    * 
@@ -95,7 +95,7 @@ public interface SwingBoundedRangeModel
    */
   int getMaximum();
   /**
-   * Sets the upper bound for the model and sends a {@link SwingChangeEvent} to all
+   * Sets the upper bound for the model and sends a {@link ChangeEvent} to all
    * registered listeners.  The new maximum must be greater than or equal to the
    * end value of the model's range (as returned by {@link #getValue()} + 
    * {@link #getExtent()}).
@@ -133,7 +133,7 @@ public interface SwingBoundedRangeModel
   int getExtent();
   /**
    * Sets the extent, which is the length of the model's range, and sends a
-   * {@link SwingChangeEvent} to all registered listeners.
+   * {@link ChangeEvent} to all registered listeners.
    * 
    * @param extent the extent
    *
@@ -157,15 +157,15 @@ public interface SwingBoundedRangeModel
    * 
    * @param listener the listener to add
    * 
-   * @see #removeChangeListener(SwingChangeListener)
+   * @see #removeChangeListener(ChangeListener)
    */
-  void addChangeListener(SwingChangeListener listener);
+  void addChangeListener(ChangeListener listener);
   /**
    * Removes a <code>ChangeListener</code> from this object.
    * 
    * @param listener the listener to remove
    *
-   * @see #addChangeListener(SwingChangeListener)
+   * @see #addChangeListener(ChangeListener)
    */
-  void removeChangeListener(SwingChangeListener listener);
+  void removeChangeListener(ChangeListener listener);
 }

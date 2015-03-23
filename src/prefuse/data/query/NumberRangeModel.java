@@ -3,7 +3,7 @@ package prefuse.data.query;
 
 import prefuse.util.TypeLib;
 import prefuse.util.ui.ValuedRangeModel;
-import swing.javax.swing.SwingDefaultBoundedRangeModel;
+import swing.javax.swing.DefaultBoundedRangeModel;
 
 /**
  * Range model for numerical data. Designed to support range-based dynamic
@@ -11,7 +11,7 @@ import swing.javax.swing.SwingDefaultBoundedRangeModel;
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
-public class NumberRangeModel extends SwingDefaultBoundedRangeModel
+public class NumberRangeModel extends DefaultBoundedRangeModel
     implements ValuedRangeModel
 {
     /**
@@ -130,7 +130,7 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
     }
     
     /**
-     * @see swing.javax.swing.SwingBoundedRangeModel#setRangeProperties(int, int, int, int, boolean)
+     * @see swing.javax.swing.BoundedRangeModel#setRangeProperties(int, int, int, int, boolean)
      */
     public void setRangeProperties(int val, int extent, int min, int max,
                                    boolean adj)
@@ -279,7 +279,7 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
     /**
      * Not supported, throws an exception.
      * @throws UnsupportedOperationException
-     * @see swing.javax.swing.SwingBoundedRangeModel#setMinimum(int)
+     * @see swing.javax.swing.BoundedRangeModel#setMinimum(int)
      */
     public void setMinimum(int min) {
         throw new UnsupportedOperationException();
@@ -288,14 +288,14 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
     /**
      * Not supported, throws an exception.
      * @throws UnsupportedOperationException
-     * @see swing.javax.swing.SwingBoundedRangeModel#setMaximum(int)
+     * @see swing.javax.swing.BoundedRangeModel#setMaximum(int)
      */
     public void setMaximum(int max) {
         throw new UnsupportedOperationException();
     }
     
     /**
-     * @see swing.javax.swing.SwingBoundedRangeModel#setValue(int)
+     * @see swing.javax.swing.BoundedRangeModel#setValue(int)
      */
     public void setValue(int val) {
         m_lo = null;
@@ -303,7 +303,7 @@ public class NumberRangeModel extends SwingDefaultBoundedRangeModel
     }
     
     /**
-     * @see swing.javax.swing.SwingBoundedRangeModel#setExtent(int)
+     * @see swing.javax.swing.BoundedRangeModel#setExtent(int)
      */
     public void setExtent(int extent) {
         m_hi = null;
