@@ -262,7 +262,6 @@ public class AndroidGraphics2D implements Graphics2D
 	@Deprecated
 	public Rectangle getClipRect()
 	{
-		// TODO for Dritan: check if it is necessary to implement this
 		return null;
 	}
 
@@ -330,7 +329,6 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void copyArea(int sx, int sy, int width, int height, int dx, int dy)
 	{
-		// TODO for Dritan: check if it is neccesary to implement this method
 	}
 
 	/*
@@ -380,7 +378,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, int x, int y, Color bgcolor, ImageObserver observer)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO  this should be implemented
 		return false;
 	}
 
@@ -392,7 +390,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, int x, int y, ImageObserver observer)
 	{
-		// TODO for Dritan: this method is already used in prefuse. check how it can be implemented
+		// TODO  this should be implemented
 		return false;
 	}
 
@@ -404,7 +402,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO  this should be implemented
 		return false;
 	}
 
@@ -416,7 +414,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer)
 	{
-		// TODO for Dritan: this should be implemented
+		//TODO  this should be implemented
 		return false;
 	}
 
@@ -428,7 +426,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, Color bgcolor, ImageObserver observer)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO  this should be implemented
 		return false;
 	}
 
@@ -440,7 +438,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO  this should be implemented
 		return false;
 	}
 
@@ -621,7 +619,6 @@ public class AndroidGraphics2D implements Graphics2D
 	}
 
 	/*
-	 * (non-Javadoc) FIXME Dritan: this method is not programmed proper. please invest more time to make it right
 	 * 
 	 * @see awt.java.awt.Graphics#fillRoundRect(int, int, int, int, int, int)
 	 */
@@ -813,13 +810,14 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawGlyphVector(GlyphVector g, float x, float y)
 	{
+		// implementation disabled, because at the moment it si not needed
+		
 		// TODO draw at x, y
 		// draw(g.getOutline());
 		/*
 		 * Matrix matrix = new Matrix(); matrix.setTranslate(x, y); Path pth = getPath(g.getOutline()); pth.transform(matrix); draw(pth);
 		 */
 
-		// TODO for Dritan: check if it is neccesary to implement this
 		// Path path = new Path();
 		// char[] c = ((AndroidGlyphVector)g).getGlyphs();
 		// mP.getTextPath(c, 0, c.length, x, y, path);
@@ -834,7 +832,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO : this should be implemented
 
 	}
 
@@ -846,7 +844,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO : this should be implemented
 		return false;
 	}
 
@@ -858,7 +856,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawRenderableImage(RenderableImage img, AffineTransform xform)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO : this should be implemented
 
 	}
 
@@ -870,12 +868,12 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public void drawRenderedImage(RenderedImage img, AffineTransform xform)
 	{
-		// TODO for Dritan: this should be implemented
+		// TODO : this should be implemented
 
 	}
 
 	/*
-	 * (non-Javadoc) FIXME Dritan: String attributes are ignored. Fix this if there is time or if it's neccessary
+	 * (non-Javadoc) FIXME : String attributes are ignored. 
 	 * 
 	 * @see awt.java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator, float, float)
 	 */
@@ -972,7 +970,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public GraphicsConfiguration getDeviceConfiguration()
 	{
-		// TODO for Dritan: check if it is needed to implement this
+		// TODO : check if it is needed to implement this
 		return null;
 	}
 
@@ -984,7 +982,7 @@ public class AndroidGraphics2D implements Graphics2D
 	@Override
 	public FontRenderContext getFontRenderContext()
 	{
-		// TODO for Dritan: check if it is needed to implement this
+		// TODO : check if it is needed to implement this
 		return null;
 	}
 
@@ -1237,7 +1235,7 @@ public class AndroidGraphics2D implements Graphics2D
 	{
 		
 		/*
-		 ORIGINAL CODE FROM ANDROID TODO for Dritan: Check it the original Code is necessary. 
+		 ALTERNATIVE CODE: TODO Check if this Code is necessary. 
 		 At the moment it throws an exception with the message matrix can not be changed (at reset and setValues). 
 		currentMatrix.reset();
 		
