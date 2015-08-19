@@ -205,7 +205,55 @@ public class MainActivity extends Activity
 		return display;
 	}
 
+
 	private Table generateTable()
+	{
+		Table table = new Table();
+
+		// use a calendar for input of human-readable dates
+		GregorianCalendar cal = new GregorianCalendar();
+
+		// set up table schema
+		table.addColumn("Date", Date.class);
+		table.addColumn("BMI", double.class);
+		table.addColumn("NBZ", int.class);
+		table.addColumn("Insult", String.class);
+		int items = 1000;
+		table.addRows(items);
+		
+		Random randomGenerator = new Random();
+		for(int i = 0; i < items / 2; i++)
+		{
+			table.set(i, 0, cal.getTime());
+			table.set(i, 1, randomGenerator.nextDouble() * 40);
+			table.set(i, 2, randomGenerator.nextDouble() * 400);
+			table.set(i, 3, "T");
+		}
+
+		for(int i = items/2; i<items; i++)
+		{
+			table.set(i, 0, cal.getTime());
+			table.set(i, 1, randomGenerator.nextDouble() * 40);
+			table.set(i, 2, randomGenerator.nextDouble() * 400);
+			table.set(i, 3, "F");
+		}
+		
+
+ /**  add items outside of visible area (for performance check) **/ 		
+//		for(int j = 5000; j<items; j++)
+//		{
+//			String insult = randomGenerator.nextBoolean() ? "T" : "F";
+//			table.set(j, 0, cal.getTime());
+//			table.set(j, 1, 400);
+//			table.set(j, 2, randomGenerator.nextDouble() * 400);
+//			table.set(j, 3, insult);
+//		}		
+
+		return table;
+	}
+	
+	
+	private Table generateTableForPerforamceTest()
 	{
 		Table table = new Table();
 

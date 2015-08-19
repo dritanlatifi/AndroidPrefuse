@@ -1004,6 +1004,7 @@ public class Color implements PPaint, Serializable {
      */
     public int getAndroidColorRepresentation()
     {
-    	return android.graphics.Color.parseColor( this.getHexColor() );
+    	return android.graphics.Color.argb(this.getAlpha(),this.getRed(), this.getGreen(), this.getBlue()); 
+    	//return android.graphics.Color.parseColor( this.getHexColor() );
     }
 }

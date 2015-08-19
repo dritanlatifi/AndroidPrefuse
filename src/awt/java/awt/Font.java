@@ -95,7 +95,7 @@ public class Font implements Serializable {
 
     
     /**
-     * android Paint
+     * android Paint. this is needed at the class AwtFontMetrics
      */
     protected Paint paint;
 

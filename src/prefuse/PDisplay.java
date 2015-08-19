@@ -381,13 +381,15 @@ public class PDisplay extends View
 	}
 
 	/**
-	 * Sets the font used by this Display. This determines the font used by this Display's text editor and in any debugging text. TODO for Dritan: no support for changing font at androidPrefuse 1.0
+	 * Sets the font used by this Display. This determines the font used by this Display's text editor and in any debugging text. 
+	 * TODO: add font support. if it is not possible, then remove this method
 	 * 
 	 * @param f
 	 *            the Font to use
 	 */
 	public void setFont(Font f)
 	{
+		
 	}
 
 	/**
@@ -905,7 +907,7 @@ public class PDisplay extends View
 			mark = t;
 			nframes = 0;
 		}
-		Log.d("PERFORMANCE", "framerate: " + nframes );
+		Log.d("PERFORMANCE", "framerate: " + nframes + " - " + frameRate );
 		log("ALL");
 		log("ALL-START");
 	}
@@ -1090,6 +1092,7 @@ public class PDisplay extends View
 	 * 
 	 * @param g
 	 *            the printer graphics context.
+	 *  @incomplete
 	 */
 	protected void printComponent(Graphics g)
 	{
