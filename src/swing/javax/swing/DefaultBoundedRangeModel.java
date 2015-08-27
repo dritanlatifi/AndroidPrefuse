@@ -1,426 +1,186 @@
-/* DefaultBoundedRangeModel.java -- Default implementation
-   of BoundedRangeModel.
-   Copyright (C) 2002, 2004, 2005, 2006,  Free Software Foundation, Inc.
-This file is part of GNU Classpath.
-GNU Classpath is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
-GNU Classpath is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
-You should have received a copy of the GNU General Public License
-along with GNU Classpath; see the file COPYING.  If not, write to the
-Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301 USA.
-Linking this library statically or dynamically with other modules is
-making a combined work based on this library.  Thus, the terms and
-conditions of the GNU General Public License cover the whole
-combination.
-As a special exception, the copyright holders of this library give you
-permission to link this library with independent modules to produce an
-executable, regardless of the license terms of these independent
-modules, and to copy and distribute the resulting executable under
-terms of your choice, provided that you also meet, for each linked
-independent module, the terms and conditions of the license of that
-module.  An independent module is a module which is not derived from
-or based on this library.  If you modify this library, you may extend
-this exception to your version of the library, but you are not
-obligated to do so.  If you do not wish to do so, delete this
-exception statement from your version. */
-package swing.javax.swing;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.EventListener;
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
+package swing.javax.swing;
+
+import java.io.Serializable;
 import swing.javax.swing.event.ChangeEvent;
 import swing.javax.swing.event.ChangeListener;
 import swing.javax.swing.event.EventListenerList;
 
+
 /**
- * The default implementation of <code>BoundedRangeModel</code>.
- *
- * @author Andrew Selkirk (aselkirk@sympatico.ca)
- * @author Sascha Brawer (brawer@dandelis.ch)
+ * <p>
+ * <i>DefaultBoundedRangeModel</i>
+ * </p>
+ * <h3>Implementation Notes:</h3>
+ * <ul>
+ * <li>The <code>serialVersionUID</code> fields are explicitly declared as a performance
+ * optimization, not as a guarantee of serialization compatibility.</li>
+ * </ul>
  */
-public class DefaultBoundedRangeModel
-  implements BoundedRangeModel, Serializable
-{
-  /**
-   * The identifier of this class in object serialization. Verified
-   * using the serialver tool of Sun J2SE 1.4.1_01.
-   */
-  private static final long serialVersionUID = 5034068491295259790L;
-  /**
-   * An event that is sent to all registered {@link ChangeListener}s
-   * when the state of this range model has changed.
-   *
-   * <p>The event object is created on demand, the first time it
-   * is actually needed.</p>
-   *
-   * @see #fireStateChanged()
-   */
-  protected transient ChangeEvent changeEvent;
-  /**
-   * The list of the currently registered EventListeners.
-   */
-  protected EventListenerList listenerList = new EventListenerList();
-  /**
-   * The current value of the range model, which is always between
-   * {@link #minimum} and ({@link #maximum} - {@link #extent}). In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
-   * <code>value</code> is displayed as the position of the thumb.
-   */
-  private int value;
-  /**
-   * The current extent of the range model, which is a number greater
-   * than or equal to zero. In a scroll bar visualization of a {@link
-   * BoundedRangeModel}, the <code>extent</code> is displayed as the
-   * size of the thumb.
-   */
-  private int extent;
-  /**
-   * The current minimum value of the range model, which is always
-   * less than or equal to {@link #maximum}.
-   */
-  private int minimum;
-  /**
-   * The current maximum value of the range model, which is always
-   * greater than or equal to {@link #minimum}.
-   */
-  private int maximum;
-  /**
-   * A property that indicates whether the value of this {@link
-   * BoundedRangeModel} is going to change in the immediate future.
-   */
-  private boolean isAdjusting;
-  /**
-   * Constructs a <code>DefaultBoundedRangeModel</code> with default
-   * values for the properties. The properties <code>value</code>,
-   * <code>extent</code> and <code>minimum</code> will be initialized
-   * to zero; <code>maximum</code> will be set to 100; the property
-   * <code>valueIsAdjusting</code> will be <code>false</code>.
-   */
-  public DefaultBoundedRangeModel()
-  {
-    // The fields value, extent, minimum have the default value 0, and
-    // isAdjusting is already false. These fields no not need to be
-    // set explicitly.
-    maximum = 100;
-  }
-  /**
-   * Constructs a <code>DefaultBoundedRangeModel</code> with the
-   * specified values for some properties.
-   *
-   * @param value the initial value of the range model, which must be
-   *     a number between <code>minimum</code> and <code>(maximum -
-   *     extent)</code>. In a scroll bar visualization of a {@link
-   *     BoundedRangeModel}, the <code>value</code> is displayed as the
-   *     position of the thumb.
-   * @param extent the initial extent of the range model, which is a
-   *     number greater than or equal to zero. In a scroll bar
-   *     visualization of a {@link BoundedRangeModel}, the
-   *     <code>extent</code> is displayed as the size of the thumb.
-   * @param minimum the initial minimal value of the range model.
-   * @param maximum the initial maximal value of the range model.
-   *
-   * @throws IllegalArgumentException if the following condition is
-   *     not satisfied: <code>minimum &lt;= value &lt;= value + extent &lt;=
-   *     maximum</code>.
-   */
-  public DefaultBoundedRangeModel(int value, int extent, int minimum,
-                                  int maximum)
-  {
-    if (!(minimum <= value && extent >= 0 && (value + extent) <= maximum))
-      throw new IllegalArgumentException();
-    this.value = value;
-    this.extent = extent;
-    this.minimum = minimum;
-    this.maximum = maximum;
-    // The isAdjusting field already has a false value by default.
-  }
-  /**
-   * Returns a string with all relevant properties of this range
-   * model.
-   *
-   * @return a string representing the object
-   */
-  public String toString()
-  {
-    return getClass().getName()
-      + "[value=" + value
-      + ", extent=" + extent
-      + ", min=" + minimum
-      + ", max=" + maximum
-      + ", adj=" + isAdjusting
-      + ']';
-  }
-  /**
-   * Returns the current value of this bounded range model.  In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
-   * <code>value</code> is displayed as the position of the thumb.
-   *
-   * @return the value
-   */
-  public int getValue()
-  {
-    return value;
-  }
-  /**
-   * Changes the current value of this bounded range model. In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
-   * <code>value</code> is displayed as the position of the thumb;
-   * changing the <code>value</code> of a scroll bar's model
-   * thus moves the thumb to a different position.
-   *
-   * @param value the value
-   */
-  public void setValue(int value)
-  {
-    value = Math.max(minimum, value);
-    if (value + extent > maximum)
-      value = maximum - extent;
-    if (value != this.value)
-      {
-        this.value = value;
-        fireStateChanged();
-      }
-  }
-  /**
-   * Returns the current extent of this bounded range model, which is
-   * a number greater than or equal to zero. In a scroll bar
-   * visualization of a {@link BoundedRangeModel}, the
-   * <code>extent</code> is displayed as the size of the thumb.
-   *
-   * @return the extent
-   */
-  public int getExtent()
-  {
-    return extent;
-  }
-  /**
-   * Changes the current extent of this bounded range model. In a
-   * scroll bar visualization of a {@link BoundedRangeModel}, the
-   * <code>extent</code> is displayed as the size of the thumb.
-   *
-   * @param extent the new extent of the range model, which is a
-   *     number greater than or equal to zero.
-   */
-  public void setExtent(int extent)
-  {
-    extent = Math.max(extent, 0);
-    if (value + extent > maximum)
-      extent = maximum - value;
-    if (extent != this.extent)
-      {
+public class DefaultBoundedRangeModel implements BoundedRangeModel, Serializable {
+    private static final long serialVersionUID = -3186121964369712936L;
+
+    private static final int DEFAULT_MAX = 100;
+
+    protected ChangeEvent changeEvent;
+
+    protected EventListenerList listenerList;
+
+    private int max;
+
+    private int min;
+
+    private int extent;
+
+    private int value;
+
+    private boolean valueIsAdjusting;
+
+    public DefaultBoundedRangeModel() {
+        this(0, 0, 0, DEFAULT_MAX);
+    }
+
+    public DefaultBoundedRangeModel(int value, int extent, int min, int max) {
+        if (min > value || value > value + extent || value + extent > max) {
+            throw new IllegalArgumentException("Invalid range properties"); //$NON-NLS-1$
+        }
+        this.min = min;
+        this.max = max;
         this.extent = extent;
+        this.value = value;
+        changeEvent = new ChangeEvent(this);
+        valueIsAdjusting = false;
+        listenerList = new EventListenerList();
+    }
+
+    public void addChangeListener(ChangeListener listener) {
+        listenerList.add(ChangeListener.class, listener);
+    }
+
+    protected void fireStateChanged() {
+        ChangeListener[] listeners = getChangeListeners();
+        for (int i = 0; i < listeners.length; i++) {
+            listeners[i].stateChanged(changeEvent);
+        }
+    }
+
+    public ChangeListener[] getChangeListeners() {
+        return listenerList.getListeners(ChangeListener.class);
+    }
+
+    public int getExtent() {
+        return extent;
+    }
+
+    public <T extends java.util.EventListener> T[] getListeners(Class<T> c) {
+        return listenerList.getListeners(c);
+    }
+
+    public int getMaximum() {
+        return max;
+    }
+
+    public int getMinimum() {
+        return min;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public boolean getValueIsAdjusting() {
+        return valueIsAdjusting;
+    }
+
+    public void removeChangeListener(ChangeListener listener) {
+        listenerList.remove(ChangeListener.class, listener);
+    }
+
+    public void setExtent(int n) {
+        int newExtent = Math.min(Math.max(n, 0), max - value);
+        if (newExtent != extent) {
+            extent = newExtent;
+            fireStateChanged();
+        }
+    }
+
+    public void setMaximum(int n) {
+        if (max == n) {
+            return;
+        }
+        max = n;
+        min = Math.min(n, min);
+        extent = Math.min(max - min, extent);
+        value = Math.min(value, max - extent);
         fireStateChanged();
-      }
-  }
-  /**
-   * Returns the current minimal value of this bounded range model.
-   */
-  public int getMinimum()
-  {
-    return minimum;
-  }
-  /**
-   * Changes the current minimal value of this bounded range model.
-   *
-   * @param minimum the new minimal value.
-   */
-  public void setMinimum(int minimum)
-  {
-    int value, maximum;
-    maximum = Math.max(minimum, this.maximum);
-    value = Math.max(minimum, this.value);
-    setRangeProperties(value, extent, minimum, maximum, isAdjusting);
-  }
-  /**
-   * Returns the current maximal value of this bounded range model.
-   *
-   * @return the maximum
-   */
-  public int getMaximum()
-  {
-    return maximum;
-  }
-  /**
-   * Changes the current maximal value of this bounded range model.
-   *
-   * @param maximum the new maximal value.
-   */
-  public void setMaximum(int maximum)
-  {
-    int value, extent, minimum;
-    minimum = Math.min(this.minimum, maximum);
-    extent = Math.min(this.extent, maximum - minimum);
-    value = Math.min(this.value, maximum - extent);
-    setRangeProperties(value, extent, minimum, maximum, isAdjusting);
-  }
-  /**
-   * Returns whether or not the value of this bounded range model is
-   * going to change in the immediate future. Scroll bars set this
-   * property to <code>true</code> while the thumb is being dragged
-   * around; when the mouse is relased, they set the property to
-   * <code>false</code> and post a final {@link ChangeEvent}.
-   *
-   * @return <code>true</code> if the value will change soon again;
-   *     <code>false</code> if the value will probably not change soon.
-   */
-  public boolean getValueIsAdjusting()
-  {
-    return isAdjusting;
-  }
-  /**
-   * Specifies whether or not the value of this bounded range model is
-   * going to change in the immediate future. Scroll bars set this
-   * property to <code>true</code> while the thumb is being dragged
-   * around; when the mouse is relased, they set the property to
-   * <code>false</code>.
-   *
-   * @param isAdjusting <code>true</code> if the value will change
-   *     soon again; <code>false</code> if the value will probably not
-   *     change soon.
-   */
-  public void setValueIsAdjusting(boolean isAdjusting)
-  {
-    if (isAdjusting == this.isAdjusting)
-      return;
-    this.isAdjusting = isAdjusting;
-    fireStateChanged();
-  }
-  /**
-   * Sets all properties.
-   *
-   * @param value the new value of the range model.  In a scroll bar
-   *     visualization of a {@link BoundedRangeModel}, the
-   *     <code>value</code> is displayed as the position of the thumb.
-   * @param extent the new extent of the range model, which is a
-   *     number greater than or equal to zero. In a scroll bar
-   *     visualization of a {@link BoundedRangeModel}, the
-   *     <code>extent</code> is displayed as the size of the thumb.
-   * @param minimum the new minimal value of the range model.
-   * @param maximum the new maximal value of the range model.
-   * @param isAdjusting whether or not the value of this bounded range
-   *     model is going to change in the immediate future. Scroll bars set
-   *     this property to <code>true</code> while the thumb is being
-   *     dragged around; when the mouse is relased, they set the property
-   *     to <code>false</code>.
-   */
-  public void setRangeProperties(int value, int extent, int minimum,
-                                 int maximum, boolean isAdjusting)
-  {
-    minimum = Math.min(Math.min(minimum, maximum), value);
-    maximum = Math.max(value, maximum);
-    if (extent + value > maximum)
-      extent = maximum - value;
-    extent = Math.max(0, extent);
-    if ((value == this.value)
-        && (extent == this.extent)
-        && (minimum == this.minimum)
-        && (maximum == this.maximum)
-        && (isAdjusting == this.isAdjusting))
-      return;
-    this.value = value;
-    this.extent = extent;
-    this.minimum = minimum;
-    this.maximum = maximum;
-    this.isAdjusting = isAdjusting;
-		
-    fireStateChanged();
-  }
-  /**
-   * Subscribes a ChangeListener to state changes.
-   *
-   * @param listener the listener to be subscribed.
-   */
-  public void addChangeListener(ChangeListener listener)
-  {
-    listenerList.add(ChangeListener.class, listener);
-  }
-  /**
-   * Cancels the subscription of a ChangeListener.
-   *
-   * @param listener the listener to be unsubscribed.
-   */
-  public void removeChangeListener(ChangeListener listener)
-  {
-    listenerList.remove(ChangeListener.class, listener);
-  }
-  /**
-   * Sends a {@link ChangeEvent} to any registered {@link
-   * ChangeListener}s.
-   *
-   * @see #addChangeListener(ChangeListener)
-   * @see #removeChangeListener(ChangeListener)
-   */
-  protected void fireStateChanged()
-  {
-    ChangeListener[] listeners = getChangeListeners();
-    
-    if (changeEvent == null)
-      changeEvent = new ChangeEvent(this);
-    for (int i = listeners.length - 1; i >= 0; --i)
-      listeners[i].stateChanged(changeEvent);
-  }
-  /**
-   * Retrieves the current listeners of the specified class.
-   *
-   * @param listenerType the class of listeners; usually {@link
-   *     ChangeListener}<code>.class</code>.
-   *
-   * @return an array with the currently subscribed listeners, or
-   *     an empty array if there are currently no listeners.
-   *
-   * @since 1.3
-   */
-  public <T extends EventListener> T[] getListeners(Class<T> listenerType)
-  {
-    return listenerList.getListeners(listenerType);
-  }
-  /**
-   * Returns all <code>ChangeListeners</code> that are currently
-   * subscribed for changes to this
-   * <code>DefaultBoundedRangeModel</code>.
-   *
-   * @return an array with the currently subscribed listeners, or
-   *     an empty array if there are currently no listeners.
-   *
-   * @since 1.4
-   */
-  public ChangeListener[] getChangeListeners()
-  {
-    return (ChangeListener[]) getListeners(ChangeListener.class);
-  }
-  
-  /**
-   * Provides serialization support.
-   *
-   * @param stream  the output stream (<code>null</code> not permitted).
-   *
-   * @throws IOException  if there is an I/O error.
-   */
-  private void writeObject(ObjectOutputStream stream) 
-    throws IOException 
-  {
-    stream.defaultWriteObject();
-  }
-  /**
-   * Provides serialization support.
-   *
-   * @param stream  the input stream (<code>null</code> not permitted).
-   *
-   * @throws IOException  if there is an I/O error.
-   * @throws ClassNotFoundException  if there is a classpath problem.
-   */
-  private void readObject(ObjectInputStream stream)
-    throws ClassNotFoundException, IOException
-  {
-    stream.defaultReadObject();
-    listenerList = new EventListenerList();
-  }
+    }
+
+    public void setMinimum(int n) {
+        if (n == min) {
+            return;
+        }
+        min = n;
+        max = Math.max(n, max);
+        extent = Math.min(max - min, extent);
+        value = Math.max(value, min);
+        fireStateChanged();
+    }
+
+    public void setRangeProperties(int newValue, int newExtent, int newMin, int newMax,
+            boolean adjusting) {
+        if (newValue == value && newExtent == extent && newMin == min && newMax == max
+                && adjusting == valueIsAdjusting) {
+            return;
+        }
+        value = newValue;
+        min = Math.min(newMin, value);
+        max = Math.max(newMax, value);
+        extent = Math.min(newExtent, max - value);
+        valueIsAdjusting = adjusting;
+        fireStateChanged();
+    }
+
+    public void setValue(int n) {
+        int newValue = Math.min(Math.max(n, min), max - extent);
+        if (newValue != value) {
+            value = newValue;
+            fireStateChanged();
+        }
+    }
+
+    public void setValueIsAdjusting(boolean b) {
+        if (b != valueIsAdjusting) {
+            valueIsAdjusting = b;
+            fireStateChanged();
+        }
+    }
+
+    /*
+     * The format of the string is based on 1.5 release behavior
+     * which can be revealed using the following code:
+     *
+     *     Object obj = new DefaultBoundedRangeModel();
+     *     System.out.println(obj.toString());
+     */
+    @Override
+    public String toString() {
+        return getClass().getName() + "[" + "value=" + value + ", " + "extent=" + extent + ", "
+                + "min=" + min + ", " + "max=" + max + ", " + "adj=" + valueIsAdjusting + "]";
+    }
 }

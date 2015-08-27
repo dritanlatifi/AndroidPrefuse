@@ -1,119 +1,65 @@
-/* ListDataEvent.java --
-   Copyright (C) 2002, 2006, Free Software Foundation, Inc.
-This file is part of GNU Classpath.
-GNU Classpath is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
-GNU Classpath is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
-You should have received a copy of the GNU General Public License
-along with GNU Classpath; see the file COPYING.  If not, write to the
-Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301 USA.
-Linking this library statically or dynamically with other modules is
-making a combined work based on this library.  Thus, the terms and
-conditions of the GNU General Public License cover the whole
-combination.
-As a special exception, the copyright holders of this library give you
-permission to link this library with independent modules to produce an
-executable, regardless of the license terms of these independent
-modules, and to copy and distribute the resulting executable under
-terms of your choice, provided that you also meet, for each linked
-independent module, the terms and conditions of the license of that
-module.  An independent module is a module which is not derived from
-or based on this library.  If you modify this library, you may extend
-this exception to your version of the library, but you are not
-obligated to do so.  If you do not wish to do so, delete this
-exception statement from your version. */
-package swing.javax.swing.event;
-import java.util.EventObject;
-/**
- * An event that contains information about a modification to the content of
- * a list.
- * 
- * @author Andrew Selkirk
- * @author Ronald Veldema
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
-public class ListDataEvent extends EventObject
-{
-  private static final long serialVersionUID = 2510353260071004774L;
-  
-  /** An event type indicating that the list content has been modified. */
-  public static final int CONTENTS_CHANGED = 0;
-  
-  /** An event type indicating that an interval has been added to the list. */
-  public static final int INTERVAL_ADDED = 1;
-  
-  /** 
-   * An event type indicating that an interval has been removed from the 
-   * list. 
-   */
-  public static final int INTERVAL_REMOVED = 2;
-  private int type;
-  private int index0;
-  private int index1;
-	
-  /**
-   * Creates a <code>ListDataEvent</code> object.
-   * 
-   * @param source  the source of the event (<code>null</code> not permitted).
-   * @param type  the type of the event (should be one of 
-   *     {@link #CONTENTS_CHANGED}, {@link #INTERVAL_ADDED} or 
-   *     {@link #INTERVAL_REMOVED}, although this is not enforced).
-   * @param index0  the index for one end of the modified range of list 
-   *     elements.
-   * @param index1  the index for the other end of the modified range of list 
-   *     elements.
-   */
-  public ListDataEvent(Object source, int type, int index0, int index1)
-  {
-    super(source);
-    this.type = type;
-    this.index0 = Math.min(index0, index1);
-    this.index1 = Math.max(index0, index1);
-  }
-	
-  /**
-   * Returns the index of the first item in the range of modified list items.
-   * 
-   * @return The index of the first item in the range of modified list items.
-   */
-  public int getIndex0()
-  {
-    return index0;
-  }
-  /**
-   * Returns the index of the last item in the range of modified list items.
-   * 
-   * @return The index of the last item in the range of modified list items.
-   */
-  public int getIndex1()
-  {
-    return index1;
-  }
-  /**
-   * Returns a code representing the type of this event, which is usually one
-   * of {@link #CONTENTS_CHANGED}, {@link #INTERVAL_ADDED} or 
-   * {@link #INTERVAL_REMOVED}.
-   * 
-   * @return The event type.
-   */
-  public int getType()
-  {
-    return type;
-  }
-  
-  /**
-   * Returns a string representing the state of this event.
-   * 
-   * @return A string.
-   */
-  public String toString()
-  {
-    return getClass().getName() + "[type=" + type + ",index0=" + index0 
-        + ",index1=" + index1 + "]";
-  }
+
+/**
+ * @author Anton Avtamonov
+ */
+
+package swing.javax.swing.event;
+
+import java.io.Serializable;
+import java.util.EventObject;
+
+public class ListDataEvent extends EventObject implements Serializable {
+    public static final int CONTENTS_CHANGED = 0;
+    public static final int INTERVAL_ADDED = 1;
+    public static final int INTERVAL_REMOVED = 2;
+
+    private final int type;
+    private final int index0;
+    private final int index1;
+
+    public ListDataEvent(final Object source, final int type, final int index0, final int index1) {
+        super(source);
+        this.type = type;
+        this.index0 = Math.min(index0, index1);
+        this.index1 = Math.max(index0, index1);
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public int getIndex0() {
+        return index0;
+    }
+
+    public int getIndex1() {
+        return index1;
+    }
+
+    /*
+     * The format of the string is based on 1.5 release behavior
+     * which can be revealed using the following code:
+     *
+     *     Object obj = new ListDataEvent(null, ListDataEvent.CONTENTS_CHANGED, 0, 1);
+     *     System.out.println(obj.toString());
+     */
+    public String toString() {
+        return this.getClass().getName() + "[source="+source+",type=" + type + ",index0=" + index0 + ",index1=" + index1 + "]";
+    }
 }
