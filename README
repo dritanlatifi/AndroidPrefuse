@@ -1,0 +1,10 @@
+AndroidPrefuse is a sowftware framework for building graphical 2D applications in Android. 
+It is based on the software framwork prefuse (http://prefuse.org). See license-prefuse.txt for copyright and license. 
+AndroidPrefuse can be freely used for both commercial and non-commercial purposes. For more information see license-androidprefuse.txt.
+
+The software was developed and published at GitHub by Dritan Latifi on 15.09.2015. The git commits before this date, do not have any license agreement.
+There for all commits which were made at the local git repository by the developer and were imported to GitHub underlay the above mentioned software license.
+
+
+AndroidPrefuse is currently on a alpha stage and made to work with only scatter plot example. For other graphical applications some changes on AndroidPrefuse may be needed.
+
