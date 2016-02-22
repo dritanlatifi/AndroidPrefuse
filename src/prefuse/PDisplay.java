@@ -239,13 +239,6 @@ public class PDisplay extends View
 		mScaleGestureDetector = new ScaleGestureDetector(context, mScaleGestureListener);
 		mGestureDetector = new GestureDetectorCompat(context, mGestureListener);
 
-		// handlers
-		// InputEventCapturer iec = new InputEventCapturer();
-		// addMouseListener(iec);
-		// addMouseMotionListener(iec);
-		// addMouseWheelListener(iec);
-		// addKeyListener(iec);
-
 		// invalidate the display when the filter changes
 		m_predicate.addExpressionListener(new UpdateListener()
 		{

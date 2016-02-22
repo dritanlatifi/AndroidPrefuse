@@ -45,6 +45,65 @@ import prefuse.visual.sort.ItemSorter;
 
 public class MainActivity extends Activity
 {
+	private static class DataHolder
+	{
+		  private Table data;
+		  public Table getData() {return data;}
+		  public DataHolder()
+		  {
+			  this.data = generateTable();
+		  }
+		  private static final DataHolder holder = new DataHolder();
+		  public static DataHolder getInstance() {return holder;}
+		  
+			private Table generateTable()
+			{
+				Table table = new Table();
+
+				// use a calendar for input of human-readable dates
+				GregorianCalendar cal = new GregorianCalendar();
+
+				// set up table schema
+				table.addColumn("Date", Date.class);
+				table.addColumn("BMI", double.class);
+				table.addColumn("NBZ", int.class);
+				table.addColumn("Insult", String.class);
+				int items = 100;
+				table.addRows(items);
+				
+				Random randomGenerator = new Random();
+				for(int i = 0; i < items / 2; i++)
+				{
+					table.set(i, 0, cal.getTime());
+					table.set(i, 1, randomGenerator.nextDouble() * 40);
+					table.set(i, 2, randomGenerator.nextDouble() * 400);
+					table.set(i, 3, "T");
+				}
+
+				for(int i = items/2; i<items; i++)
+				{
+					table.set(i, 0, cal.getTime());
+					table.set(i, 1, randomGenerator.nextDouble() * 40);
+					table.set(i, 2, randomGenerator.nextDouble() * 400);
+					table.set(i, 3, "F");
+				}
+				
+
+		 /**  add items outside of visible area (for performance check) **/ 		
+//				for(int j = 5000; j<items; j++)
+//				{
+//					String insult = randomGenerator.nextBoolean() ? "T" : "F";
+//					table.set(j, 0, cal.getTime());
+//					table.set(j, 1, 400);
+//					table.set(j, 2, randomGenerator.nextDouble() * 400);
+//					table.set(j, 3, insult);
+//				}		
+
+				return table;
+			}
+					  
+	}
+	Table data;
 	Visualization vis;
 	PDisplay display;
 	@Override
@@ -57,8 +116,8 @@ public class MainActivity extends Activity
 
 		// Remove notification bar
 		// this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-		setContentView(createVisualizationV6(generateTable()));
+		data = DataHolder.getInstance().getData();
+		setContentView(createVisualizationV6(data));
 	}
 
 	@Override
@@ -101,7 +160,7 @@ public class MainActivity extends Activity
 		/* STEP 2: set up renderers for the visual data */
 		vis.setRendererFactory(new RendererFactory()
 		{
-			AbstractShapeRenderer sr = new ShapeRenderer(20);
+			AbstractShapeRenderer sr = new ShapeRenderer(35);
 			Renderer arY = new AxisRenderer(Constants.FAR_LEFT, Constants.CENTER);
 			Renderer arX = new AxisRenderer(Constants.CENTER, Constants.FAR_BOTTOM);
 
@@ -163,7 +222,7 @@ public class MainActivity extends Activity
 			{
 				if( !item.isInGroup("xlab") && !item.isInGroup("ylab") ) // process only the items of the axis
 					return;
-		        Font font = FontLib.getFont("SansSerif",Font.PLAIN,25);
+		        Font font = FontLib.getFont("SansSerif",Font.BOLD ,30);
 				item.setFont(font);
 			}
 		});			
@@ -206,52 +265,7 @@ public class MainActivity extends Activity
 	}
 
 
-	private Table generateTable()
-	{
-		Table table = new Table();
 
-		// use a calendar for input of human-readable dates
-		GregorianCalendar cal = new GregorianCalendar();
-
-		// set up table schema
-		table.addColumn("Date", Date.class);
-		table.addColumn("BMI", double.class);
-		table.addColumn("NBZ", int.class);
-		table.addColumn("Insult", String.class);
-		int items = 1000;
-		table.addRows(items);
-		
-		Random randomGenerator = new Random();
-		for(int i = 0; i < items / 2; i++)
-		{
-			table.set(i, 0, cal.getTime());
-			table.set(i, 1, randomGenerator.nextDouble() * 40);
-			table.set(i, 2, randomGenerator.nextDouble() * 400);
-			table.set(i, 3, "T");
-		}
-
-		for(int i = items/2; i<items; i++)
-		{
-			table.set(i, 0, cal.getTime());
-			table.set(i, 1, randomGenerator.nextDouble() * 40);
-			table.set(i, 2, randomGenerator.nextDouble() * 400);
-			table.set(i, 3, "F");
-		}
-		
-
- /**  add items outside of visible area (for performance check) **/ 		
-//		for(int j = 5000; j<items; j++)
-//		{
-//			String insult = randomGenerator.nextBoolean() ? "T" : "F";
-//			table.set(j, 0, cal.getTime());
-//			table.set(j, 1, 400);
-//			table.set(j, 2, randomGenerator.nextDouble() * 400);
-//			table.set(j, 3, insult);
-//		}		
-
-		return table;
-	}
-	
 	
 	private Table generateTableForPerforamceTest()
 	{
@@ -329,5 +343,5 @@ public class MainActivity extends Activity
 		boundsLabelsX.setRect(left + axisWidth, top + innerHeight - axisHeight, innerWidth - axisWidth, axisHeight);
 		boundsLabelsY.setRect(left, top, innerWidth + paddingRight, innerHeight - axisHeight);
 	}
-	
 }
+ 
